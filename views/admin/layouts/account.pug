@@ -1,0 +1,18 @@
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    block title
+    link(rel="stylesheet", href="/admin/assets/css/style.css")
+    title pageTitle
+    link(
+      href="#"
+      rel="icon" 
+      type="image/x-icon"
+    )
+    script. 
+      const pathAdmin = "#{adminPathName}";
+  body
+    .page-account
+      block main
+    script(src="/admin/assets/js/script.js")

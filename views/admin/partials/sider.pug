@@ -1,0 +1,78 @@
+//- sidebar.pug
+nav.sider
+  ul.inner-menu
+    li
+      a(href="/admin/dashboard`")
+        i.fa-solid.fa-gauge-high
+        |  Dashboard
+
+    //- Dropdown: Sâu róm thông
+    li.dropdown
+      a(href="#")
+        <i class="fa-solid fa-mosquito"></i>
+        |  Sâu róm thông
+        i.fa-solid.fa-chevron-down.arrow
+      ul.submenu
+        li: a(href="#") Hà Nội
+        li: a(href="#") Hồ Chí Minh
+        li: a(href="#") Đà Nẵng
+        li: a(href="#") Hải Phòng
+        li: a(href="#") Cần Thơ
+
+    //- Dropdown: Sâu hại lá keo
+    li.dropdown
+      a(href="#")
+        <i class="fa-solid fa-mosquito"></i>
+        |  Sâu hại lá keo
+        i.fa-solid.fa-chevron-down.arrow
+      ul.submenu
+        li: a(href="#") Hà Nội
+        li: a(href="#") Hồ Chí Minh
+        li: a(href="#") Đà Nẵng
+        li: a(href="#") Hải Phòng
+        li: a(href="#") Cần Thơ
+
+    //- Dropdown: Bệnh hại lá keo
+    li.dropdown
+      a(href="#")
+        <i class="fa-solid fa-mosquito"></i>
+        |  Bệnh hại lá keo
+        i.fa-solid.fa-chevron-down.arrow
+      ul.submenu
+        li: a(href="#") Hà Nội
+        li: a(href="#") Hồ Chí Minh
+        li: a(href="#") Đà Nẵng
+        li: a(href="#") Hải Phòng
+        li: a(href="#") Cần Thơ
+    li.dropdown
+      a(href="#" )
+        <i class="fa-solid fa-gears"></i>
+        |  Quản trị hệ thống
+        i.fa-solid.fa-chevron-down.arrow
+      ul.submenu
+        li
+          a(href="#") 
+            i.fa-solid.fa-user-clock
+            |  Lịch sử người dùng
+        li
+          a(href="/admin/user/list") 
+            i.fa-solid.fa-user
+            |  Quản lý người dùng
+        li
+          a(href="#") 
+            i.fa-solid.fa-user-lock
+            |  Phân quyền
+    hr
+
+    li
+      a(href="#")
+        i.fa-solid.fa-user-gear
+        |  Thông tin cá nhân
+
+    li
+      a(href="javascript:;", class="inner-logout")
+        i.fa-solid.fa-power-off
+        |  Đăng xuất
+
+//- overlay (ví dụ dùng cho mobile hoặc đóng mở)
+.sider-overlay

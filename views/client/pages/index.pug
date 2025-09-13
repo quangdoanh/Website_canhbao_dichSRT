@@ -1,0 +1,18 @@
+extends ../layouts/default
+
+block content
+  main.container
+    .content
+      // Search Panel
+      .search-panel
+        label Thông tin hiển thị
+
+      // Map Panel
+      .map-panel
+        #map
+        .legend
+          h4 Chú thích
+          ul
+            li.red ● Vùng dịch nghiêm trọng
+            li.yellow ● Vùng cảnh báo
+            li.green ● Vùng an toàn
