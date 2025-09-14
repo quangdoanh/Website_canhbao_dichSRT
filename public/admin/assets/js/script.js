@@ -16,45 +16,551 @@ if (buttonMenuMobile) {
 }
 // End Menu Mobile
 
-//Sider
 document.addEventListener("DOMContentLoaded", () => {
   const allLinks = document.querySelectorAll(".sider .inner-menu li a");
   const dropdownLinks = document.querySelectorAll(".sider .inner-menu li.dropdown > a");
 
-  // ✅ Mặc định chọn phần tử đầu tiên
-  if (allLinks.length > 0) {
-    allLinks[0].classList.add("active");
-  }
+  // Active menu theo URL hiện tại
+  const pathNameCurrent = window.location.pathname;
 
   allLinks.forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
+    let href = link.getAttribute("href");
+    if (!href || href === "#") return;
 
-      // Xóa active cũ
-      allLinks.forEach(l => l.classList.remove("active"));
+    // Nếu href không bắt đầu bằng '/', thêm '/' vào đầu để thành đường dẫn tuyệt đối
+    if (!href.startsWith("/")) href = "/" + href;
 
-      // Đặt active cho link vừa click
+    const pathName = new URL(href, window.location.origin).pathname;
+
+    if (pathNameCurrent === pathName|| pathNameCurrent.startsWith(pathName + "/")) {
       link.classList.add("active");
+      const parentLi = link.closest("li.dropdown");
+      if (parentLi) parentLi.classList.add("active");
+    }
+  });
 
-      const parentLi = link.parentElement;
+  // Toggle dropdown menu cha, không reload trang
+  dropdownLinks.forEach(drop => {
+    drop.addEventListener("click", (e) => {
+      e.preventDefault(); // chỉ toggle, không reload
 
-      // Nếu là dropdown cha thì toggle submenu
-      if (parentLi.classList.contains("dropdown")) {
-        // Nếu muốn chỉ mở 1 submenu thì đóng các cái khác
-        dropdownLinks.forEach(other => {
-          if (other !== link) {
-            other.parentElement.classList.remove("active");
-          }
-        });
+      dropdownLinks.forEach(other => {
+        if (other !== drop) {
+          other.parentElement.classList.remove("active");
+        }
+      });
 
-        parentLi.classList.toggle("active");
-      }
+      drop.parentElement.classList.toggle("active");
     });
   });
 });
 
-//End Sider
+
 
 // menu -mobile
 //End Sider
 
+// Logout
+const buttonLogout = document.querySelector(".sider .inner-logout");
+if (buttonLogout) {
+  buttonLogout.addEventListener("click", () => {
+    fetch(`/${pathAdmin}/account/logout`, {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code == "success") {
+          window.location.href = `/${pathAdmin}/account/login`;
+        }
+      });
+  });
+}
+// End Logout
+// Alert
+const alertTime = document.querySelector("[alert-time]");
+if(alertTime) {
+  let time = alertTime.getAttribute("alert-time");
+  time = time ? parseInt(time) : 4000;
+  setTimeout(() => {
+    alertTime.remove(); // Xóa phần tử khỏi giao diện
+  }, time);
+}
+// End Alert
+
+// Filepond Image
+const listFilepondImage = document.querySelectorAll("[filepond-image]");
+let filePond = {};
+if (listFilepondImage.length > 0) {
+  listFilepondImage.forEach((filepondImage) => {
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+    FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+    let files = null;
+    const elementImageDefault = filepondImage.closest("[image-default]");
+    if (elementImageDefault) {
+      const imageDefault = elementImageDefault.getAttribute("image-default");
+      if (imageDefault) {
+        files = [
+          {
+            source: imageDefault, // Đường dẫn ảnh
+          },
+        ];
+      }
+    }
+
+    filePond[filepondImage.name] = FilePond.create(filepondImage, {
+      labelIdle: "+",
+      files: files,
+    });
+  });
+}
+// End Filepond Image
+// Filepond Image Multi
+const listFilepondImageMulti = document.querySelectorAll(
+  "[filepond-image-multi]"
+);
+let filePondMulti = {};
+if (listFilepondImageMulti.length > 0) {
+  listFilepondImageMulti.forEach((filepondImage) => {
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+    FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+    let files = null;
+    const elementListImageDefault = filepondImage.closest(
+      "[list-image-default]"
+    );
+    if (elementListImageDefault) {
+      let listImageDefault =
+        elementListImageDefault.getAttribute("list-image-default");
+      if (listImageDefault) {
+        listImageDefault = JSON.parse(listImageDefault);
+        files = [];
+        listImageDefault.forEach((image) => {
+          files.push({
+            source: image, // Đường dẫn ảnh
+          });
+        });
+      }
+    }
+
+    filePondMulti[filepondImage.name] = FilePond.create(filepondImage, {
+      labelIdle: "+",
+      files: files,
+    });
+  });
+}
+// End Filepond Image Multi
+
+
+//  Account Admin Create Form
+const AccountAdminCreateForm = document.querySelector(
+  "#account-admin-create-form"
+);
+if (AccountAdminCreateForm) {
+  const validation = new JustValidate("#account-admin-create-form");
+
+  validation
+    .addField("#fullName", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập họ tên!",
+      },
+      {
+        rule: "minLength",
+        value: 5,
+        errorMessage: "Họ tên phải có ít nhất 5 ký tự!",
+      },
+      {
+        rule: "maxLength",
+        value: 50,
+        errorMessage: "Họ tên không được vượt quá 50 ký tự!",
+      },
+    ])
+    .addField("#email", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập email!",
+      },
+      {
+        rule: "email",
+        errorMessage: "Email không đúng định dạng!",
+      },
+    ])
+    .addField("#phone", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập số điện thoại!",
+      },
+      {
+        rule: "customRegexp",
+        value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+        errorMessage: "Số điện thoại không đúng định dạng!",
+      },
+    ])
+    .addField("#password", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập mật khẩu!",
+      },
+      {
+        validator: (value) => value.length >= 8,
+        errorMessage: "Mật khẩu phải chứa ít nhất 8 ký tự!",
+      },
+      {
+        validator: (value) => /[A-Z]/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một chữ cái in hoa!",
+      },
+      {
+        validator: (value) => /[a-z]/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một chữ cái thường!",
+      },
+      {
+        validator: (value) => /\d/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một chữ số!",
+      },
+      {
+        validator: (value) => /[@$!%*?&]/.test(value),
+        errorMessage: "Mật khẩu phải chứa ít nhất một ký tự đặc biệt!",
+      },
+    ])
+    .onSuccess((event) => {
+      const fullName = event.target.fullName.value;
+      const email = event.target.email.value;
+      const phone = event.target.phone.value;
+      const role = event.target.role.value;
+      const status = event.target.status.value;
+      const password = event.target.password.value;
+      const province = event.target.province.value;
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if (avatars.length > 0) {
+        avatar = avatars[0].file;
+      }
+
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("role", role);
+      formData.append("status", status);
+      formData.append("password", password);
+      formData.append("province", province)
+      formData.append("avatar", avatar);
+
+      fetch(`/${pathAdmin}/account-admin/create`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/account-admin/list`;
+          }
+        });
+    });
+}
+
+//  Account Admin Create Form
+
+//  Account Admin Edit Form
+const AccountAdminEditForm = document.querySelector(
+  "#account-admin-edit-form"
+);
+if (AccountAdminEditForm) {
+  const validation = new JustValidate("#account-admin-edit-form");
+
+  validation
+    .addField("#fullName", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập họ tên!",
+      },
+      {
+        rule: "minLength",
+        value: 5,
+        errorMessage: "Họ tên phải có ít nhất 5 ký tự!",
+      },
+      {
+        rule: "maxLength",
+        value: 50,
+        errorMessage: "Họ tên không được vượt quá 50 ký tự!",
+      },
+    ])
+    .addField("#email", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập email!",
+      },
+      {
+        rule: "email",
+        errorMessage: "Email không đúng định dạng!",
+      },
+    ])
+    .addField("#phone", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập số điện thoại!",
+      },
+      {
+        rule: "customRegexp",
+        value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+        errorMessage: "Số điện thoại không đúng định dạng!",
+      },
+    ])
+    .addField("#password", [
+      {
+        validator: (value) => value ? value.length >= 8 : true,
+        errorMessage: 'Mật khẩu phải chứa ít nhất 8 ký tự!',
+      },
+      {
+        validator: (value) => value ? /[A-Z]/.test(value) : true,
+        errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!',
+      },
+      {
+        validator: (value) => value ? /[a-z]/.test(value) : true,
+        errorMessage: 'Mật khẩu phải chứa ít nhất một chữ cái thường!',
+      },
+      {
+        validator: (value) => value ? /\d/.test(value) : true,
+        errorMessage: 'Mật khẩu phải chứa ít nhất một chữ số!',
+      },
+      {
+        validator: (value) => value ? /[@$!%*?&]/.test(value) : true,
+        errorMessage: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt!',
+      },
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const fullName = event.target.fullName.value;
+      const email = event.target.email.value;
+      const phone = event.target.phone.value;
+      const role = event.target.role.value;
+      const status = event.target.status.value;
+      const password = event.target.password.value;
+      const province = event.target.province.value;
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if (avatars.length > 0) {
+        avatar = avatars[0].file;
+      }
+
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("role", role);
+      formData.append("status", status);
+      formData.append("password", password);
+      formData.append("province", province)
+      formData.append("avatar", avatar);
+
+      fetch(`/${pathAdmin}/account-admin/edit/${id}`, {
+        method: "PATCH",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/account-admin/list`;
+          }
+        });
+    });
+}
+
+//  Account Admin Edit Form
+// Button Delete
+const listButtonDelete = document.querySelectorAll("[button-delete]");
+if (listButtonDelete.length > 0) {
+  listButtonDelete.forEach((button) => {
+    button.addEventListener("click", () => {
+      const dataApi = button.getAttribute("data-api");
+      fetch(dataApi, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.reload();
+          }
+        });
+    });
+  });
+}
+
+// End Button Delete
+//check-all
+const checkAll = document.querySelector("[check-all]");
+if (checkAll) {
+  checkAll.addEventListener("click", () => {
+    const listCheckItem = document.querySelectorAll("[check-item]");
+    listCheckItem.forEach((item) => {
+      item.checked = checkAll.checked;
+    });
+  });
+}
+//end check-all
+
+// Change multi
+const changeMulti = document.querySelector("[change-multi]");
+if (changeMulti) {
+  const dataApi = changeMulti.getAttribute("data-api");
+  const select = changeMulti.querySelector("select");
+  const button = changeMulti.querySelector("button");
+
+  button.addEventListener("click", () => {
+    const option = select.value;
+    const listInputChecked = document.querySelectorAll("[check-item]:checked");
+    if (option && listInputChecked.length > 0) {
+      const ids = [];
+      listInputChecked.forEach((item) => {
+        const id = item.getAttribute("check-item");
+        ids.push(id);
+      });
+      const dataFinal = {
+        option: option,
+        ids: ids,
+      };
+      fetch(dataApi, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.reload();
+          }
+        });
+    } else {
+      alert("Vui lòng chọn option và bản ghi muốn thực hiện!");
+    }
+  });
+}
+// End Change multi
+// filter status
+const filterStatus = document.querySelector("[filter-status]");
+if (filterStatus) {
+  const url = new URL(window.location.href);
+  //lắng nghe thay đổi lựa chọn
+  filterStatus.addEventListener("change", () => {
+    const value = filterStatus.value;
+    if (value) {
+      url.searchParams.set("status", value);
+    } else {
+      url.searchParams.delete("status");
+    }
+    window.location.href = url.href;
+  });
+  //hiển thị cái lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("status");
+  if (valueCurrent) {
+    filterStatus.value = valueCurrent;
+  }
+}
+// end filter status
+// Filter start date
+const filterStartDate = document.querySelector("[filter-start-date]");
+if (filterStartDate) {
+  const url = new URL(window.location.href);
+  //lăng nghe sự thay đổi
+  filterStartDate.addEventListener("change", () => {
+    const value = filterStartDate.value;
+    if (value) {
+      url.searchParams.set("startDate", value);
+    } else {
+      url.searchParams.delete("startDate");
+    }
+    window.location.href = url.href;
+  });
+  const valueCurrent = url.searchParams.get("startDate");
+  if (valueCurrent) {
+    filterStartDate.value = valueCurrent;
+  }
+}
+// end Filter start date
+// Filter end date
+const filterEndDate = document.querySelector("[filter-end-date]");
+if (filterEndDate) {
+  const url = new URL(window.location.href);
+  //Lắng nghe sự thay đổi
+  filterEndDate.addEventListener("change", () => {
+    const value = filterEndDate.value;
+    if (value) {
+      url.searchParams.set("endDate", value);
+    } else {
+      url.searchParams.delete("endDate");
+    }
+    window.location.href = url.href;
+  });
+
+  const valueCurrent = url.searchParams.get("endDate");
+  if (valueCurrent) {
+    filterEndDate.value = valueCurrent;
+  }
+}
+// End Filter end date
+// Filter reset
+const filterReset = document.querySelector("[filter-reset]");
+if (filterReset) {
+  const url = new URL(window.location.href);
+  filterReset.addEventListener("click", () => {
+    url.search = "";
+    window.location.href = url.href;
+  });
+}
+// Filter reset
+// Search
+const search = document.querySelector("[search]");
+if (search) {
+  const url = new URL(window.location.href);
+  search.addEventListener("keyup", (event) => {
+    if (event.code == "Enter") {
+      const value = search.value;
+      if (value) {
+        url.searchParams.set("keyword", value.trim());
+      } else {
+        url.searchParams.delete("keyword");
+      }
+
+      window.location.href = url.href;
+    }
+  });
+  const valueCurrent = url.searchParams.get("keyword");
+  if (valueCurrent) {
+    search.value = valueCurrent;
+  }
+}
+// End Search
+// pagination
+const pagination = document.querySelector("[pagination]");
+if (pagination) {
+  const url = new URL(window.location.href);
+  pagination.addEventListener("change", () => {
+    const value = pagination.value;
+    if (value) {
+      url.searchParams.set("page", value);
+    } else {
+      url.searchParams.delete("page");
+    }
+    window.location.href = url.href;
+  });
+  const valueCurrent = url.searchParams.get("page");
+  if (valueCurrent) {
+    pagination.value = valueCurrent;
+  }
+}
+// end pagination

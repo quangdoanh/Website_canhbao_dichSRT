@@ -2,13 +2,13 @@
 nav.sider
   ul.inner-menu
     li
-      a(href="/admin/dashboard`")
+      a(href=`/${pathAdmin}/dashboard`)
         i.fa-solid.fa-gauge-high
         |  Dashboard
 
     //- Dropdown: Sâu róm thông
     li.dropdown
-      a(href="#")
+      a(href="")
         <i class="fa-solid fa-mosquito"></i>
         |  Sâu róm thông
         i.fa-solid.fa-chevron-down.arrow
@@ -21,7 +21,7 @@ nav.sider
 
     //- Dropdown: Sâu hại lá keo
     li.dropdown
-      a(href="#")
+      a(href="")
         <i class="fa-solid fa-mosquito"></i>
         |  Sâu hại lá keo
         i.fa-solid.fa-chevron-down.arrow
@@ -34,7 +34,7 @@ nav.sider
 
     //- Dropdown: Bệnh hại lá keo
     li.dropdown
-      a(href="#")
+      a(href="")
         <i class="fa-solid fa-mosquito"></i>
         |  Bệnh hại lá keo
         i.fa-solid.fa-chevron-down.arrow
@@ -45,27 +45,27 @@ nav.sider
         li: a(href="#") Hải Phòng
         li: a(href="#") Cần Thơ
     li.dropdown
-      a(href="#" )
+      a(href="" )
         <i class="fa-solid fa-gears"></i>
         |  Quản trị hệ thống
         i.fa-solid.fa-chevron-down.arrow
       ul.submenu
         li
-          a(href="#") 
+          a(href="") 
             i.fa-solid.fa-user-clock
             |  Lịch sử người dùng
         li
-          a(href="/admin/user/list") 
+          a(href=`/${pathAdmin}/account-admin/list`) 
             i.fa-solid.fa-user
             |  Quản lý người dùng
         li
-          a(href="#") 
+          a(href="") 
             i.fa-solid.fa-user-lock
             |  Phân quyền
     hr
 
     li
-      a(href="#")
+      a(href="")
         i.fa-solid.fa-user-gear
         |  Thông tin cá nhân
 

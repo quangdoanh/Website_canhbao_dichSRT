@@ -1,44 +1,34 @@
- const jwt = require('jsonwebtoken');
-  const AccountAdmin = require('../../models/account-admin.model');
-  const Role = require("../../models/role.model")
+const jwt = require('jsonwebtoken');
+const AccountAdmin = require('../../models/account-admin.model');
+const variableConfig = require('../../config/variable');
 
-  module.exports.verifyToken = async (req, res, next) => {
-    try {
-      const token = req.cookies.token;
+module.exports.verifyToken = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
 
-      if(!token) {
-        res.redirect(`/${pathAdmin}/account/login`);
-        return;
-      }
-
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const { id, email } = decoded;
-
-      const existAccount = await AccountAdmin.findOne({
-        _id: id,
-        email: email,
-        status: "active"
-      })
-      const role = await Role.findOne({
-        _id: existAccount.role
-      })
-      existAccount.roleName = role.name;
-      req.account = existAccount;
-
-      req.permissions  = role.permissions
-
-      res.locals.account = existAccount;
-
-      res.locals.permissions = role.permissions;
-      if(!existAccount) {
-        res.clearCookie("token");
-        res.redirect(`/${pathAdmin}/account/login`);
-        return;
-      }
-
-      next();
-    } catch (error) {
-      res.clearCookie("token");
-      res.redirect(`/${pathAdmin}/account/login`);
+    if (!token) {
+      return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
     }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { id, email } = decoded;
+
+    // Chỉ kiểm tra account có tồn tại và active
+    const existAccount = await AccountAdmin.findOneByIdAndEmail(id, email);
+
+    if (!existAccount) {
+      res.clearCookie("token");
+      return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
+    }
+
+    // Gán thông tin user vào request và locals (để view pug dùng được)
+    req.account = existAccount;
+    res.locals.account = existAccount;
+
+    next();
+  } catch (error) {
+    console.error("JWT verify error:", error.message);
+    res.clearCookie("token");
+    res.redirect(`/${variableConfig.pathAdmin}/account/login`);
   }
+};

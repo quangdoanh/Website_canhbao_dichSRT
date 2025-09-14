@@ -7,6 +7,7 @@ const adminRoutes = require('./routes/admin/index.route');
 const variableConfig = require("./config/variable");
 
 const cookieParser = require('cookie-parser');
+const flash = require('express-flash');
 const session = require('express-session');
 const database = require('./config/database');
 const app = express();
@@ -30,7 +31,7 @@ app.use(express.json());
 app.use(cookieParser('SVACIIWQBC'));
 
 app.use(session({ cookie: { maxAge: 60000 }}));
-
+app.use(flash());
 
 //thiết lập đường dẫn
 app.use(`/${variableConfig.pathAdmin}`, adminRoutes);
