@@ -8,11 +8,24 @@ html(lang="vi")
     // Leaflet CSS
     link(rel="stylesheet", href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css")
 
+    //Leaflet Draw CSS 
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.css")
+
     // Font Awesome
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css")
 
+    // Swiper
+    link(
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" 
+      rel="stylesheet"
+      )
+
     // Custom CSS
     link(rel="stylesheet", href="/assets/css/style.css")
+
+    //SweetAlert
+    script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js")
+
 
   body
     include ../partials/header
@@ -20,5 +33,7 @@ html(lang="vi")
     include ../partials/footer
 
     script(src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js")
+    script(src="https://cdn.jsdelivr.net/npm/leaflet-draw@1.0.4/dist/leaflet.draw.js")
+    script(src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js")
     script(src="/assets/js/map.js")
     script(src="/assets/js/script.js")

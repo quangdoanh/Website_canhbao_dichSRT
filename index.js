@@ -4,6 +4,8 @@ const path = require('path');
 require('dotenv').config()
 
 const adminRoutes = require('./routes/admin/index.route');
+const clientRouters = require("./routes/clients/index.route")
+
 const variableConfig = require("./config/variable");
 
 const cookieParser = require('cookie-parser');
@@ -29,30 +31,13 @@ app.use(express.json());
 // Sử dụng cookie-parser
 app.use(cookieParser('SVACIIWQBC'));
 
-app.use(session({ cookie: { maxAge: 60000 }}));
+app.use(session({ cookie: { maxAge: 60000 } }));
 
 
 //thiết lập đường dẫn
 app.use(`/${variableConfig.pathAdmin}`, adminRoutes);
 
-app.get('/', (req, res) => {
-  res.render('client/pages/index', {
-    pageTitle: "Trang Chủ"
-  });
-});
-
-
-// app.get('/login', (req, res) => {
-//   res.render('admin/pages/login', {
-//     pageTitle: "Login"
-//   });
-// });
-
-// app.get('/admin/dashboard', (req, res) => {
-//   res.render('admin/pages/dashboard', {
-//     pageTitle: "Trang admin"
-//   });
-// });
+app.use("/", clientRouters)
 
 app.listen(port, () => {
   console.log(`Website đang chạy tại http://localhost:${port}`);
