@@ -3,16 +3,17 @@
   .container
     .inner-wrap
         .inner-item
-          .inner-desc
-            | CSDL DỊCH BỆNH
+          i.fa-solid.fa-home
+          | DỊCH SRT
         .inner-item
-          span <i class="fa-solid fa-phone"></i>
-          .inner-hotline
-            span 024 33840233
+          i.fa-solid.fa-phone
+          | 024 33840233
         .inner-item
-          span <i class="fa-solid fa-location-dot"></i>
-          .inner-address 
-            span Thị trấn .....
+          i.fa-solid.fa-envelope
+          | daihoclamnghiep@vnuf.edu.vn
+        .inner-item
+          i.fa-solid.fa-building
+          | Thị trấn Xuân Mai, huyện Chương Mỹ, Hà Nội
 // End Top Header
 // Header
 header.header
@@ -36,10 +37,10 @@ header.header
           li
             a(href="#") Tin tức
           li
-            a(href="#") abc
+            a(href="#") Liên hệ
         .inner-overlay
       // Cart
       .inner-button
-        a(href="/login") Đăng nhập
+        a(href=`/${pathAdmin}/account/login`) Đăng Nhập
           
 // End Header

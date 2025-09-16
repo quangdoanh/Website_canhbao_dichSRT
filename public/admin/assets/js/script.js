@@ -16,48 +16,122 @@ if (buttonMenuMobile) {
 }
 // End Menu Mobile
 
-document.addEventListener("DOMContentLoaded", () => {
-  const allLinks = document.querySelectorAll(".sider .inner-menu li a");
-  const dropdownLinks = document.querySelectorAll(".sider .inner-menu li.dropdown > a");
-
-  // Active menu theo URL hiện tại
+//Sider
+const sider = document.querySelector(".sider");
+if (sider) {
   const pathNameCurrent = window.location.pathname;
+  const splitPathNameCurrent = pathNameCurrent.split("/");
 
-  allLinks.forEach(link => {
-    let href = link.getAttribute("href");
-    if (!href || href === "#") return;
 
-    // Nếu href không bắt đầu bằng '/', thêm '/' vào đầu để thành đường dẫn tuyệt đối
-    if (!href.startsWith("/")) href = "/" + href;
 
-    const pathName = new URL(href, window.location.origin).pathname;
+  const menuList = sider.querySelectorAll(".dashboard");
+  menuList.forEach(item => {
+    const href = item.href;
+    const pathName = new URL(href).pathname;
+    const splitPathName = pathName.split("/");
+    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2]) {
+      item.classList.add("active");
+    }
 
-    if (pathNameCurrent === pathName|| pathNameCurrent.startsWith(pathName + "/")) {
-      link.classList.add("active");
-      const parentLi = link.closest("li.dropdown");
-      if (parentLi) parentLi.classList.add("active");
+
+  })
+
+  const menuItems = document.querySelectorAll('.item_menu');
+
+  menuItems.forEach(item => {
+    item.addEventListener('click', () => {
+
+      if (item.classList.contains('open')) {
+        // Nếu item đang active → bỏ active
+        item.classList.remove('open');
+      } else {
+        // Nếu item khác → bỏ active ở tất cả, rồi thêm active cho item hiện tại
+        menuItems.forEach(i => i.classList.remove('active'));
+        menuList.forEach(i => i.classList.remove('active', `open`));
+        item.classList.add('active', 'open');
+      }
+    });
+  });
+
+  const cityItems = document.querySelectorAll('.item_city');
+
+  cityItems.forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.classList.contains('open')) {
+        // Nếu item đang active → bỏ active
+        item.classList.remove('open');
+      } else {
+        // Nếu item khác → bỏ active ở tất cả, rồi thêm active cho item hiện tại
+        cityItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active', 'open');
+      }
+    })
+  })
+
+  // active theo url 
+  let submenuLinks = sider.querySelectorAll(".menu");
+  console.log(submenuLinks)
+  submenuLinks.forEach(link => {
+    const href = link.href;
+    const pathName = new URL(href).pathname;
+    const splitPathName = pathName.split("/");
+
+    if (splitPathNameCurrent[3] == splitPathName[3] && splitPathNameCurrent[2] == splitPathName[2] &&
+      splitPathNameCurrent[4] == splitPathName[4]) {
+      // Active link con
+      // console.log("đg dan", splitPathName[3])
+      // console.log("đg dan 2", splitPathName[4])
+      // console.log("đg dan ban dau", splitPathNameCurrent[3])
+      // console.log("đg dan ban dau", splitPathNameCurrent[4])
+      // console.log("them class", link)
+
+      link.classList.add("actives");
+
+      // Active luôn city cha (mở ra)
+      const cityDiv = link.closest("ul.submenu-child")?.previousElementSibling;
+      if (cityDiv && cityDiv.classList.contains("item_city")) {
+        cityDiv.classList.add("active", "open");
+      }
+
+      // Active menu cha
+      const itemMenu = link.closest("ul.submenu")?.previousElementSibling;
+      if (itemMenu && itemMenu.classList.contains("item_menu")) {
+        itemMenu.classList.add("active", "open");
+      }
+      menuList.forEach(i => i.classList.remove('active', `open`));
+
+
     }
   });
 
-  // Toggle dropdown menu cha, không reload trang
-  dropdownLinks.forEach(drop => {
-    drop.addEventListener("click", (e) => {
-      e.preventDefault(); // chỉ toggle, không reload
+  let submenu2Links = sider.querySelectorAll(".menu2");
+  submenu2Links.forEach(link => {
+    const href = link.href;
+    const pathName = new URL(href).pathname;
+    const splitPathName = pathName.split("/");
 
-      dropdownLinks.forEach(other => {
-        if (other !== drop) {
-          other.parentElement.classList.remove("active");
-        }
-      });
+    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2]) {
+      // Active link con
+      // console.log("đg dan", splitPathName[3])
+      // console.log("đg dan 2", splitPathName[4])
+      // console.log("đg dan ban dau", splitPathNameCurrent[3])
+      // console.log("đg dan ban dau", splitPathNameCurrent[4])
+      // console.log("them class", link)
 
-      drop.parentElement.classList.toggle("active");
-    });
-  });
-});
+      link.classList.add("actives");
+
+      // Active menu cha
+      const itemMenu = link.closest("ul.submenu2")?.previousElementSibling; // lấy anh của phần tử ul.submenu
+      if (itemMenu && itemMenu.classList.contains("item_menu")) {
+        itemMenu.classList.add("active", "open");
+      }
+      menuList.forEach(i => i.classList.remove('active', `open`));
 
 
+    }
+  })
 
-// menu -mobile
+}
 //End Sider
 
 // Logout
@@ -78,7 +152,7 @@ if (buttonLogout) {
 // End Logout
 // Alert
 const alertTime = document.querySelector("[alert-time]");
-if(alertTime) {
+if (alertTime) {
   let time = alertTime.getAttribute("alert-time");
   time = time ? parseInt(time) : 4000;
   setTimeout(() => {

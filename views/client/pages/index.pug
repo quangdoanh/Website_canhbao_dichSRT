@@ -1,18 +1,57 @@
 extends ../layouts/default
 
 block content
-  main.container
-    .content
-      // Search Panel
-      .search-panel
-        label Thông tin hiển thị
+  .section-1
+    .container
+      .content
+        // Search Panel
+        .search-panel
+          //- label Thông tin hiển thị
 
-      // Map Panel
-      .map-panel
-        #map
-        .legend
-          h4 Chú thích
-          ul
-            li.red ● Vùng dịch nghiêm trọng
-            li.yellow ● Vùng cảnh báo
-            li.green ● Vùng an toàn
+        // Map Panel
+        .map-panel
+          #map
+      // Section 3
+  .section-3
+    .container
+      h2.box-title(
+        data-aos-duration="800" 
+        data-aos="fade-up"
+        ) Tin Tức Mới
+      .swiper.swiper-section-3(
+        data-aos-delay="150" 
+        data-aos-duration="800" 
+        data-aos="fade-up"
+        )
+        .swiper-wrapper
+          .swiper-slide
+            .inner-item
+              a(href="#")
+                img(
+                  alt="" 
+                  src="/assets/images/la_keo.jpg"
+                  )
+          .swiper-slide
+            .inner-item
+              a(href="#")
+                img(
+                  alt="" 
+                  src="/assets/images/sau_la_keo.webp"
+                  )
+          .swiper-slide
+            .inner-item
+              a(href="#")
+                img(
+                  alt="" 
+                  src="/assets/images/sau_rom.webp"
+                  )
+          .swiper-slide
+            .inner-item
+              a(href="#")
+                img(
+                  alt="" 
+                  src="/assets/images/sau_la_keo.webp"
+                  )
+        .swiper-pagination
+  // End Section 3
+      

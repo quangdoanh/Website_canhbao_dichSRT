@@ -2,18 +2,21 @@ const router = require('express').Router();
 const accountRoutes = require('./account.route');
 const dashboardRoutes = require('./dashboard.route');
 const adminRoutes = require('./admin.route');
-// const userRoutes = require("./user.route");
+const sauromthongRoutes = require('./sauromthong.route')
+const userRoutes = require("./user.route");
 
 const authMiddleware = require("../../middlewares/admin/auth.middlewares");
 
-router.use((req, res, next)=> {
+router.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
 
+router.use('/sauromthong', authMiddleware.verifyToken, sauromthongRoutes);
 router.use('/account', accountRoutes);
-router.use('/dashboard',authMiddleware.verifyToken ,dashboardRoutes);
-router.use('/account-admin',authMiddleware.verifyToken ,adminRoutes);
+router.use('/dashboard', authMiddleware.verifyToken, dashboardRoutes);
+router.use('/account-admin', authMiddleware.verifyToken, adminRoutes);
+router.use('/user', authMiddleware.verifyToken, userRoutes);
 
 
 
@@ -23,5 +26,5 @@ router.use('/account-admin',authMiddleware.verifyToken ,adminRoutes);
 //       pageTitle: "404 Not Found"
 //     })
 //   })
-  
+
 module.exports = router;
