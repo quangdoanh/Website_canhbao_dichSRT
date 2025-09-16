@@ -1054,7 +1054,7 @@ a {
 .table-2 table thead tr th {
   border-bottom: 1px solid #D5D5D5;
   background-color: #FCFDFD;
-  padding: 14px;
+  padding: 10px;
   font-weight: 800;
   font-size: 14px;
   color: var(--color-text);
@@ -1075,7 +1075,7 @@ a {
   background-color: #fff;
   padding: 8px 14px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--color-text);
   text-align: left;
 }

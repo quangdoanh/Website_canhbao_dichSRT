@@ -114,7 +114,7 @@ module.exports.adminCreatePost = async (req, res) => {
     // console.log("Dữ liệu thêm mới: ", newAdminData);
 
     // Lưu vào DB thông qua model (model sẽ hash password)
-    const newAdmin = await AccountsAdminModel.addNew(newAdminData);
+    await AccountsAdminModel.addNew(newAdminData);
 
     req.flash("success", "Tạo tài khoản thành công");
     res.json({

@@ -54,9 +54,9 @@ block main
           tr
             th.inner-center
               input(type="checkbox" class="inner-check" check-all)
-            th Họ tên
-            th.inner-center Ảnh đại diện
-            th Email
+            th.inner-center Họ tên
+            th.inner-center Ảnh 
+            th.inner-center Email
             th Số điện thoại
             th Nhóm quyền
             th Tạo bởi
@@ -68,7 +68,7 @@ block main
             tr
               td.inner-center
                 input(type="checkbox" class="inner-check" check-item = item.id)
-              td #{item.full_name}
+              td.inner-center #{item.full_name}
               td.inner-center
                 if item.avatar
                   img(src=item.avatar class="inner-avatar")
