@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const AccountAdmin = require('../../models/account-admin.model');
 const variableConfig = require('../../config/variable');
+const RoleModel = require('../../models/role.model');
 
 module.exports.verifyToken = async (req, res, next) => {
   try {
@@ -15,7 +16,9 @@ module.exports.verifyToken = async (req, res, next) => {
 
     // Chỉ kiểm tra account có tồn tại và active
     const existAccount = await AccountAdmin.findOneByIdAndEmail(id, email);
-
+    const Role =  await RoleModel.getRoleById(existAccount.role);
+    
+    existAccount.rolename = Role.name;
     if (!existAccount) {
       res.clearCookie("token");
       return res.redirect(`/${variableConfig.pathAdmin}/account/login`);

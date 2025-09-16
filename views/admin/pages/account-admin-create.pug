@@ -17,10 +17,9 @@ block main
         .inner-group
           label(class="inner-label" for="role") Nhóm quyền
           select(id="role" name="role")
-              option(value="quyen1") Nhóm quyền 1
-              option(value="quyen2") Nhóm quyền 2
-              option(value="quyen3") Nhóm quyền 3
-          
+            option(value="") ---Chọn--- 
+            each item in RoleList
+              option(value=item.id) #{item.name}
         .inner-group
           label(class="inner-label" for="status") Trạng thái
           select(id="status" name="status")
@@ -31,7 +30,7 @@ block main
           label(class="inner-label" for="password") Mật khẩu
           input(type="password" id="password" name="password")
         .inner-group
-          label(class="inner-label" for="province") Tỉnh
+          label(class="inner-label" for="province") Tỉnh/TP
           select(id="province" name="province")
             each item in Province
               option(value=item.id) #{item.name}

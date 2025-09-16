@@ -587,6 +587,30 @@ if (filterEndDate) {
   }
 }
 // End Filter end date
+// Filter Role
+const filterRole = document.querySelector("[filter-role]");
+if (filterRole) {
+  const url = new URL(window.location.href);
+
+  // Lắng nghe thay đổi lựa chọn
+  filterRole.addEventListener("change", () => {
+    const value = filterRole.value;
+    if (value) {
+      url.searchParams.set("role", value);
+    } else {
+      url.searchParams.delete("role");
+    }
+
+    window.location.href = url.href;
+  })
+
+  // Hiển thị lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("role");
+  if (valueCurrent) {
+    filterRole.value = valueCurrent;
+  }
+}
+// End Filter Role
 // Filter reset
 const filterReset = document.querySelector("[filter-reset]");
 if (filterReset) {
@@ -619,6 +643,112 @@ if (search) {
   }
 }
 // End Search
+
+// Role Create Form
+const roleCreateForm = document.querySelector(
+  "#role-create-form"
+);
+if (roleCreateForm) {
+  const validation = new JustValidate("#role-create-form");
+
+  validation
+    .addField("#name", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tên nhóm quyền!",
+      },
+    ])
+    .onSuccess((event) => {
+      const name = event.target.name.value;
+      const description = event.target.description.value;
+      const permissions = [];
+
+      // permissions
+      const listElementPermission = roleCreateForm.querySelectorAll(
+        'input[name="permissions"]:checked'
+      );
+      listElementPermission.forEach((input) => {
+        permissions.push(input.value);
+      });
+      // End permissions
+      const dataFinal = {
+        name: name,
+        description: description,
+        permissions: permissions,
+      };
+
+      console.log(dataFinal);
+      fetch(`/${pathAdmin}/role/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/role/list`;
+          }
+        });
+    });
+}
+// End Role Create Form
+// Role edit Form
+const roleEditForm = document.querySelector("#role-edit-form");
+if (roleEditForm) {
+  const validation = new JustValidate("#role-edit-form");
+
+  validation
+    .addField("#name", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tên nhóm quyền!",
+      },
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const name = event.target.name.value;
+      const description = event.target.description.value;
+      const permissions = [];
+
+      // permissions
+      const listElementPermission = roleEditForm.querySelectorAll(
+        'input[name="permissions"]:checked'
+      );
+      listElementPermission.forEach((input) => {
+        permissions.push(input.value);
+      });
+      // End permissions
+      const dataFinal = {
+        id: id,
+        name: name,
+        description: description,
+        permissions: permissions,
+      };
+
+      fetch(`/${pathAdmin}/role/edit/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/role/list`;
+          }
+        });
+    });
+}
+//  Role edit Form
 // pagination
 const pagination = document.querySelector("[pagination]");
 if (pagination) {
