@@ -717,4 +717,49 @@ textarea {
 }
 
 /* endMap */
+
+/* hiển thị thông tin */
+.info-box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  padding: 12px 16px;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: #333;
+  max-width: 280px;
+}
+
+.info-box h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c7be5;
+  /* xanh nhạt */
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 6px;
+}
+
+.info-box table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-box table td {
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+.info-box table tr:nth-child(even) {
+  background-color: #f9f9f9;
+  /* sọc ziczac nhẹ */
+}
+
+.info-box table td:first-child {
+  font-weight: 600;
+  color: #555;
+  width: 40%;
+}
+
+/* end */
+
 /* end  */

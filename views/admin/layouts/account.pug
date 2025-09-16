@@ -2,17 +2,13 @@ html
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    block title
+    title Đăng nhập
     link(rel="stylesheet", href="/admin/assets/css/style.css")
-    title pageTitle
-    link(
-      href="#"
-      rel="icon" 
-      type="image/x-icon"
-    )
-    script. 
-      const pathAdmin = "#{adminPathName}";
+    script.
+      const pathAdmin= "#{pathAdmin}"
   body
     .page-account
       block main
-    script(src="/admin/assets/js/script.js")
+
+    script(src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js")
+    script(src="/admin/assets/js/account.js")

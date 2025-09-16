@@ -39,12 +39,14 @@ const loadWFS = () => {
             const infoDiv = document.querySelector('.search-panel');
             console.log(infoDiv)
             infoDiv.innerHTML = `
-            <h3>Thông tin vùng</h3>
-            <table border="1" cellspacing="0" cellpadding="5">
-              <tr><td><b>Tên xã</b></td><td>${props.huyen || '---'}</td></tr>
-              <tr><td><b>Tên xã</b></td><td>${props.xa || '---'}</td></tr>
-              <tr><td><b>Diện tích</b></td><td>${props.dtich || '---'} km²</td></tr>
-            </table>
+            <div class="info-box">
+                <h3>Thông tin vùng</h3>
+                <table>
+                  <tr><td><b>Huyện</b></td><td>${props.huyen || '---'}</td></tr>
+                  <tr><td><b>Xã</b></td><td>${props.xa || '---'}</td></tr>
+                  <tr><td><b>Diện tích</b></td><td>${props.dtich || '---'} km²</td></tr>
+                </table>
+              </div>
       `;
           });
 
@@ -217,7 +219,65 @@ const saveControl = L.Control.extend({
 const saveBtn = new saveControl();
 map.addControl(saveBtn);
 
+// Control nền chọn nền bản đồ
+const basemapControl = L.Control.extend({
+  options: { position: 'topright' },
 
+  onAdd: (map) => {
+    const container = L.DomUtil.create('div', 'basemapControl');
+    container.style.padding = '8px';
+    container.style.borderRadius = '8px';
+    container.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '6px';
+    container.style.backgroundColor = 'white';
+
+    L.DomEvent.disableClickPropagation(container);
+
+    // Các tile layers
+    const layers = {
+      osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+      satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+      light: L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png')
+    };
+
+    // Add OSM mặc định
+    layers.osm.addTo(map);
+
+    // Tạo 3 nút chấm tròn
+    Object.entries({
+      osm: "OSM",
+      satellite: "Vệ tinh",
+      light: "Nền sáng"
+    }).forEach(([key, title]) => {
+      const dot = L.DomUtil.create('div', 'basemap-dot', container);
+      dot.title = title;
+      dot.style.width = '14px';
+      dot.style.height = '14px';
+      dot.style.borderRadius = '50%';
+      dot.style.border = '2px solid #333';
+      dot.style.cursor = 'pointer';
+      dot.style.backgroundColor = key === "osm" ? '#333' : '#fff';
+
+      dot.addEventListener('click', () => {
+        // Xóa tất cả layers cũ
+        Object.values(layers).forEach(l => map.removeLayer(l));
+        // Thêm layer được chọn
+        layers[key].addTo(map);
+
+        // Đổi màu nút active
+        const allDots = container.querySelectorAll('.basemap-dot');
+        allDots.forEach(d => d.style.backgroundColor = '#fff');
+        dot.style.backgroundColor = '#333';
+      });
+    });
+
+    return container;
+  }
+});
+const mapControl = new basemapControl();
+map.addControl(mapControl);
 
 // xóa polygon 
 const deletePolygon = (str) => {
