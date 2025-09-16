@@ -18,11 +18,10 @@ block main
         span - 
         input(type="date" filter-end-date)
       .inner-item
-        select
+        select(filter-role)
           option(value="") Nhóm quyền
-          option(value="") Quản trị viên
-          option(value="") Quản lý tour
-          option(value="") Quản lý đơn hàng
+          each item in RoleList
+            option(value=item.id) #{item.name}
       .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
 
@@ -77,8 +76,8 @@ block main
                   img(src="/images/default-avatar.png" class="inner-avatar")
               td #{item.email}
               td #{item.phone}
-              td #{item.role}
-              td #{item.createdbyname || "N/A"}
+              td #{item.roleName}
+              td #{item.createdByName || "N/A"}
               td
                 if item.status === "active"
                   .badge.badge-green Hoạt động
@@ -86,7 +85,7 @@ block main
                   .badge.badge-red Tạm dừng
                 else if item.status === "initial"
                   .badge.badge-orange Khởi tạo
-              td #{item.provincename}
+              td #{item.provinceName}
               td
                 .inner-buttons
                   a.inner-edit(href=`/${pathAdmin}/account-admin/edit/${item.id}`)
@@ -95,12 +94,12 @@ block main
                     i(class="fa-regular fa-trash-can")
   //- Section 7: Pagination
   .section-7
-  - const start = (pagination.page - 1) * limit + 1;
-  - const end = Math.min(pagination.page * limit, pagination.totalRecords);
-  span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+    - const start = (pagination.page - 1) * limit + 1;
+    - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+    span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
 
-  select.inner-pagination(pagination name="page")
-    each val in [...Array(pagination.totalPages).keys()]
-      - const pageNum = val + 1;
-      option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}
+    select.inner-pagination(pagination name="page")
+      each val in [...Array(pagination.totalPages).keys()]
+        - const pageNum = val + 1;
+        option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}
 

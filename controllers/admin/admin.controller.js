@@ -1,15 +1,20 @@
 const AccountsAdminModel = require("../../models/account-admin.model");
 const ProvinceModel = require("../../models/province.model");
+const RoleModel = require("../../models/role.model");
+//  r.name AS roleName,
+//       c.full_name AS createdByName,
+//       p.name AS provinceName
 module.exports.list = async (req, res) => {
   try {
-    const Province = await ProvinceModel.getAll();
+    const Province = await ProvinceModel.getProvinceById();
     const filters = {
       status: req.query.status || null,
       startDate: req.query.startDate || null,
       endDate: req.query.endDate || null,
+      role: req.query.role || null,
       keyword: req.query.keyword || null,
     };
-    const limit = 4;
+    const limit = 3;
     let page = parseInt(req.query.page) || 1;
     if (page < 1) page = 1;
 
@@ -23,19 +28,50 @@ module.exports.list = async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Lấy danh sách phân trang (trừ chính mình)
+    const RoleList = await RoleModel.getAll();
     const accountAdminList = await AccountsAdminModel.selectAllWithCreator(
       req.account.id,
       limit,
       offset,
       filters
     );
+    for (const item of accountAdminList) {
+      if (item.role) {
+        const roleInf = await RoleModel.getRoleById(item.role);
+
+        if (roleInf) {
+          item.roleName = roleInf.name;
+        }
+      }
+    }
+    for (const item of accountAdminList) {
+      if (item.province) {
+        const provinceInf = await ProvinceModel.getProvinceById(item.province);
+
+        if (provinceInf) {
+          item.provinceName = provinceInf.name;
+        }
+      }
+    }
+    for (const item of accountAdminList) {
+      if (item.create_by) {
+        const accountInf = await AccountsAdminModel.findByID(item.create_by);
+
+        if (accountInf) {
+          item.createdByName = accountInf.full_name;
+        }
+      }
+    }
+
+    console.log(accountAdminList);
 
     res.render("admin/pages/account-admin-list", {
       pageTitle: "Danh sách tài khoản",
-      accountAdminList,
+      accountAdminList: accountAdminList,
       pagination: { page, totalPages, totalRecords },
-      limit,
-      filters,
+      limit: limit,
+      filters: filters,
+      RoleList: RoleList,
     });
   } catch (err) {
     console.error(err);
@@ -44,9 +80,11 @@ module.exports.list = async (req, res) => {
 };
 module.exports.adminCreate = async (req, res) => {
   const Province = await ProvinceModel.getAll();
+  const RoleList = await RoleModel.getAll();
   res.render("admin/pages/account-admin-create", {
     pageTitle: "Tạo tài khoản ",
     Province: Province,
+    RoleList: RoleList,
   });
 };
 module.exports.adminCreatePost = async (req, res) => {
@@ -89,15 +127,25 @@ module.exports.adminCreatePost = async (req, res) => {
 };
 
 module.exports.adminEdit = async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const accountAdmin = await AccountsAdminModel.findByID(parseInt(id));
-  const Province = await ProvinceModel.getAll();
-  res.render("admin/pages/account-admin-edit", {
-    pageTitle: "Trang chỉnh sửa",
-    accountAdminDetail: accountAdmin,
-    Province: Province,
-  });
+    const accountAdmin = await AccountsAdminModel.findByID(parseInt(id));
+    const Province = await ProvinceModel.getAll();
+    const RoleList = await RoleModel.getAll();
+    res.render("admin/pages/account-admin-edit", {
+      pageTitle: "Trang chỉnh sửa",
+      accountAdminDetail: accountAdmin,
+      Province: Province,
+      RoleList: RoleList,
+    });
+  } catch (err) {
+    console.error(err);
+    res.json({
+      code: "error",
+      message: "Có lỗi xảy ra khi cập nhật tài khoản!",
+    });
+  }
 };
 module.exports.adminEditPatch = async (req, res) => {
   try {

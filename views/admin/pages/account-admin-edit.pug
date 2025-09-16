@@ -20,9 +20,10 @@ block main
         .inner-group
           label(class="inner-label" for="role") Nhóm quyền
           select(id="role" name="role")
-              option(value="quyen1") Nhóm quyền 1
-              option(value="quyen2") Nhóm quyền 2
-              option(value="quyen3") Nhóm quyền 3
+            each item in RoleList
+              option(
+                value=item.id
+                selected=accountAdminDetail.role == item.id ? true:false) #{item.name}
           
         .inner-group
           label(class="inner-label" for="status") Trạng thái
@@ -44,7 +45,7 @@ block main
           input(type="password" id="password" name="password")
         .inner-group
           label(class="inner-label" for="province") Tỉnh
-          select(id="province" name="rovince")
+          select(id="province" name="province")
             each item in Province
               option(
                 value=item.id
