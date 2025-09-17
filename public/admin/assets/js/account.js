@@ -1,6 +1,6 @@
 // Login Form
 const loginForm = document.querySelector("#login-form");
-if(loginForm) {
+if (loginForm) {
   const validation = new JustValidate('#login-form');
 
   validation
@@ -44,28 +44,34 @@ if(loginForm) {
       const email = event.target.email.value;
       const password = event.target.password.value;
       const rememberPassword = event.target.rememberPassword.checked;
-      const dataFinal ={
+      const dataFinal = {
         email: email,
-        password:password,
-        rememberPassword:rememberPassword
+        password: password,
+        rememberPassword: rememberPassword,
+        purpose: "Đăng nhập"
       }
-      fetch(`/${pathAdmin}/account/login`,{
-        method:"POST",
+      fetch(`/${pathAdmin}/account/login`, {
+
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(dataFinal)
       })
-      .then(res => res.json())
-      .then(data => {
-        if(data.code == "error") {
-          alert(data.message);
-        }
-        if(data.code == "success") {
-          window.location.href = `/${pathAdmin}/dashboard`;
-        }
-      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            if (data.role == "admin") {
+              window.location.href = `/${pathAdmin}/dashboard`;
+            } else {
+              window.location.href = `/`;
+            }
+          }
+        })
     })
-  ;
+    ;
 }
 // End Login Form

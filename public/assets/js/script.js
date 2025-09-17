@@ -53,5 +53,24 @@ if (swiperSection3) {
 }
 // End Swiper Section 3
 // end Doanh
+// Logout 
+// dùng riêng js cilent
 
+const buttonLogout = document.querySelector(".logout");
+console.log(buttonLogout)
+if (buttonLogout) {
+  buttonLogout.addEventListener("click", () => {
+    fetch(`/admin/account/logout`, {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.code == "success") {
+          console.log('Đăng xuất nè')
+          window.location.href = `/`;
+        }
+      });
+  });
+}
+// End Logout
 

@@ -40,7 +40,12 @@ header.header
             a(href="#") Liên hệ
         .inner-overlay
       // Cart
-      .inner-button
-        a(href=`/${pathAdmin}/account/login`) Đăng Nhập
+      if account == "guest"
+        .inner-button
+          a.login(href=`/${pathAdmin}/account/login`) Đăng Nhập
+      else
+        .inner-button
+          div.logout Đăng Xuất
+
           
 // End Header

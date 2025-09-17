@@ -1,6 +1,21 @@
 const HaTinhModel = require(`../../models/hatinh.model`)
+const Log = require(`../../helpers/loguser.helper`)
 
 module.exports.homeSavePolygon = async (req, res) => {
+    if (req.account == "guest") {
+        res.json({
+            success: false,
+            message: "Bạn cần đăng nhập để lưu polygon"
+        });
+        return
+    }
+
+    // Lưu log
+    const user = req.account?.email;
+    if (user) {
+        Log.logUser(user, req.originalUrl, req.method, "Lưu Polygon")
+    }
+    // end
 
     try {
         const { geometries } = req.body;
@@ -36,7 +51,18 @@ module.exports.homeSavePolygon = async (req, res) => {
     }
 }
 module.exports.homeDeletePolygon = async (req, res) => {
-
+    if (req.account == "guest") {
+        res.json({
+            success: false,
+            message: "Bạn cần đăng nhập để xóa polygon"
+        });
+    }
+    // Lưu log
+    const user = req.account?.email;
+    if (user) {
+        Log.logUser(user, req.originalUrl, req.method, "Xóa Polygon")
+    }
+    // end
     try {
         const id = req.params.id;
         const success = await HaTinhModel.delete(id);
@@ -54,6 +80,12 @@ module.exports.homeDeletePolygon = async (req, res) => {
     }
 }
 module.exports.home = (req, res) => {
+
+    const user = req.account?.email;
+    if (user) {
+        Log.logUser(user, req.originalUrl, req.method, "Truy cập trang chủ")
+    }
+
     res.render('client/pages/index', {
         pageTitle: "Trang Chủ"
     });

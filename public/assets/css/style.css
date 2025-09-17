@@ -252,7 +252,7 @@ textarea {
 }
 
 /* Doanh */
-.header .inner-button {
+.header .inner-button .login {
   border: 2px solid #007F18;
   border-radius: 20px;
   padding: 6px 12px;
@@ -260,16 +260,33 @@ textarea {
   cursor: pointer;
 }
 
-.header .inner-button:hover {
+.header .inner-button .logout {
+  border: 2px solid #FF0000;
+  border-radius: 20px;
+  padding: 6px 12px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.header .inner-button .logout {
+  color: #FF0000;
+}
+
+.header .inner-button .logout:hover {
+  background-color: transparent;
+  font-weight: 800;
+}
+
+.header .inner-button:hover .login {
   background-color: #007F18;
 }
 
 
-.header .inner-button a {
+.header .inner-button .login {
   color: #007F18;
 }
 
-.header .inner-button a:hover {
+.header .inner-button .login:hover {
   color: #fff;
 }
 

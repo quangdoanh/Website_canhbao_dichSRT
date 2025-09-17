@@ -192,7 +192,8 @@ const saveControl = L.Control.extend({
                 } else {
                   Swal.fire({
                     icon: 'error',
-                    title: 'Lỗi khi lưu polygon!'
+                    title: 'Lỗi khi lưu polygon!',
+                    text: data.message
                   });
                 }
               })
@@ -239,7 +240,11 @@ const basemapControl = L.Control.extend({
     const layers = {
       osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
       satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
-      light: L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png')
+      light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      })
     };
 
     // Add OSM mặc định
@@ -296,7 +301,7 @@ const deletePolygon = (str) => {
     // Nếu nhấn Cancel hoặc đóng popup → return ngay, không xóa
     if (!result.isConfirmed) return;
 
-    fetch('/polygons/' + id, {
+    fetch(`/polygons/${id}`, {
       method: 'DELETE'
     })
       .then(res => res.json())
@@ -304,6 +309,12 @@ const deletePolygon = (str) => {
         if (data.code) {
           Swal.fire('Đã xóa!', data.message, 'success');
           loadWFS(); // load lại WFS để cập nhật map
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi khi xóa polygon!',
+            text: data.message
+          });
         }
       })
       .catch(err => console.error("Lỗi xóa:", err));

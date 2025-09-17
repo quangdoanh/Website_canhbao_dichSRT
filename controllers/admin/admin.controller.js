@@ -35,6 +35,7 @@ module.exports.list = async (req, res) => {
       offset,
       filters
     );
+    // Loc
     for (const item of accountAdminList) {
       if (item.role) {
         const roleInf = await RoleModel.getRoleById(item.role);

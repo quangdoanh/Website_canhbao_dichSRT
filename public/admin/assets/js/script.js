@@ -110,7 +110,7 @@ if (sider) {
     const pathName = new URL(href).pathname;
     const splitPathName = pathName.split("/");
 
-    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2]) {
+    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2] && splitPathNameCurrent[3] == splitPathName[3]) {
       // Active link con
       // console.log("đg dan", splitPathName[3])
       // console.log("đg dan 2", splitPathName[4])
@@ -226,12 +226,12 @@ if (listFilepondImageMulti.length > 0) {
 // End Filepond Image Multi
 
 
-//  Account Admin Create Form
-const AccountAdminCreateForm = document.querySelector(
-  "#account-admin-create-form"
+//  User Create Form
+const UserCreateForm = document.querySelector(
+  "#user-create-form"
 );
-if (AccountAdminCreateForm) {
-  const validation = new JustValidate("#account-admin-create-form");
+if (UserCreateForm) {
+  const validation = new JustValidate("#user-create-form");
 
   validation
     .addField("#fullName", [
@@ -321,7 +321,7 @@ if (AccountAdminCreateForm) {
       formData.append("province", province)
       formData.append("avatar", avatar);
 
-      fetch(`/${pathAdmin}/account-admin/create`, {
+      fetch(`/${pathAdmin}/user/create`, {
         method: "POST",
         body: formData,
       })
@@ -331,20 +331,20 @@ if (AccountAdminCreateForm) {
             alert(data.message);
           }
           if (data.code == "success") {
-            window.location.href = `/${pathAdmin}/account-admin/list`;
+            window.location.href = `/${pathAdmin}/user/list`;
           }
         });
     });
 }
 
-//  Account Admin Create Form
+//  User Create Form
 
-//  Account Admin Edit Form
-const AccountAdminEditForm = document.querySelector(
-  "#account-admin-edit-form"
+//  User Edit Form
+const UserEditForm = document.querySelector(
+  "#user-edit-form"
 );
-if (AccountAdminEditForm) {
-  const validation = new JustValidate("#account-admin-edit-form");
+if (UserEditForm) {
+  const validation = new JustValidate("#user-edit-form");
 
   validation
     .addField("#fullName", [
@@ -431,7 +431,7 @@ if (AccountAdminEditForm) {
       formData.append("province", province)
       formData.append("avatar", avatar);
 
-      fetch(`/${pathAdmin}/account-admin/edit/${id}`, {
+      fetch(`/${pathAdmin}/user/edit/${id}`, {
         method: "PATCH",
         body: formData,
       })
@@ -441,13 +441,13 @@ if (AccountAdminEditForm) {
             alert(data.message);
           }
           if (data.code == "success") {
-            window.location.href = `/${pathAdmin}/account-admin/list`;
+            window.location.href = `/${pathAdmin}/user/list`;
           }
         });
     });
 }
 
-//  Account Admin Edit Form
+//  User Edit Form
 // Button Delete
 const listButtonDelete = document.querySelectorAll("[button-delete]");
 if (listButtonDelete.length > 0) {

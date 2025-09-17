@@ -4,41 +4,41 @@ block main
     h1.box-title Chỉnh sửa tài khoản 
 
     .section-8
-      form#account-admin-edit-form
+      form#user-edit-form
         .inner-group(style="display: none;")
           label(class="inner-label "  for="id") 
-          input(type="text" id="id" name="id" value=accountAdminDetail.id)
+          input(type="text" id="id" name="id" value=accountUserDetail.id)
         .inner-group
           label(class="inner-label" for="fullName") Họ tên
-          input(type="text" id="fullName" name="fullName" value=accountAdminDetail.full_name)
+          input(type="text" id="fullName" name="fullName" value=accountUserDetail.full_name)
         .inner-group
           label(class="inner-label" for="email") Email
-          input(type="email" id="email" name="email" value=accountAdminDetail.email)
+          input(type="email" id="email" name="email" value=accountUserDetail.email)
         .inner-group
           label(class="inner-label" for="phone") Số điện thoại
-          input(type="text" id="phone" name="phone" value=accountAdminDetail.phone)
+          input(type="text" id="phone" name="phone" value=accountUserDetail.phone)
         .inner-group
           label(class="inner-label" for="role") Nhóm quyền
           select(id="role" name="role")
             each item in RoleList
               option(
                 value=item.id
-                selected=accountAdminDetail.role == item.id ? true:false) #{item.name}
+                selected=accountUserDetail.role == item.id ? true:false) #{item.name}
           
         .inner-group
           label(class="inner-label" for="status") Trạng thái
           select(id="status" name="status")
             option(
               value="initial"
-              selected=(accountAdminDetail.status == "initial" ? true : false)
+              selected=(accountUserDetail.status == "initial" ? true : false)
             ) Khởi tạo
             option(
               value="active"
-              selected=(accountAdminDetail.status == "active" ? true : false)
+              selected=(accountUserDetail.status == "active" ? true : false)
             ) Hoạt động
             option(
               value="inactive"
-              selected=(accountAdminDetail.status == "inactive" ? true : false)
+              selected=(accountUserDetail.status == "inactive" ? true : false)
             ) Dừng hoạt động
         .inner-group
           label(class="inner-label" for="password") Mật khẩu
@@ -49,13 +49,13 @@ block main
             each item in Province
               option(
                 value=item.id
-                selected=accountAdminDetail.province == item.id ? true:false) #{item.name}
+                selected=accountUserDetail.province == item.id ? true:false) #{item.name}
         .inner-group.inner-two-col
           label(class="inner-label" for="avatar") Ảnh đại diện
           div(class="inner-upload-image")
             input(type="file" id="avatar" accept="image/*" filepond-image name="avatar"
-            image-default=(accountAdminDetail.avatar || ""))
+            image-default=(accountUserDetail.avatar || ""))
         .inner-button.inner-two-col
           button Cập nhật
       .inner-back
-        a(href=`/${pathAdmin}/account-admin/list`) Quay lại danh sách
+        a(href=`/${pathAdmin}/user/list`) Quay lại danh sách

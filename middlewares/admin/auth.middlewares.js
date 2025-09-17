@@ -8,7 +8,9 @@ module.exports.verifyToken = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
+      console.log("Người dùng")
       return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
+
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -16,8 +18,8 @@ module.exports.verifyToken = async (req, res, next) => {
 
     // Chỉ kiểm tra account có tồn tại và active
     const existAccount = await AccountAdmin.findOneByIdAndEmail(id, email);
-    const Role =  await RoleModel.getRoleById(existAccount.role);
-    
+    const Role = await RoleModel.getRoleById(existAccount.role);
+
     existAccount.rolename = Role.name;
     if (!existAccount) {
       res.clearCookie("token");
