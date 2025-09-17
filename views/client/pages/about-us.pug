@@ -1,0 +1,67 @@
+extends ../layouts/default
+
+block content
+  .about-page
+    .header-image
+      img(src="assets/images/banner.png" alt="Giới thiệu phần mềm")
+    .container
+      .inner-wrap
+        h1.page-title PHẦN MỀM TỰ ĐỘNG CẢNH BÁO SỚM, GIÁM SÁT DỊCH SÂU RÓM THÔNG; GIÁM SÁT DỊCH SÂU, BỆNH HẠI LÁ KEO
+
+        p.post-date 28-10-2021
+
+        h2.section-title GIỚI THIỆU
+
+        p.intro-text Đây là sản phẩm thuộc Đề tài Khoa học và Công nghệ tiềm năng cấp Bộ Nông nghiệp và Phát triển nông thôn.
+
+        ol.main-list
+          li.item
+            strong.label Tên đề tài: 
+            p.goal-text Nghiên cứu xây dựng mô hình ứng dụng công nghệ địa không gian tự động giám sát và cảnh báo sớm dịch sâu hại rừng trồng tập trung tại vùng Đông Bắc và Bắc Trung Bộ.
+
+          li.item
+            strong.label Mục tiêu
+            p.goal-text Xây dựng được 01 phần mềm có khả năng tự động cảnh báo sớm dịch sâu róm thông đồng thời có thể giám sát được dịch sâu róm thông và sâu, bệnh hại lá keo.
+
+          li.item
+            strong.label Nội dung
+            p.desc-text Phần mềm được xây dựng gồm có các chức năng và Module chính như sau:
+
+            .content-section
+              .sub-section
+                p.sub-title a) Chức năng tự động cảnh báo sớm dịch sâu róm Thông
+                ul.module-list
+                  li Module quản trị hệ thống;
+                  li Module quản lý cơ sở dữ liệu trung tâm;
+                  li Module lưu trữ, hiển thị và quản lý dữ liệu về các khu vực theo cấp nguy cơ phát dịch SRT;
+                  li Module hiển thị kết quả cảnh báo sớm cấp nguy cơ dịch SRT trực tuyến trên WebGIS;
+
+              .sub-section
+                p.sub-title b) Chức năng giám sát dịch sâu róm Thông
+                ul.module-list
+                  li Module lưu trữ, hiển thị và quản lý dữ liệu về các khu vực có dịch SRT;
+                  li Module giám sát các khu rừng bị dịch SRT;
+                  li Module hiển thị kết quả giám sát các khu rừng bị dịch SRT trực tuyến trên WebGIS;
+
+              .sub-section
+                p.sub-title c) Chức năng giám sát dịch sâu hại lá Keo
+                ul.module-list
+                  li Module lưu trữ, hiển thị và quản lý dữ liệu về các khu vực có dịch sâu hại lá Keo;
+                  li Module giám sát các khu rừng bị dịch sâu hại lá Keo;
+                  li Module hiển thị kết quả các khu rừng bị dịch sâu hại lá keo trực tuyến trên WebGIS;
+
+              .sub-section
+                p.sub-title d) Chức năng giám sát dịch bệnh hại lá Keo
+                ul.module-list
+                  li Module lưu trữ, hiển thị và quản lý dữ liệu về các khu vực có dịch bệnh hại lá Keo;
+                  li Module giám sát các khu rừng bị dịch bệnh hại lá Keo;
+                  li Module hiển thị kết quả các khu rừng bị dịch bệnh hại lá keo trực tuyến trên WebGIS;
+
+              .sub-section
+                p.sub-title e) Chức năng điều tra, kiểm chứng hiện trường
+                ul.module-list
+                  li Module kiểm chứng, cập nhật các khu vực có dịch SRT từ dữ liệu thực địa;
+                  li Module kiểm chứng, cập nhật các khu vực có dịch sâu hại lá Keo từ dữ liệu thực địa;
+                  li Module kiểm chứng, cập nhật các khu vực có dịch bệnh hại lá Keo từ dữ liệu thực địa;
+                  li App ứng dụng điều tra, kiểm chứng hiện trường cài đặt trên điện thoại.
+                  li Module tích hợp các chức năng liên quan.

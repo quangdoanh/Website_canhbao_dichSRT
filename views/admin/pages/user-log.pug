@@ -3,5 +3,102 @@ extends ../layouts/default.pug
 block main
   h1.box-title Lịch sử người dùng
 
-  
+  //- Section 4: Bộ lọc
+  .section-4
+    .inner-wrap
+      .inner-item.inner-label
+        i.fa-solid.fa-filter
+        | Bộ lọc
+      .inner-item
+        select(filter-status)
+          option(value="") Phương Thức
+          option(value="GET") GET
+          option(value="POST") POST
+          option(value="DELETE") DELETE
+      .inner-item
+        select(filter-user)
+          option(value="") Người dùng
+          option(value="") Nguyễn Văn A
+          option(value="") Trần Thị B
+          option(value="") Lê Văn C
+      .inner-item.inner-date
+        input(type="date" filter-start-date)
+        span -
+        input(type="date" filter-end-date)
+      .inner-item.inner-reset(filter-reset)
+        i.fa-solid.fa-rotate-left
+        | Xóa bộ lọc
+
+  //- Section 5: Hành động & tìm kiếm
+  .section-5
+    .inner-wrap
+      .inner-change-status(change-multi data-api="/account-admin/change-multi")
+        .inner-item
+          select
+            option(value="") -- Hành động --
+
+            option(value="delete") Xóa
+        .inner-item
+          button Áp dụng
+      .inner-search
+        i.fa-solid.fa-magnifying-glass
+        input(type="text" placeholder="Tìm kiếm" search)
+
+  //- Section 6: Bảng danh sách
+  .section-6
+    .table-2
+      table
+        thead
+          tr
+            th.inner-center
+              input(type="checkbox" class="inner-check" check-all)
+            th.inner-center Người dùng
+            th.inner-center API
+            th.inner-center Phương thức
+            th.inner-center Thời gian
+            th.inner-center Mục đích
+            td.inner-center Hành động
+        tbody
+          tr
+            td.inner-center
+              input(type="checkbox" class="inner-check" check-item="1")
+            td.inner-center Nguyễn Văn A
+            td.inner-center /account-admin/create
+            td.inner-center POST
+            td.inner-center 2025-09-17T06:30:00.000Z
+            td.inner-center Tạo mới tài khoản
+            td.inner-center
+              .inner-buttons
+                button.inner-delete(button-delete data-api=``)
+                  i(class="fa-regular fa-trash-can")
+          tr
+            td.inner-center
+              input(type="checkbox" class="inner-check" check-item="2")
+            td.inner-center Trần Thị B
+            td.inner-center /account-admin/delete/2
+            td.inner-center DELETE
+            td.inner-center 2025-09-17T07:10:15.000Z
+            td.inner-center Xóa tài khoản
+            td.inner-center 
+              .inner-buttons
+                button.inner-delete(button-delete data-api=``)
+                  i(class="fa-regular fa-trash-can")
+          tr
+            td.inner-center
+              input(type="checkbox" class="inner-check" check-item="3")
+            td.inner-center Lê Văn C
+            td.inner-center /account-admin/edit/3
+            td.inner-center PUT
+            td.inner-center 2025-09-17T08:05:42.000Z
+            td.inner-center Chỉnh sửa thông tin
+            td.inner-center 
+              .inner-buttons
+                button.inner-delete(button-delete data-api=``)
+                  i(class="fa-regular fa-trash-can")
+
+  //- Section 7: Pagination
+  .section-7
+    span.inner-label Hiển thị 1 - 2 của 2
+    select.inner-pagination(name="page")
+      option(value="1" selected) Trang 1
 
