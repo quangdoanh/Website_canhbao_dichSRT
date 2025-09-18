@@ -4,7 +4,9 @@ const homeRouter = require(`./home.route`);
 const contactRouter = require('./contact.route');
 const aboutRouter = require('./about.route');
 
-route.use('/', homeRouter)
+const authMiddleware = require("../../middlewares/clients/auth.middlewares");
+
+route.use('/', authMiddleware.verifyToken, homeRouter)
 route.use('/contact', contactRouter)
 route.use('/about-us', aboutRouter)
 

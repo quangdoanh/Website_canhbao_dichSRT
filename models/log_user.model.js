@@ -13,7 +13,7 @@ const LogUserModel = {
     },
 
     // Lấy tất cả dữ liệu trừ cột id
-    async getAllExceptId() {
+    async getAll() {
         const query = `
             SELECT "user", endpoint, method, purpose, time
             FROM "public"."log_user"

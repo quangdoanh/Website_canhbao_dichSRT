@@ -57,44 +57,20 @@ block main
             th.inner-center Phương thức
             th.inner-center Thời gian
             th.inner-center Mục đích
-            td.inner-center Hành động
         tbody
+         each item in logUserList
           tr
             td.inner-center
               input(type="checkbox" class="inner-check" check-item="1")
-            td.inner-center Nguyễn Văn A
-            td.inner-center /account-admin/create
-            td.inner-center POST
-            td.inner-center 2025-09-17T06:30:00.000Z
-            td.inner-center Tạo mới tài khoản
+            td.inner-center #{item.user}
+            td.inner-center #{item.endpoint}
+            td.inner-center #{item.method}
+            td.inner-center #{item.timeDo}
+            td.inner-center #{item.purpose}
             td.inner-center
-              .inner-buttons
-                button.inner-delete(button-delete data-api=``)
-                  i(class="fa-regular fa-trash-can")
-          tr
-            td.inner-center
-              input(type="checkbox" class="inner-check" check-item="2")
-            td.inner-center Trần Thị B
-            td.inner-center /account-admin/delete/2
-            td.inner-center DELETE
-            td.inner-center 2025-09-17T07:10:15.000Z
-            td.inner-center Xóa tài khoản
-            td.inner-center 
-              .inner-buttons
-                button.inner-delete(button-delete data-api=``)
-                  i(class="fa-regular fa-trash-can")
-          tr
-            td.inner-center
-              input(type="checkbox" class="inner-check" check-item="3")
-            td.inner-center Lê Văn C
-            td.inner-center /account-admin/edit/3
-            td.inner-center PUT
-            td.inner-center 2025-09-17T08:05:42.000Z
-            td.inner-center Chỉnh sửa thông tin
-            td.inner-center 
-              .inner-buttons
-                button.inner-delete(button-delete data-api=``)
-                  i(class="fa-regular fa-trash-can")
+              //- .inner-buttons
+              //-   button.inner-delete(button-delete data-api=``)
+              //-     i(class="fa-regular fa-trash-can")
 
   //- Section 7: Pagination
   .section-7

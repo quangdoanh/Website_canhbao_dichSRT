@@ -1,10 +1,10 @@
 
 const UserModel = require("../../models/user.model");
 const ProvinceModel = require("../../models/province.model");
+const LogUserModel = require("../../models/log_user.model")
 const RoleModel = require("../../models/role.model");
-//  r.name AS roleName,
-//       c.full_name AS createdByName,
-//       p.name AS provinceName
+
+const moment = require("moment/moment")
 module.exports.list = async (req, res) => {
   try {
     const Province = await ProvinceModel.getProvinceById();
@@ -245,7 +245,27 @@ module.exports.changeMultiPatch = async (req, res) => {
 
 
 module.exports.log = async (req, res) => {
-  res.render("admin/pages/user-log", {
-    pageTitle: "Lịch sử người dùng"
-  })
+
+  try {
+    const logUserList = await LogUserModel.getAll();
+
+    for (const item of logUserList) {
+
+
+      item.timeDo = moment(item.time).format("HH:mm - DD/MM/YYYY");
+
+    }
+
+
+    //console.log(logUserList);
+
+    res.render("admin/pages/user-log", {
+      pageTitle: "Lịch sử người dùng",
+      logUserList: logUserList
+
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Lỗi server");
+  }
 }
