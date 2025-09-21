@@ -52,6 +52,7 @@ module.exports.loginPost = async (req, res) => {
           expiresIn: rememberPassword ? "30d" : "1d"
         }
       );
+      console.log("token admin: "+token)
       console.log("JWT_SECRET: 1", process.env.JWT_SECRET);
 
 
@@ -111,6 +112,7 @@ module.exports.loginPost = async (req, res) => {
           expiresIn: rememberPassword ? "30d" : "1d"
         }
       );
+      console.log(token)
       console.log("JWT_SECRET: 1", process.env.JWT_SECRET);
 
 
@@ -120,7 +122,7 @@ module.exports.loginPost = async (req, res) => {
           ? 30 * 24 * 60 * 60 * 1000 // 30 ngày
           : 24 * 60 * 60 * 1000, // 1 ngày
         httpOnly: true,
-        sameSite: "strict"
+        sameSite: "strict",
       });
 
       // ghi log đăng nhập  user

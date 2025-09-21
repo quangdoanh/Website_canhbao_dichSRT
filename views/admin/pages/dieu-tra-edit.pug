@@ -1,0 +1,55 @@
+extends ../layouts/default.pug
+include ../mixins/optionHuyen.pug
+include ../mixins/optionXa.pug
+
+block main
+  h1.box-title Chỉnh sửa
+
+  .section-8
+    form#dieutra-edit-form
+      //- ID bản ghi (ẩn)
+      .inner-group(style="display:none")
+        label(class="inner-label" for="id") Id bản ghi
+        input(type="text" id="id" name="id" value=dieutra.id)
+      //- Tỉnh (ẩn)
+      .inner-group(style="display:none")
+        label(class="inner-label" for="matinh") Id_Tỉnh
+        input(type="text" id="matinh" name="matinh" value=dieutra.ma_tinh readonly)
+
+      //- Huyện
+      .inner-group
+        label(class="inner-label" for="huyen") Huyện
+        select(id="huyen" name="huyen" class="huyen")
+          option(value=dieutra.ma_huyen selected) #{dieutra.ten_huyen}
+          // Các option khác từ mixin
+          +optionHuyen(ListHuyen)
+
+      //- Xã
+      .inner-group
+        label(class="inner-label" for="xa") Xã
+        select(id="xa" name="xa" class="xa")
+          option(value=dieutra.ma_xa selected) #{dieutra.ten_xa}
+          +optionXa(ListXaTheoHuyen)
+
+      //- Số sâu non
+      .inner-group
+        label(class="inner-label" for="sosau") Số sâu non
+        input(type="number" id="sosau" name="sosau" value=dieutra.so_sau_non)
+
+      //- Số cây
+      .inner-group
+        label(class="inner-label" for="socay") Số cây
+        input(type="number" id="socay" name="socay" value=dieutra.so_cay)
+
+      //- Địa chỉ cụ thể
+      .inner-group.inner-two-col
+        label(class="inner-label" for="diachi") Địa chỉ cụ thể
+        input(type="text" id="diachi" name="diachi" value=dieutra.dia_chi_cu_the)
+
+      //- Button submit
+      .inner-button.inner-two-col
+        button(type="submit") Cập nhật
+
+    //- Back link
+    .inner-back
+      a(href=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`) Quay lại danh sách

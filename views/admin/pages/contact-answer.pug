@@ -1,0 +1,26 @@
+extends ../layouts/default.pug
+
+block main
+    h1.box-title Phản hồi liên hệ
+  
+    .section-8
+      form#contact-answer-form
+        .inner-group(style="display:none;")
+            label(class="inner-label" for="id") id
+            input(type="text" id="id" name="id" readonly value=contactDetail.id)
+        .inner-group
+          label(class="inner-label" for="full_name") Họ và tên
+          input(type="text" id="full_name" name="full_name" readonly value=contactDetail.full_name)
+        .inner-group
+          label(class="inner-label" for="email") Email
+          input(type="text" id="email" name="email" readonly value=contactDetail.email)
+        .inner-group.inner-two-col
+          label(class="inner-label" for="message") Câu hỏi
+          textarea(id="message" name="message" readonly)= contactDetail.message
+        .inner-group.inner-two-col
+          label(class="inner-label" for="answer") Phản hồi
+          input(type="text" id="answer" name="answer")
+        .inner-button.inner-two-col
+          button Phản hồi
+      .inner-back
+        a(href=``) Quay lại danh sách

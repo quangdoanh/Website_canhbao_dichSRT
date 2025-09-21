@@ -29,9 +29,7 @@ module.exports.verifyToken = async (req, res, next) => {
     // Gán thông tin user vào request và locals (để view pug dùng được)
     req.account = existAccount;
     res.locals.account = existAccount;
-
-    console.log("tên tk:", existAccount)
-
+    console.log(req.account);
     next();
   } catch (error) {
     console.error("JWT verify error:", error.message);

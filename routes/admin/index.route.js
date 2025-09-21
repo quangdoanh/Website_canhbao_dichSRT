@@ -5,6 +5,9 @@ const adminRoutes = require('./admin.route');
 const sauromthongRoutes = require('./sauromthong.route')
 const userRoutes = require("./user.route");
 const roleRoutes = require('./role.route');
+const aboutRoutes = require('./about.route');
+const contactRoutes = require('./contact.route');
+// const userRoutes = require("./user.route");
 
 const authMiddleware = require("../../middlewares/admin/auth.middlewares");
 
@@ -19,6 +22,8 @@ router.use('/dashboard', authMiddleware.verifyToken, dashboardRoutes);
 // router.use('/account-admin', authMiddleware.verifyToken, adminRoutes);
 router.use('/user', authMiddleware.verifyToken, userRoutes);
 router.use('/role', authMiddleware.verifyToken, roleRoutes);
+router.use('/about', authMiddleware.verifyToken, aboutRoutes);
+router.use('/contact', authMiddleware.verifyToken, contactRoutes);
 
 
 

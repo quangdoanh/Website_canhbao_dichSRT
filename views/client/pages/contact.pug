@@ -23,9 +23,9 @@ block content
         .contact-right
           h2 GỬI Ý KIẾN/GÓP Ý CHO CHÚNG TÔI
           hr
-          form(action="/send-contact" method="POST")
-            input(type="text" name="name" placeholder="Họ và tên (bắt buộc)" required)
-            input(type="email" name="email" placeholder="Email (bắt buộc)" required)
-            input(type="text" name="phone" placeholder="Điện thoại")
-            textarea(name="message" placeholder="Nội dung" rows="6")
-            button(type="submit") GỬI ĐI
+          form(id="contact-create-form")
+            input(type="text" name="full_name" id="full_name" placeholder="Họ và tên (bắt buộc)" required)
+            input(type="email" name="email" id="email" placeholder="Email (bắt buộc)" required)
+            input(type="text" name="phone" id="phone" placeholder="Điện thoại")
+            textarea(name="message" id="message" placeholder="Nội dung" rows="6")
+            button(class="inner-button") GỬI ĐI
