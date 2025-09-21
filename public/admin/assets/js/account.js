@@ -48,7 +48,6 @@ if (loginForm) {
         email: email,
         password: password,
         rememberPassword: rememberPassword,
-        purpose: "Đăng nhập"
       }
       fetch(`/${pathAdmin}/account/login`, {
 
@@ -66,6 +65,7 @@ if (loginForm) {
           if (data.code == "success") {
             if (data.role == "admin") {
               window.location.href = `/${pathAdmin}/dashboard`;
+
             } else {
               window.location.href = `/`;
             }

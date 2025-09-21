@@ -749,6 +749,93 @@ if (roleEditForm) {
     });
 }
 //  Role edit Form
+
+
+
+
+
+// SRT edit Form
+const srtEditForm = document.querySelector("#srt-edit-form");
+
+if (srtEditForm) {
+  const validation = new JustValidate("#srt-edit-form");
+
+  validation
+    .addField("#tk", [{ rule: "required" }])
+    .addField("#khoanh", [{ rule: "required" }])
+    .addField("#lo", [{ rule: "required" }])
+    .addField("#dtich", [{ rule: "required" }])
+    .addField("#namtr", [{ rule: "required" }])
+    .addField("#churung", [{ rule: "required" }])
+    .addField("#phancap", [{ rule: "required" }])
+    .addField("#huyen", [{ rule: "required" }]) // hidden input
+    .addField("#xa", [{ rule: "required" }])    // hidden input
+    .onSuccess((event) => {
+
+
+
+      const id = event.target.id.value;
+      const tk = event.target.tk.value;
+      const khoanh = event.target.khoanh.value;
+      const lo = event.target.lo.value;
+      const dtich = event.target.dtich.value;
+      const namtr = event.target.namtr.value;
+      const churung = event.target.churung.value;
+      const phancap = event.target.phancap.value;
+      // Lấy giá trị Huyện, Xã, Id_tỉnh
+      const huyen = event.target.huyen.value;
+      const xa = event.target.xa.value;
+      const matinh = event.target.matinh.value;
+      const permissions = [];
+
+      // permissions
+      const listElementPermission = srtEditForm.querySelectorAll(
+        'input[name="permissions"]:checked'
+      );
+      listElementPermission.forEach((input) => {
+        permissions.push(input.value);
+      });
+      // End permissions
+      const dataFinal = {
+        id,
+        tk,
+        khoanh,
+        lo,
+        dtich,
+        namtr,
+        churung,
+        phancap,
+        huyen,
+        xa,
+        permissions: permissions,
+      };
+      console.log("data", dataFinal)
+
+      fetch(`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/edit/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataFinal),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            alert(data.message);
+            console.log("thành công")
+            //window.location.href = `/${pathAdmin}/sauromthong/dulieusrt/${matinh}/list`;
+          }
+        });
+    });
+}
+//  SRT edit Form
+
+
+
+
 // pagination
 const pagination = document.querySelector("[pagination]");
 if (pagination) {
@@ -768,3 +855,14 @@ if (pagination) {
   }
 }
 // end pagination
+
+// Create Wrong
+const CreateWrong = document.querySelector(".create-wrong")
+console.log(CreateWrong)
+if (CreateWrong) {
+  CreateWrong.addEventListener("click", (e) => {
+    e.preventDefault();
+    alert("Hệ thống đang nâng cấp")
+  })
+}
+// end

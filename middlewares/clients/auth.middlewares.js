@@ -2,8 +2,7 @@ const jwt = require('jsonwebtoken');
 const UserAdmin = require('../../models/user.model');
 const variableConfig = require('../../config/variable');
 const RoleModel = require('../../models/role.model');
-
-module.exports.verifyToken = async (req, res, next) => {
+module.exports.verifyTokenUser = async (req, res, next) => {
     try {
         const token = req.cookies.token;
 
@@ -17,7 +16,7 @@ module.exports.verifyToken = async (req, res, next) => {
 
             // existAccount.rolename = Role.name;
             if (!existAccount) {
-                res.clearCookie("token");
+                //res.clearCookie("token");
                 return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
             }
 

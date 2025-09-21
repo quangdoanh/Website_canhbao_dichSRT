@@ -1,0 +1,51 @@
+extends ../layouts/default.pug
+include ../mixins/optionHuyen.pug
+include ../mixins/optionXa.pug
+
+
+block main
+  h1.box-title Tạo dữ liệu SRT
+
+  .section-8
+    form#dulieu-create-form
+      .inner-group
+        label(class="inner-label" for="parent") Huyện
+        select(id="parent" name="parent" class="huyen") 
+          option(value="") -- Chọn Huyện --
+          +optionHuyen(ListHuyen) 
+      .inner-group
+        label(class="inner-label" for="parent") Xã
+        select(id="parent" name="parent" class="xa")  
+          option(value="") -- Chọn Xã --
+          +optionXa(ListXaTheoHuyen)
+      //- .inner-group
+      //-   label(class="inner-label" for="name") Địa điểm điều tra
+      //-   input(type="text" id="name" name="name")               
+      .inner-group
+        label(class="inner-label" for="position") Tiểu khu
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Khoảnh
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Lô
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Diện tích ảnh hưởng
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Loại rừng
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Năm trồng
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Chủ rừng
+        input(type="text" id="position" name="position")
+      .inner-group
+        label(class="inner-label" for="position") Phân cấp
+        input(type="number"  min = "1" max = "3" id="position" name="position")
+      .inner-button.inner-two-col
+        button.create-wrong Tạo mới
+    .inner-back
+      a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/list`) Quay lại danh sách

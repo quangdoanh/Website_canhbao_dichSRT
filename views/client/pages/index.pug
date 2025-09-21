@@ -2,56 +2,52 @@ extends ../layouts/default
 
 block content
   .section-1
-    .container
-      .content
-        // Search Panel
-        .search-panel
-          label Thông tin hiển thị
+    #map
 
-        // Map Panel
-        .map-panel
-          #map
-      // Section 3
-  .section-3
-    .container
-      h2.box-title(
-        data-aos-duration="800" 
-        data-aos="fade-up"
-        ) Tin Tức Mới
-      .swiper.swiper-section-3(
-        data-aos-delay="150" 
-        data-aos-duration="800" 
-        data-aos="fade-up"
-        )
-        .swiper-wrapper
-          .swiper-slide
-            .inner-item
-              a(href="#")
-                img(
-                  alt="" 
-                  src="/assets/images/la_keo.jpg"
-                  )
-          .swiper-slide
-            .inner-item
-              a(href="#")
-                img(
-                  alt="" 
-                  src="/assets/images/sau_la_keo.webp"
-                  )
-          .swiper-slide
-            .inner-item
-              a(href="#")
-                img(
-                  alt="" 
-                  src="/assets/images/sau_rom.webp"
-                  )
-          .swiper-slide
-            .inner-item
-              a(href="#")
-                img(
-                  alt="" 
-                  src="/assets/images/sau_la_keo.webp"
-                  )
-        .swiper-pagination
-  // End Section 3
-      
+      .info-table
+        .info-header Thông tin hiển thị cho tỉnh Hà Tĩnh
+
+        // Layer control
+        .layer-control
+          h3 Chọn dữ liệu bản đồ
+          select#layerSelect
+            option(value="Sauromthong_6tinh") Sâu róm thông 6 tỉnh
+            option(value="Benhhaikeo_8tinh") Bệnh hại lá keo 8 tỉnh
+            option(value="Sauhailakeo_5tinh") Sâu hại lá keo 5 tỉnh
+
+        // Bộ lọc (filter)
+        //- .filter
+        //-   label Cấp độ:
+        //-   select#capDoFilter
+        //-     option(value="all") Tất cả
+        //-     option(value="1") Cấp 1
+        //-     option(value="2") Cấp 2
+        //-     option(value="3") Cấp 3
+        //-   //- label Diện tích:
+        //-   //- input#dienTichFilter(type="number" placeholder="Nhập diện tích...")
+        //-   button#searchBtn
+        //-     i.fas.fa-search
+        // Bảng dữ liệu
+        table
+          thead
+            tr
+              th Tên xã
+              th Tiểu khu
+              th Khoảnh
+              th Lô
+              //- th Phân cấp
+              //- th Diện tích
+          tbody
+           each item in dataList
+            tr(
+              data-xa=item.xa
+              data-tk=item.tk
+              data-khoanh=item.khoanh
+              data-lo=item.lo)
+              td #{item.xa}
+              td #{item.tk}
+              td #{item.khoanh}
+              td #{item.lo}
+              //- td #{item.phancap}
+
+

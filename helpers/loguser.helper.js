@@ -10,6 +10,6 @@ module.exports.logUser = async (user, endponit, method, purpose) => {
     }
     console.log("data nè", dataFinal)
 
-    await LogUserModel.insert(dataFinal);
+    //await LogUserModel.insert(dataFinal);
 
 };

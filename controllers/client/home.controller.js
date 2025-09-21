@@ -1,5 +1,8 @@
 const HaTinhModel = require(`../../models/hatinh.model`)
-const Log = require(`../../helpers/loguser.helper`)
+const Sauromthong_6tinhModel = require(`../../models/sau_rom_thong.model`)
+const Log = require(`../../helpers/loguser.helper`);
+const Sauhailakeo_5tinhModel = require("../../models/sau_hai_lakeo.model");
+const Benhhai_lakeoModel = require("../../models/benhhaikeo.model");
 
 module.exports.homeSavePolygon = async (req, res) => {
     if (req.account == "guest") {
@@ -79,14 +82,25 @@ module.exports.homeDeletePolygon = async (req, res) => {
         console.error(" Lỗi khi xóa polygon:", err);
     }
 }
-module.exports.home = (req, res) => {
+module.exports.home = async (req, res) => {
 
     const user = req.account?.email;
     if (user) {
         Log.logUser(user, req.originalUrl, req.method, "Truy cập trang chủ")
     }
+    let dataList = [];
+    const dataMap = req.query.bando;
+    if (dataMap == "Sauhailakeo_5tinh") {
+        dataList = await Sauhailakeo_5tinhModel.findTop20ByDienTich();
+    } else if (dataMap == "Sauromthong_6tinh") {
+        dataList = await Sauromthong_6tinhModel.findTop20ByDienTich()
+    } else {
+        dataList = await Benhhai_lakeoModel.findTop20ByDienTich()
+    }
+    //console.log(sauromthongList)
 
     res.render('client/pages/index', {
-        pageTitle: "Trang Chủ"
+        pageTitle: "Trang Chủ",
+        dataList: dataList
     });
 }

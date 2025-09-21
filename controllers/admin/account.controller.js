@@ -13,6 +13,7 @@ module.exports.loginPost = async (req, res) => {
   const { email, password, rememberPassword } = req.body;
   try {
 
+
     if (email.includes("admin")) {
       // 1. Tìm tài khoản theo email
       const existAccount = await AccountsAdminModel.findByEmail(email);
@@ -44,8 +45,7 @@ module.exports.loginPost = async (req, res) => {
       const token = jwt.sign(
         {
           id: existAccount.id,
-          email: existAccount.email,
-          role: existAccount.role
+          email: existAccount.email
         },
         process.env.JWT_SECRET,
         {
@@ -73,6 +73,7 @@ module.exports.loginPost = async (req, res) => {
         token: token,
         role: "admin"
       });
+
     } else {
       const existAccount = await UserModel.findByEmail(email);
       if (!existAccount) {
@@ -103,8 +104,7 @@ module.exports.loginPost = async (req, res) => {
       const token = jwt.sign(
         {
           id: existAccount.id,
-          email: existAccount.email,
-          role: existAccount.role
+          email: existAccount.email
         },
         process.env.JWT_SECRET,
         {
@@ -151,19 +151,21 @@ module.exports.loginPost = async (req, res) => {
 
 module.exports.logoutPost = async (req, res) => {
 
-  // Lưu log
+  // // Lưu log
 
-  const token = req.cookies.token;
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const { id, email } = decoded;
+  // const token = req.cookies.token;
+  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  // const { id, email } = decoded;
+  // console.log(decoded)
 
-  // Chỉ kiểm tra account có tồn tại và active
-  const existAccount = await UserModel.findOneByIdAndEmail(id, email);
-  const user = existAccount.email;
-  if (user) {
-    Log.logUser(user, req.originalUrl, req.method, "Đăng xuất")
-  }
-  // end
+  // // Chỉ kiểm tra account có tồn tại và active
+  // const existAccount = await UserModel.findOneByIdAndEmail(id, email);
+  // if (existAccount) {
+  //   existAccount.email;
+  //   Log.logUser(user, req.originalUrl, req.method, "Đăng xuất")
+  //   // end
+  // }
+
 
   res.clearCookie("token");
   res.json({

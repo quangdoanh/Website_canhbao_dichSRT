@@ -7,8 +7,8 @@ module.exports.verifyToken = async (req, res, next) => {
   try {
     const token = req.cookies.token;
 
+
     if (!token) {
-      console.log("Người dùng")
       return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
 
     }
@@ -19,7 +19,7 @@ module.exports.verifyToken = async (req, res, next) => {
     // Chỉ kiểm tra account có tồn tại và active
     const existAccount = await AccountAdmin.findOneByIdAndEmail(id, email);
     const Role = await RoleModel.getRoleById(existAccount.role);
-
+    console.log("Sau verify:", existAccount);
     existAccount.rolename = Role.name;
     if (!existAccount) {
       res.clearCookie("token");
@@ -30,9 +30,12 @@ module.exports.verifyToken = async (req, res, next) => {
     req.account = existAccount;
     res.locals.account = existAccount;
 
+    console.log("tên tk:", existAccount)
+
     next();
   } catch (error) {
     console.error("JWT verify error:", error.message);
+    console.log("bị lỗi hệ thống")
     res.clearCookie("token");
     res.redirect(`/${variableConfig.pathAdmin}/account/login`);
   }

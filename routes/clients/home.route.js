@@ -4,10 +4,6 @@ const router = require("express").Router()
 const homeController = require("../../controllers/client/home.controller")
 // end Controllers
 
-
-
-
-
 router.get('/', homeController.home)
 
 router.post(
