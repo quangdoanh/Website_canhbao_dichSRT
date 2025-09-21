@@ -1,0 +1,34 @@
+extends ../layouts/default.pug
+include ../mixins/optionHuyen.pug
+include ../mixins/optionXa.pug
+block main
+    h1.box-title Thêm mới
+
+    .section-8
+      form#dieutra-create-form
+        .inner-group(style="display:none")
+          label(class="inner-label" for="matinh") Id_Tỉnh
+          input(type="text" id="matinh" name="matinh" value=matinh readonly)
+        .inner-group
+          label(class="inner-label" for="huyen") Huyện
+          select(id="huyen" name="huyen" class="huyen")
+            option(value="") ---Chọn--- 
+            +optionHuyen(ListHuyen)
+        .inner-group
+          label(class="inner-label" for="xa" ) Xã
+          select(id="xa" name="xa" class="xa")
+            option(value="") ---Chọn--- 
+            +optionXa(ListXaTheoHuyen)
+        .inner-group
+          label(class="inner-label" for="sosau") Số sâu non
+          input(type="number" id="sosau" name="sosau")
+        .inner-group
+          label(class="inner-label" for="socay") Số cây
+          input(type="number" id="socay" name="socay")
+        .inner-group.inner-two-col
+          label(class="inner-label" for="diachi") Địa chỉ cụ thể
+          input(type="text" id="diachi" name="diachi")
+        .inner-button.inner-two-col
+          button Tạo mới
+      .inner-back
+        a(href=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`) Quay lại danh sách

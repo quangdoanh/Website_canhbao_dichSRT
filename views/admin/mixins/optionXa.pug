@@ -1,0 +1,42 @@
+mixin optionXa(listXaTheoHuyen)
+  //- Render tất cả xã, kèm data-huyen để lọc
+  each item in listXaTheoHuyen
+    each xa in item.dsXa
+      option(value=xa.ma_xa data-huyen=item.huyen)= xa.ten_xa
+
+    
+  //- Script lọc xã theo huyện
+  script.
+    const xaSelect = document.querySelector("select.xa");
+    const huyenSelect = document.querySelector("select.huyen");
+
+    console.log("huyen:",huyenSelect)
+    console.log(xaSelect)
+
+    function filterXaByHuyen(ma_huyen) {
+      const options = xaSelect.querySelectorAll("option[data-huyen]");
+      console.log("Huyện:",ma_huyen)
+      console.log("lựa chọn",options)
+      options.forEach(opt => {
+        if (!ma_huyen || opt.getAttribute("data-huyen") === ma_huyen) {
+          opt.style.display = "";
+        } else {
+          opt.style.display = "none";
+        }
+      });
+      // reset về -- Chọn Xã --
+     const selectedOption = xaSelect.querySelector("option[selected]");
+      if (selectedOption) {
+        xaSelect.value = selectedOption.value;
+      } else {
+        xaSelect.value = ""; // nếu không có option selected
+      }
+
+    }
+
+    huyenSelect.addEventListener("change", (e) => {
+      filterXaByHuyen(e.target.value);
+    });
+
+    // Khởi tạo: ẩn hết xã trước
+    filterXaByHuyen("");

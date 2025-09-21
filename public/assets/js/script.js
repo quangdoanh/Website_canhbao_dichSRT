@@ -74,3 +74,49 @@ if (buttonLogout) {
 }
 // End Logout
 
+//contact-create-form
+const contactCreateForm = document.querySelector("#contact-create-form");
+if (contactCreateForm) {
+  const validation = new JustValidate("#contact-create-form");
+
+  validation
+    .addField("#full_name", [
+      { rule: "required", errorMessage: "Vui lòng nhập họ và tên!" }
+    ])
+    .addField("#email", [
+      { rule: "required", errorMessage: "Vui lòng nhập email!" },
+      { rule: "email", errorMessage: "Email không đúng định dạng!" }
+    ])
+    .addField("#message", [
+      { rule: "required", errorMessage: "Vui lòng nhập nội dung!" }
+    ])
+    .onSuccess((event) => {
+      event.preventDefault(); // Ngăn submit mặc định
+      const data = {
+        full_name: event.target.full_name.value,
+        email: event.target.email.value,
+        phone: event.target.phone.value,
+        message: event.target.message.value
+      };
+      console.log(data);
+      fetch(`contact/create`, { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "success") {
+            contactForm.reset();
+          } else {
+            alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Có lỗi xảy ra, vui lòng thử lại!");
+        });
+    });
+}
+
+//end-contact-create-form

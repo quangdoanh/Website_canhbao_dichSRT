@@ -768,3 +768,348 @@ if (pagination) {
   }
 }
 // end pagination
+
+// About Create Form
+const aboutCreateForm = document.querySelector("#about-create-form");
+if (aboutCreateForm) {
+  const validation = new JustValidate("#about-create-form");  
+
+  validation
+    .addField("#title", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tiêu đề!",
+      },
+    ])
+    .onSuccess((event) => {
+      const title = event.target.title.value;
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if (avatars.length > 0) {
+        avatar = avatars[0].file;
+      }
+      const content = tinymce.get("content").getContent();
+      //Tạo formData
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("avatar", avatar);
+      formData.append("content", content);
+
+      fetch(`/${pathAdmin}/about/create`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Dữ liệu trả về:", data);
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/about/list`;
+          }
+        });
+    });
+}
+// End About Create Form
+
+// About Edit Form
+const aboutEditForm = document.querySelector("#about-edit-form");
+if (aboutEditForm) {
+  const validation = new JustValidate("#about-edit-form");  
+
+  validation
+    .addField("#title", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập tiêu đề!",
+      },
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const title = event.target.title.value;
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if (avatars.length > 0) {
+        avatar = avatars[0].file;
+        const avatarInput = event.target.avatar; // Lấy chính input
+        const imageDefault = avatarInput.getAttribute("image-default"); 
+        if (imageDefault && imageDefault.includes(avatar.name)) {
+          avatar = null;
+        }
+      }
+      const content = tinymce.get("content").getContent();
+      //Tạo formData
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("title", title);
+      formData.append("avatar", avatar);
+      formData.append("content", content);
+
+      fetch(`/${pathAdmin}/about/edit/${id}`, {
+        method: "PATCH",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Dữ liệu trả về:", data);
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/about/list`;
+          }
+        });
+    });
+}
+// End About Edit Form
+//change-status-about
+const toggleStatusInputs = document.querySelectorAll("[toggle-status]");
+
+if (toggleStatusInputs) {
+  toggleStatusInputs.forEach(input => {
+    input.addEventListener("change", async (e) => {
+      const api = e.target.getAttribute("data-api");
+      const status = e.target.checked ? 1 : 0;
+
+      try {
+        const res = await fetch(api, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status })
+        });
+
+        const data = await res.json();
+        if (data.code !== "success") {
+          alert("Cập nhật thất bại: " + data.message);
+          e.target.checked = !e.target.checked; // rollback 
+        }
+      } catch (err) {
+        alert("Có lỗi kết nối!");
+        e.target.checked = !e.target.checked;
+      }
+    });
+  });
+}
+
+//end change-status-about
+
+
+
+// contact answer Form
+const contactAnswerForm = document.querySelector("#contact-answer-form");
+if (contactAnswerForm) {
+  const validation = new JustValidate("#contact-answer-form");  
+
+  validation
+    .addField("#answer", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập phản hồi!",
+      },
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const answer = event.target.answer.value;
+      
+      const data = {
+        id:id,
+        answer:answer
+      };
+
+      fetch(`/${pathAdmin}/contact/answer/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Dữ liệu trả về:", data);
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.href = `/${pathAdmin}/contact/list`;
+          }
+        });
+    });
+}
+// End contact answer Form
+
+
+//dieutra-create-form
+const dieutraForm = document.querySelector("#dieutra-create-form");
+
+if (dieutraForm) {
+  const validation = new JustValidate("#dieutra-create-form");
+
+  validation
+    // Validate số sâu
+    .addField("#sosau", [
+      { rule: "required", errorMessage: "Vui lòng nhập số sâu!" },
+      { rule: "number", errorMessage: "Số sâu phải là số!" },
+      { rule: "minNumber", value: 0, errorMessage: "Số sâu phải >= 0" }
+    ])
+    // Validate số cây
+    .addField("#socay", [
+      { rule: "required", errorMessage: "Vui lòng nhập số cây!" },
+      { rule: "number", errorMessage: "Số cây phải là số!" },
+      { rule: "minNumber", value: 0, errorMessage: "Số cây phải >= 0" }
+    ])
+    // Validate huyện
+    .addField("#huyen", [
+      { rule: "required", errorMessage: "Vui lòng chọn huyện!" }
+    ])
+    // Validate xã
+    .addField("#xa", [
+      { rule: "required", errorMessage: "Vui lòng chọn xã!" }
+    ])
+    // Validate địa chỉ cụ thể
+    .addField("#diachi", [
+      { rule: "required", errorMessage: "Vui lòng nhập địa chỉ cụ thể!" },
+      { rule: "maxLength", value: 255, errorMessage: "Địa chỉ quá dài!" }
+    ])
+    .onSuccess((event) => {
+      event.preventDefault();
+
+      const matinh = event.target.matinh.value;
+      const huyen = event.target.huyen.value;
+      const xa = event.target.xa.value;
+      const sosau = parseInt(event.target.sosau.value) || 0;
+      const socay = parseInt(event.target.socay.value) || 0;
+      const diachi = event.target.diachi.value.trim();
+
+      const data = {
+        matinh,
+        huyen,
+        xa,
+        sosau,
+        socay,
+        dia_chi_cu_the: diachi
+      };
+
+      console.log(data);
+
+      fetch(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/create`, { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === "success") {
+          alert("Tạo mới thành công!");
+          window.location.href = `/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`;
+        } else {
+          alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
+      });
+    });
+}
+//end-dieutra-create-form
+
+
+// dieutra-edit-form
+const dieutraEditForm = document.querySelector("#dieutra-edit-form");
+
+if (dieutraEditForm) {
+  const validation = new JustValidate("#dieutra-edit-form");
+
+  validation
+    // Validate số sâu
+    .addField("#sosau", [
+      { rule: "required", errorMessage: "Vui lòng nhập số sâu!" },
+      { rule: "number", errorMessage: "Số sâu phải là số!" },
+      { rule: "minNumber", value: 0, errorMessage: "Số sâu phải >= 0" }
+    ])
+    // Validate số cây
+    .addField("#socay", [
+      { rule: "required", errorMessage: "Vui lòng nhập số cây!" },
+      { rule: "number", errorMessage: "Số cây phải là số!" },
+      { rule: "minNumber", value: 0, errorMessage: "Số cây phải >= 0" }
+    ])
+    // Validate huyện
+    .addField("#huyen", [
+      { rule: "required", errorMessage: "Vui lòng chọn huyện!" }
+    ])
+    // Validate xã
+    .addField("#xa", [
+      { rule: "required", errorMessage: "Vui lòng chọn xã!" }
+    ])
+    // Validate địa chỉ cụ thể
+    .addField("#diachi", [
+      { rule: "required", errorMessage: "Vui lòng nhập địa chỉ cụ thể!" },
+      { rule: "maxLength", value: 255, errorMessage: "Địa chỉ quá dài!" }
+    ])
+    .onSuccess((event) => {
+      event.preventDefault();
+
+      const id = event.target.id.value; // id bản ghi
+      const matinh = event.target.matinh.value;
+      const huyen = event.target.huyen.value;
+      const xa = event.target.xa.value;
+      const sosau = event.target.sosau.value ;
+      const socay = event.target.socay.value;
+      const diachi = event.target.diachi.value.trim();
+
+      const data = {
+        matinh,
+        huyen,
+        xa,
+        sosau,
+        socay,
+        dia_chi_cu_the: diachi
+      };
+
+      console.log("Dữ liệu gửi lên server:", data);
+
+      fetch(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/edit/${id}`, { 
+        method: "PATCH", // hoặc POST nếu backend không hỗ trợ PUT
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === "success") {
+          alert("Cập nhật thành công!");
+          window.location.href = `/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`;
+        } else {
+          alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
+      });
+    });
+}
+
+//end-dieutra-edit-form
+
+// Xóa mềm
+const listButtonDeletePathc = document.querySelectorAll("[button-delete-patch]");
+if (listButtonDeletePathc.length > 0) {
+  listButtonDeletePathc.forEach((button) => {
+    button.addEventListener("click", () => {
+      const dataApi = button.getAttribute("data-api");
+      fetch(dataApi, {
+        method: "PATCH",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code == "error") {
+            alert(data.message);
+          }
+          if (data.code == "success") {
+            window.location.reload();
+          }
+        });
+    });
+  });
+}
+
+// End Xóa mềm

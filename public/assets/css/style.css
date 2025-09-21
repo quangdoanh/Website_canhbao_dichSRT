@@ -814,28 +814,11 @@ textarea {
   font-size: 14px;
 }
 
-.section-title {
-  text-align: center;
-  font-size: 22px;
-  font-weight: 600;
-  margin: 40px 0 20px;
-  color: #333;
-  position: relative;
-}
 
-.section-title::after {
-  content: "";
-  display: block;
-  width: 60px;
-  height: 3px;
-  background: var(--color-primary);
-  margin: 10px auto 0;
-  border-radius: 2px;
-}
 
-.intro-text,
-.goal-text,
-.desc-text {
+
+
+.intro-text {
   text-align: justify;
   line-height: 1.8;
   margin-bottom: 18px;
@@ -845,77 +828,9 @@ textarea {
 
 .intro-text {
   text-align: center;
+  border-bottom: solid 1px #25282B;
+  padding-bottom: 20px;
 }
-
-.main-list {
-  margin-left: 25px;
-  margin-bottom: 25px;
-}
-
-.main-list .item {
-  margin: 18px 0;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.label {
-  font-weight: 600;
-  color: black;
-}
-
-.content-section {
-  margin-top: 15px;
-  padding-left: 5px;
-  border-left: 3px solid #e0e0e0;
-}
-
-.sub-section {
-  margin-bottom: 25px;
-}
-
-.sub-title {
-  font-weight: 300;
-  margin: 12px 0;
-  color: #222;
-}
-.module-list {
-  margin-left: 40px;
-  list-style: none;
-  padding-left: 0;
-  color: #555;
-}
-
-.module-list li {
-  margin: 6px 0;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 1.5;
-  position: relative;
-  padding-left: 18px;
-}
-
-.module-list li::before {
-  content: "-";
-  position: absolute;
-  left: 0;
-  color: #000;
-  font-weight: bold;
-}
-
-@media (max-width: 767.98px) {
-  .page-title {
-    font-size: 26px;
-  }
-  .section-title {
-    font-size: 20px;
-  }
-  .intro-text,
-  .goal-text,
-  .desc-text {
-    font-size: 15px;
-  }
-}
-
 
  /*end page-about */
 

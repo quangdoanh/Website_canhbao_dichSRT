@@ -5,6 +5,8 @@ const adminRoutes = require('./admin.route');
 const sauromthongRoutes = require('./sauromthong.route')
 const userRoutes = require("./user.route");
 const roleRoutes = require('./role.route');
+const aboutRoutes = require('./about.route');
+const contactRoutes = require('./contact.route');
 // const userRoutes = require("./user.route");
 
 const authMiddleware = require("../../middlewares/admin/auth.middlewares");
@@ -14,12 +16,14 @@ router.use((req, res, next) => {
   next();
 });
 
-router.use('/sauromthong', authMiddleware.verifyToken, sauromthongRoutes);
+router.use('/sauromthong', sauromthongRoutes);
 router.use('/account', accountRoutes);
 router.use('/dashboard', authMiddleware.verifyToken, dashboardRoutes);
 router.use('/account-admin', authMiddleware.verifyToken, adminRoutes);
-router.use('/user', authMiddleware.verifyToken, userRoutes);
+router.use('/user', userRoutes);
 router.use('/role', authMiddleware.verifyToken, roleRoutes);
+router.use('/about', aboutRoutes);
+router.use('/contact', contactRoutes);
 
 
 

@@ -6,7 +6,7 @@ const RoleModel = require('../../models/role.model');
 module.exports.verifyToken = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-
+    console.log("kiem tra: "+token)
     if (!token) {
       console.log("Người dùng")
       return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
@@ -27,9 +27,9 @@ module.exports.verifyToken = async (req, res, next) => {
     }
 
     // Gán thông tin user vào request và locals (để view pug dùng được)
-    req.account = existAccount;
+    req.account = existAccount; 
     res.locals.account = existAccount;
-
+    console.log(req.account);
     next();
   } catch (error) {
     console.error("JWT verify error:", error.message);

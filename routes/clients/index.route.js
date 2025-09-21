@@ -6,7 +6,7 @@ const aboutRouter = require('./about.route');
 
 const authMiddleware = require("../../middlewares/clients/auth.middlewares");
 
-route.use('/', authMiddleware.verifyToken, homeRouter)
+route.use('/', homeRouter)
 route.use('/contact', contactRouter)
 route.use('/about-us', aboutRouter)
 
