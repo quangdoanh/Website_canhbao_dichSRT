@@ -1,12 +1,10 @@
 const AccountsAdminModel = require("../../models/account-admin.model");
 const ProvinceModel = require("../../models/province.model");
+const TinhModel = require("../../models/tinh.model");
 const RoleModel = require("../../models/role.model");
-//  r.name AS roleName,
-//       c.full_name AS createdByName,
-//       p.name AS provinceName
+
 module.exports.list = async (req, res) => {
   try {
-    const Province = await ProvinceModel.getProvinceById();
     const filters = {
       status: req.query.status || null,
       startDate: req.query.startDate || null,
@@ -46,11 +44,11 @@ module.exports.list = async (req, res) => {
       }
     }
     for (const item of accountAdminList) {
-      if (item.province) {
-        const provinceInf = await ProvinceModel.getProvinceById(item.province);
+      if (item.ma_tinh) {
+        const tinhInf = await TinhModel.getProvinceById(item.ma_tinh);
 
-        if (provinceInf) {
-          item.provinceName = provinceInf.name;
+        if (tinhInf) {
+          item.ten_tinh = tinhInf.ten_tinh;
         }
       }
     }
@@ -63,8 +61,6 @@ module.exports.list = async (req, res) => {
         }
       }
     }
-
-    console.log(accountAdminList);
 
     res.render("admin/pages/account-admin-list", {
       pageTitle: "Danh sách tài khoản",
@@ -80,11 +76,11 @@ module.exports.list = async (req, res) => {
   }
 };
 module.exports.adminCreate = async (req, res) => {
-  const Province = await ProvinceModel.getAll();
+  const Tinh = await TinhModel.getAll()
   const RoleList = await RoleModel.getAll();
   res.render("admin/pages/account-admin-create", {
     pageTitle: "Tạo tài khoản ",
-    Province: Province,
+    Tinh:Tinh,
     RoleList: RoleList,
   });
 };
@@ -108,12 +104,9 @@ module.exports.adminCreatePost = async (req, res) => {
       status: req.body.status || "initial",
       createBy: req.account?.id,
       updateBy: req.account?.id,
-      avatar: req.file ? req.file.path : "",
       password: req.body.password,
-      province: req.body.province,
+      ma_tinh: req.body.ma_tinh,
     };
-    // console.log("Dữ liệu thêm mới: ", newAdminData);
-
     // Lưu vào DB thông qua model (model sẽ hash password)
     await AccountsAdminModel.addNew(newAdminData);
 
@@ -132,12 +125,12 @@ module.exports.adminEdit = async (req, res) => {
     const { id } = req.params;
 
     const accountAdmin = await AccountsAdminModel.findByID(parseInt(id));
-    const Province = await ProvinceModel.getAll();
+    const Tinh = await TinhModel.getAll();
     const RoleList = await RoleModel.getAll();
     res.render("admin/pages/account-admin-edit", {
       pageTitle: "Trang chỉnh sửa",
       accountAdminDetail: accountAdmin,
-      Province: Province,
+      Tinh:Tinh,
       RoleList: RoleList,
     });
   } catch (err) {
@@ -159,7 +152,7 @@ module.exports.adminEditPatch = async (req, res) => {
       phone: req.body.phone,
       role: req.body.role,
       status: req.body.status,
-      province: req.body.province,
+      ma_tinh: req.body.ma_tinh,
       update_by: req.account.id, // ai update
     };
 
@@ -167,12 +160,6 @@ module.exports.adminEditPatch = async (req, res) => {
     if (req.body.password && req.body.password.trim() !== "") {
       data.password = req.body.password; // hash ở trong model
     }
-
-    // Nếu có avatar mới
-    if (req.file) {
-      data.avatar = req.file.path;
-    }
-
     const updatedAccount = await AccountsAdminModel.updateAccount(id, data);
 
     if (!updatedAccount) {

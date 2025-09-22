@@ -1,0 +1,74 @@
+extends ../layouts/default.pug
+
+block main
+  h1.box-title Dữ liệu thời tiết
+
+  //- Section 4: Bộ lọc
+  .section-4
+    .inner-wrap
+      .inner-item.inner-label
+        <i class="fa-solid fa-filter"></i> Bộ lọc
+      .inner-item
+        select(filter-status)
+          option(value="") Trạng thái
+          option(value="active") Hoạt động
+          option(value="inactive") Tạm dừng
+      .inner-item.inner-date
+        input(type="date" filter-start-date value="2025-09-01")
+        span - 
+        input(type="date" filter-end-date value="2025-09-22")
+      .inner-item.inner-reset(filter-reset)
+        <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
+
+  //- Section 5: Hành động & tìm kiếm
+  .section-5
+    .inner-wrap
+      .inner-search
+        i(class="fa-solid fa-magnifying-glass")
+        input(type="text" placeholder="Tìm kiếm theo địa chỉ" search)
+
+  //- Section 6: Bảng danh sách
+  .section-6
+    .table-2
+      table
+        thead
+          tr
+            th.inner-center
+              input(type="checkbox" class="inner-check" check-all)
+            th Tỉnh
+            th Huyện
+            th Xã
+            th Nhiệt độ TB (°C)
+            th Lượng mưa TB (mm)
+            th Tốc độ gió TB (m/s)
+            th Cấp số
+            th Ngày cập nhật
+            th Hành động
+        tbody
+          each item, index in dataList
+            tr
+              td.inner-center
+                input(type="checkbox" class="inner-check" check-item=item.id)
+              td #{item.ten_tinh || 'Không xác định'}
+              td #{item.ten_huyen || 'Không xác định'}
+              td #{item.ten_xa || 'Không xác định'}
+              td #{item.temp_mean}
+              td #{item.rain_mean}
+              td #{item.wind_mean}
+              td #{item.cap_so_p}
+              td #{item.ngay_cap_nhat}
+              td
+                .inner-buttons
+                  a.inner-edit(href=`/admin/weather-data/detail/${item.id}`)
+                    <i class="fa-solid fa-eye"></i>
+
+  //- Section 7: Pagination
+  .section-7
+    - const start = (pagination.page - 1) * limit + 1;
+    - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+    span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+
+    select.inner-pagination(pagination name="page")
+      each val in [...Array(pagination.totalPages).keys()]
+        - const pageNum = val + 1;
+        option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}

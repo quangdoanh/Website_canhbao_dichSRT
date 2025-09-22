@@ -28,6 +28,15 @@ block main
         .inner-group.inner-two-col
           label(class="inner-label" for="diachi") Địa chỉ cụ thể
           input(type="text" id="diachi" name="diachi")
+        .inner-group
+          label(class="inner-label" for="loai_cay") Loài cây
+          select(id="loai_cay" name="loai_cay" required)
+            option(value="") ---Chọn---
+            option(value="thongmavi") Thông Mã Vĩ
+            option(value="thongnhua") Thông Nhựa
+        .inner-group
+          label(class="inner-label" for="duong_kinh_tb") Đường kính TB (cm)
+          input(type="number" id="duong_kinh_tb" name="duong_kinh_tb" step="0.5" min="0" required)
         .inner-button.inner-two-col
           button Tạo mới
       .inner-back

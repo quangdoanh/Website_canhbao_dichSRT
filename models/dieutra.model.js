@@ -1,11 +1,10 @@
 const pool = require("../config/database");
-const { softDelete } = require("./about.model");
 
 const DieuTra = {
   // Lấy tất cả bản ghi
   async getAll() {
     try {
-      const result = await pool.query("SELECT * FROM dieu_tra WHERE status = 1 ORDER BY dtra_date DESC");
+      const result = await pool.query("SELECT * FROM dieu_tra WHERE status = 1  ORDER BY dtra_date DESC");
       return result.rows;
     } catch (error) {
       throw error;
@@ -39,13 +38,13 @@ const DieuTra = {
   },
 
   // Thêm mới bản ghi
-  async create({ ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the }) {
+  async create({ ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the,loai_cay,duong_kinh_tb }) {
     try {
       const result = await pool.query(
         `INSERT INTO dieu_tra 
-        (ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-        [ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the]
+        (ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the, loai_cay, duong_kinh_tb)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8,$9,$10) RETURNING *`,
+        [ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the, loai_cay, duong_kinh_tb]
       );
       return result.rows[0];
     } catch (error) {
@@ -54,14 +53,14 @@ const DieuTra = {
   },
 
   // Cập nhật bản ghi
-  async update(id, { ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the }) {
+  async update(id, { ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the, loai_cay, duong_kinh_tb}) {
     try {
       const result = await pool.query(
         `UPDATE dieu_tra 
          SET ma_tinh = $1, ma_huyen = $2, ma_xa = $3, so_sau_non = $4, so_cay = $5, 
-             dtra_date = $6, user_id = $7, dia_chi_cu_the = $8
-         WHERE id = $9 RETURNING *`,
-        [ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the, id]
+             dtra_date = $6, user_id = $7, dia_chi_cu_the = $8, loai_cay = $9, duong_kinh_tb = $10
+         WHERE id = $11 RETURNING *`,
+        [ma_tinh, ma_huyen, ma_xa, so_sau_non, so_cay, dtra_date, user_id, dia_chi_cu_the,loai_cay,duong_kinh_tb, id]
       );
       return result.rows[0];
     } catch (error) {

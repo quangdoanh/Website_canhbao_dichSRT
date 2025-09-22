@@ -3,12 +3,13 @@ const UserModel = require("../../models/user.model");
 const ProvinceModel = require("../../models/province.model");
 const LogUserModel = require("../../models/log_user.model")
 const RoleModel = require("../../models/role.model");
+const TinhModel = require("../../models/tinh.model")
 const AccountsAdminModel = require("../../models/account-admin.model")
 
 const moment = require("moment/moment")
 module.exports.list = async (req, res) => {
   try {
-    const Province = await ProvinceModel.getProvinceById();
+    // const Province = await ProvinceModel.getProvinceById();
     const filters = {
       status: req.query.status || null,
       startDate: req.query.startDate || null,
@@ -48,17 +49,17 @@ module.exports.list = async (req, res) => {
       }
     }
     for (const item of accountUserList) {
-      if (item.province) {
-        const provinceInf = await ProvinceModel.getProvinceById(item.province);
+      if (item.ma_tinh) {
+        const tinhInf = await TinhModel.getById(item.ma_tinh);
 
-        if (provinceInf) {
-          item.provinceName = provinceInf.name;
+        if (tinhInf) {
+          item.ten_tinh = tinhInf.ten_tinh;
         }
       }
     }
     for (const item of accountUserList) {
       if (item.create_by) {
-        const accountInf = await UserModel.findByID(item.create_by);
+        const accountInf = await AccountsAdminModel.findByID(item.create_by);
 
         if (accountInf) {
           item.createdByName = accountInf.full_name;
@@ -82,11 +83,11 @@ module.exports.list = async (req, res) => {
   }
 };
 module.exports.userCreate = async (req, res) => {
-  const Province = await ProvinceModel.getAll();
+  const Tinh =  await TinhModel.getAll();
   const RoleList = await RoleModel.getAll();
   res.render("admin/pages/user-create", {
     pageTitle: "Tạo tài khoản ",
-    Province: Province,
+    Tinh:Tinh,
     RoleList: RoleList,
   });
 };
@@ -110,9 +111,9 @@ module.exports.userCreatePost = async (req, res) => {
       status: req.body.status || "initial",
       createBy: req.account?.id || null,
       updateBy: req.account?.id || null,
-      avatar: req.file ? req.file.path : "",
+      // avatar: req.file ? req.file.path : "",
       password: req.body.password,
-      province: req.body.province,
+      ma_tinh: req.body.ma_tinh,
     };
     // console.log("Dữ liệu thêm mới: ", newUserData);
 
@@ -134,12 +135,12 @@ module.exports.UserEdit = async (req, res) => {
     const { id } = req.params;
 
     const accountUser = await UserModel.findByID(parseInt(id));
-    const Province = await ProvinceModel.getAll();
+    const Tinh = await TinhModel.getAll();
     const RoleList = await RoleModel.getAll();
     res.render("admin/pages/user-edit", {
       pageTitle: "Trang chỉnh sửa",
       accountUserDetail: accountUser,
-      Province: Province,
+      Tinh:Tinh,
       RoleList: RoleList,
     });
   } catch (err) {
@@ -161,7 +162,7 @@ module.exports.UserEditPatch = async (req, res) => {
       phone: req.body.phone,
       role: req.body.role,
       status: req.body.status,
-      province: req.body.province,
+      ma_tinh: req.body.ma_tinh,
       update_by: req.account.id, // ai update
     };
 
@@ -169,12 +170,6 @@ module.exports.UserEditPatch = async (req, res) => {
     if (req.body.password && req.body.password.trim() !== "") {
       data.password = req.body.password; // hash ở trong model
     }
-
-    // Nếu có avatar mới
-    if (req.file) {
-      data.avatar = req.file.path;
-    }
-
     const updatedAccount = await UserModel.updateAccount(id, data);
 
     if (!updatedAccount) {
@@ -184,7 +179,7 @@ module.exports.UserEditPatch = async (req, res) => {
       });
     }
 
-    req.flash("success", "Cập nhật thành công thành công");
+    req.flash("success", "Cập nhật thành công");
     res.json({
       code: "success",
     });

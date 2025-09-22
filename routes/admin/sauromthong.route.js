@@ -9,6 +9,8 @@ router.get('/dulieusrt/:matinh/edit/:id', sauromthongSRTController.editDulieuSRT
 router.patch('/dulieusrt/:matinh/edit/:id', sauromthongSRTController.editPatchDulieuSRT);
 // =========== ĐIỀU TRA ======== //
 router.get('/dieutrasrt/:matinh/list', sauromthongSRTController.listDieuTraSrt)
+router.get('/api/dieutrasrt/:matinh/list', sauromthongSRTController.appListDieuTraSrt);
+
 router.get('/dieutrasrt/:matinh/create', sauromthongSRTController.createDieuTraSrt);
 router.post('/dieutrasrt/:matinh/create', sauromthongSRTController.createDieuTraSrtPost);
 router.get('/dieutrasrt/:matinh/edit/:id', sauromthongSRTController.editDieuTraSrt);

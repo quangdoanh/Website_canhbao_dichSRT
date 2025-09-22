@@ -44,17 +44,12 @@ block main
           label(class="inner-label" for="password") Mật khẩu
           input(type="password" id="password" name="password")
         .inner-group
-          label(class="inner-label" for="province") Tỉnh
-          select(id="province" name="province")
-            each item in Province
+          label(class="inner-label" for="ma_tinh") Tỉnh
+          select(id="ma_tinh" name="ma_tinh")
+            each item in Tinh
               option(
-                value=item.id
-                selected=accountUserDetail.province == item.id ? true:false) #{item.name}
-        .inner-group.inner-two-col
-          label(class="inner-label" for="avatar") Ảnh đại diện
-          div(class="inner-upload-image")
-            input(type="file" id="avatar" accept="image/*" filepond-image name="avatar"
-            image-default=(accountUserDetail.avatar || ""))
+                value=item.ma_tinh
+                selected=accountUserDetail.ma_tinh == item.ma_tinh ? true:false) #{item.ten_tinh}
         .inner-button.inner-two-col
           button Cập nhật
       .inner-back

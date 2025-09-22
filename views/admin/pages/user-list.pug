@@ -55,8 +55,7 @@ block main
             th.inner-center
               input(type="checkbox" class="inner-check" check-all)
             th.inner-center Họ tên
-            th.inner-center Ảnh 
-            th.inner-center Email
+            th Email
             th Số điện thoại
             th Nhóm quyền
             th Tạo bởi
@@ -69,11 +68,6 @@ block main
               td.inner-center
                 input(type="checkbox" class="inner-check" check-item = item.id)
               td.inner-center #{item.full_name}
-              td.inner-center
-                if item.avatar
-                  img(src=item.avatar class="inner-avatar")
-                else
-                  img(src="/images/default-avatar.png" class="inner-avatar")
               td #{item.email}
               td #{item.phone}
               td #{item.roleName}
@@ -85,7 +79,7 @@ block main
                   .badge.badge-red Tạm dừng
                 else if item.status === "initial"
                   .badge.badge-orange Khởi tạo
-              td #{item.provinceName}
+              td #{item.ten_tinh}
               td
                 .inner-buttons
                   a.inner-edit(href=`/${pathAdmin}/user/edit/${item.id}`)
