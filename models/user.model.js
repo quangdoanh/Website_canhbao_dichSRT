@@ -90,7 +90,7 @@ const UserModel = {
       status,
       created_at,
       create_by,
-      province
+      ma_tinh
     FROM users
     ${whereClause}
     ORDER BY created_at DESC
@@ -152,10 +152,9 @@ const UserModel = {
         password,
         role,
         status,
-        avatar,
         createBy,
         updateBy,
-        province,
+        ma_tinh,
     }) {
         try {
             // Hash password
@@ -164,8 +163,8 @@ const UserModel = {
 
             const query = `
       INSERT INTO users
-      (full_name, email, phone, password, role, status, avatar, create_by, update_by, created_at,province)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(),$10)
+      (full_name, email, phone, password, role, status, create_by, update_by, created_at,ma_tinh)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(),$9)
       RETURNING *
     `;
 
@@ -176,10 +175,9 @@ const UserModel = {
                 hashedPassword,
                 role,
                 status,
-                avatar,
                 createBy,
                 updateBy,
-                province,
+                ma_tinh,
             ]);
 
             return rows[0];
@@ -198,9 +196,6 @@ const UserModel = {
             ? await bcrypt.hash(data.password, 10)
             : oldAccount.password;
 
-        // Nếu không truyền avatar => giữ nguyên
-        const avatar = data.avatar ? data.avatar : oldAccount.avatar;
-
         const query = `
     UPDATE users
     SET 
@@ -208,13 +203,12 @@ const UserModel = {
       email = $2,
       phone = $3,
       role = $4,
-      avatar = $5,
-      password = $6,
-      status = $7,
-      province = $8,
-      update_by = $9,
+      password = $5,
+      status = $6,
+      ma_tinh = $7,
+      update_by = $8,
       updated_at = NOW()
-    WHERE id = $10
+    WHERE id = $9
     RETURNING *;
   `;
 
@@ -223,10 +217,9 @@ const UserModel = {
             data.email || oldAccount.email,
             data.phone || oldAccount.phone,
             data.role || oldAccount.role,
-            avatar,
             password,
             data.status || oldAccount.status,
-            data.province || oldAccount.province,
+            data.ma_tinh || oldAccount.ma_tinh,
             data.update_by || oldAccount.update_by,
             id,
         ];

@@ -348,26 +348,24 @@ if (UserCreateForm) {
       const role = event.target.role.value;
       const status = event.target.status.value;
       const password = event.target.password.value;
-      const province = event.target.province.value;
-      const avatars = filePond.avatar.getFiles();
-      let avatar = null;
-      if (avatars.length > 0) {
-        avatar = avatars[0].file;
+      const ma_tinh = event.target.ma_tinh.value;
+
+      const data ={
+        fullName:fullName,
+        email:email,
+        phone:phone,
+        role:role,
+        status:status,
+        password:password,
+        ma_tinh:ma_tinh
+
       }
-
-      const formData = new FormData();
-      formData.append("fullName", fullName);
-      formData.append("email", email);
-      formData.append("phone", phone);
-      formData.append("role", role);
-      formData.append("status", status);
-      formData.append("password", password);
-      formData.append("province", province)
-      formData.append("avatar", avatar);
-
       fetch(`/${pathAdmin}/user/create`, {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",   // THÊM DÒNG NÀY
+        },
+        body: JSON.stringify(data),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -458,26 +456,25 @@ if (UserEditForm) {
       const role = event.target.role.value;
       const status = event.target.status.value;
       const password = event.target.password.value;
-      const province = event.target.province.value;
-      const avatars = filePond.avatar.getFiles();
-      let avatar = null;
-      if (avatars.length > 0) {
-        avatar = avatars[0].file;
-      }
+      const ma_tinh = event.target.ma_tinh.value;
 
-      const formData = new FormData();
-      formData.append("fullName", fullName);
-      formData.append("email", email);
-      formData.append("phone", phone);
-      formData.append("role", role);
-      formData.append("status", status);
-      formData.append("password", password);
-      formData.append("province", province)
-      formData.append("avatar", avatar);
+      const data ={
+        fullName:fullName,
+        email:email,
+        phone:phone,
+        role:role,
+        status:status,
+        password:password,
+        ma_tinh:ma_tinh
+
+      }
 
       fetch(`/${pathAdmin}/user/edit/${id}`, {
         method: "PATCH",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",   // THÊM DÒNG NÀY
+        },
+        body: JSON.stringify(data),
       })
         .then((res) => res.json())
         .then((data) => {
@@ -1022,10 +1019,13 @@ if (toggleStatusInputs) {
         });
 
         const data = await res.json();
-        if (data.code !== "success") {
+        if (data.code === "success") {
+          window.location.reload();
+        } else {
           alert("Cập nhật thất bại: " + data.message);
-          e.target.checked = !e.target.checked; // rollback 
+          e.target.checked = !e.target.checked; // rollback
         }
+
       } catch (err) {
         alert("Có lỗi kết nối!");
         e.target.checked = !e.target.checked;
@@ -1111,15 +1111,28 @@ if (dieutraForm) {
       { rule: "required", errorMessage: "Vui lòng nhập địa chỉ cụ thể!" },
       { rule: "maxLength", value: 255, errorMessage: "Địa chỉ quá dài!" }
     ])
+    // Validate loài cây
+    .addField("#loai_cay", [
+      { rule: "required", errorMessage: "Vui lòng chọn loài cây!" },
+      { rule: "customRegexp", value: /^(thongmavi|thongnhua)$/, errorMessage: "Loài cây không hợp lệ!" }
+    ])
+    // Validate đường kính TB
+    .addField("#duong_kinh_tb", [
+      { rule: "required", errorMessage: "Vui lòng nhập đường kính TB!" },
+      { rule: "number", errorMessage: "Đường kính TB phải là số!" },
+      { rule: "minNumber", value: 0.01, errorMessage: "Đường kính TB phải > 0" }
+    ])
     .onSuccess((event) => {
       event.preventDefault();
 
       const matinh = event.target.matinh.value;
       const huyen = event.target.huyen.value;
       const xa = event.target.xa.value;
-      const sosau = parseInt(event.target.sosau.value) || 0;
-      const socay = parseInt(event.target.socay.value) || 0;
+      const sosau = event.target.sosau.value;
+      const socay = event.target.socay.value;
       const diachi = event.target.diachi.value.trim();
+      const loai_cay = event.target.loai_cay.value;
+      const duong_kinh_tb = event.target.duong_kinh_tb.value;
 
       const data = {
         matinh,
@@ -1127,10 +1140,11 @@ if (dieutraForm) {
         xa,
         sosau,
         socay,
-        dia_chi_cu_the: diachi
+        dia_chi_cu_the: diachi,
+        loai_cay,
+        duong_kinh_tb
       };
 
-      console.log(data);
 
       fetch(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/create`, {
         method: "POST",
@@ -1140,7 +1154,6 @@ if (dieutraForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            alert("Tạo mới thành công!");
             window.location.href = `/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`;
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
@@ -1187,6 +1200,12 @@ if (dieutraEditForm) {
       { rule: "required", errorMessage: "Vui lòng nhập địa chỉ cụ thể!" },
       { rule: "maxLength", value: 255, errorMessage: "Địa chỉ quá dài!" }
     ])
+    .addField("#loai_cay", [{ rule: "required", errorMessage: "Vui lòng chọn loài cây!" }])
+    .addField("#duong_kinh_tb", [
+      { rule: "required", errorMessage: "Vui lòng nhập đường kính!" },
+      { rule: "number", errorMessage: "Đường kính phải là số!" },
+      { rule: "minNumber", value: 0, errorMessage: "Đường kính phải >= 0" }
+    ])
     .onSuccess((event) => {
       event.preventDefault();
 
@@ -1197,14 +1216,17 @@ if (dieutraEditForm) {
       const sosau = event.target.sosau.value;
       const socay = event.target.socay.value;
       const diachi = event.target.diachi.value.trim();
-
+      const loai_cay = event.target.loai_cay.value;
+      const duong_kinh_tb = event.target.duong_kinh_tb.value;
       const data = {
         matinh,
         huyen,
         xa,
         sosau,
         socay,
-        dia_chi_cu_the: diachi
+        dia_chi_cu_the: diachi,
+        loai_cay,
+        duong_kinh_tb
       };
 
       console.log("Dữ liệu gửi lên server:", data);
@@ -1217,7 +1239,6 @@ if (dieutraEditForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            alert("Cập nhật thành công!");
             window.location.href = `/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`;
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");

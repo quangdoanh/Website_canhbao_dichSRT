@@ -1,0 +1,85 @@
+extends ../layouts/default.pug
+
+block main
+  h1.box-title Danh sách mất rừng
+
+    //- Section 5: Hành động & tìm kiếm
+  .section-5
+    .inner-wrap
+      .inner-change-status(
+        change-multi 
+        data-api =`/${pathAdmin}/degrad/change-multi`
+      )
+        .inner-item
+          select
+            option(value="") -- Hành động --
+            option(value="1") Đã xác nhân
+            option(value="0") Chưa xác nhận
+        .inner-item
+          button Áp dụng
+      .inner-search
+        i(class="fa-solid fa-magnifying-glass")
+        input(type="text" placeholder="Tìm kiếm" search)
+  //- Section 6: Bảng danh sách
+  .section-6
+    .table-2
+      table
+        thead
+          tr
+            th.inner-center
+              input(type="checkbox" class="inner-check" check-all)
+            th.inner-center Tỉnh
+            th.inner-center Huyện
+            th.inner-center Xã
+            th TK
+            th Khoảnh
+            th Lô
+            th Diện tích bị mất (ha)
+            th Sensor
+            th Ngày phát hiện
+            th Xác nhận
+            th Hành động
+        tbody
+            if degradList && degradList.length
+                each item, index in degradList
+                    tr
+                        td.inner-center
+                            input(type="checkbox" class="inner-check" check-item=`${item.id}`)
+                        td.inner-center= item.ten_tinh
+                        td.inner-center= item.ten_huyen
+                        td.inner-center= item.ten_xa
+                        td= item.tk
+                        td= item.khoanh
+                        td= item.lo
+                        td= item.dtich
+                        td= item.sensor
+                        td= item.acqui_dateFormat
+                        td
+                            label.switch
+                                input(
+                                type="checkbox"
+                                checked=(item.status === 1 ? true : false)
+                                toggle-status
+                                data-api=`/${pathAdmin}/degrad/change-status/${item.id}`
+                                )
+                                span.slider.round
+                        td
+                            .inner-buttons
+                                a.inner-edit(href=`/admin/degrad/detail/${item.id}`)
+                                    <i class="fa-solid fa-eye"></i>
+            else
+                tr
+                td(colspan="11" style="text-align:center; padding:10px;") Không có dữ liệu
+
+
+  //- Section 7: Pagination (bạn có thể bỏ nếu không dùng)
+  //- Section 7: Pagination
+  .section-7
+    - const start = (pagination.page - 1) * limit + 1;
+    - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+    span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+
+    select.inner-pagination(pagination name="page")
+      each val in [...Array(pagination.totalPages).keys()]
+        - const pageNum = val + 1;
+        option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}

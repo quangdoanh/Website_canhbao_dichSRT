@@ -45,7 +45,16 @@ block main
       .inner-group.inner-two-col
         label(class="inner-label" for="diachi") Địa chỉ cụ thể
         input(type="text" id="diachi" name="diachi" value=dieutra.dia_chi_cu_the)
-
+      //- Loại cây
+      .inner-group
+        label(class="inner-label" for="loai_cay") Loại cây
+        select(id="loai_cay" name="loai_cay")
+          option(value="thongmavi" selected=dieutra.loai_cay==='thongmavi') Thông Mã Vĩ
+          option(value="thongnhua" selected=dieutra.loai_cay==='thongnhua') Thông Nhựa
+      //- Đường kính trung bình
+      .inner-group
+        label(class="inner-label" for="duong_kinh_tb") Đường kính TB (cm)
+        input(type="number" step="0.01" id="duong_kinh_tb" name="duong_kinh_tb" value=dieutra.duong_kinh_tb)
       //- Button submit
       .inner-button.inner-two-col
         button(type="submit") Cập nhật

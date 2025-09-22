@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const UserAdmin = require('../../models/user.model');
+const User = require('../../models/user.model');
 const variableConfig = require('../../config/variable');
 const RoleModel = require('../../models/role.model');
 module.exports.verifyTokenUser = async (req, res, next) => {
@@ -11,16 +11,15 @@ module.exports.verifyTokenUser = async (req, res, next) => {
             const { id, email } = decoded;
 
             // Chỉ kiểm tra account có tồn tại và active
-            const existAccount = await UserAdmin.findOneByIdAndEmail(id, email);
+            const existAccount = await User.findOneByIdAndEmail(id, email);
             // const Role = await RoleModel.getRoleById(existAccount.role);
 
             // existAccount.rolename = Role.name;
             if (!existAccount) {
+                req.account = "guest";
+                res.locals.account = "guest";
                 //res.clearCookie("token");
-                return res.redirect(`/${variableConfig.pathAdmin}/account/login`);
             }
-
-            // Gán thông tin user vào request và locals (để view pug dùng được)
             req.account = existAccount;
             res.locals.account = existAccount;
         } else {

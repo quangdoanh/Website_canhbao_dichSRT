@@ -9,14 +9,12 @@ router.get('/list', adminController.list)
 router.get('/create', adminController.adminCreate)
 router.post(
     '/create',
-    upload.single('avatar'),
     accountValidate.registerPost,
     adminController.adminCreatePost
 )
 router.get('/edit/:id', adminController.adminEdit);
 router.patch(
     '/edit/:id',
-    upload.single('avatar'),
     adminController.adminEditPatch
 );
 router.delete('/delete/:id', adminController.adminDelete);

@@ -199,7 +199,6 @@ module.exports.listDieuTraSrt = async (req, res) => {
                 createdAtFormat: item.dtra_date ? moment(item.dtra_date).format("DD/MM/YYYY") : ""
             };
         });
-
         // 5. Render Pug
         res.render("admin/pages/dieu-tra-list", {
             pageTitle: "Danh sách điều tra",
@@ -212,6 +211,57 @@ module.exports.listDieuTraSrt = async (req, res) => {
         req.flash("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
     }
 };
+
+// api cho app
+module.exports.appListDieuTraSrt = async (req, res) => {
+    const { matinh } = req.params;
+
+    try {
+        // 1. Lấy tất cả bản ghi dieu_tra
+        const keyword = req.query.keyword || "";
+
+        let dieutraList;
+        if (keyword) {
+            dieutraList = await DieuTraModel.search(keyword);
+        } else {
+            dieutraList = await DieuTraModel.getAll();
+        };
+
+        // 2. Lấy danh sách tỉnh, huyện theo tỉnh
+        const listTinh = await TinhModel.getAll(); // {ma_tinh, ten_tinh}
+        const listHuyen = await HuyenModel.getByProvince(matinh); // {ma_huyen, ten_huyen}
+
+        // 3. Lấy danh sách xã theo từng huyện
+        const listXaTheoHuyen = {};
+        for (const huyen of listHuyen) {
+            const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
+            listXaTheoHuyen[huyen.ma_huyen] = dsXa; // map: ma_huyen -> danh sách xã
+        }
+
+        // 4. Map tên tỉnh, huyện, xã và định dạng ngày
+        dieutraList = dieutraList.map(item => {
+            const tinh = listTinh.find(t => String(t.ma_tinh) === String(item.ma_tinh));
+            const huyen = listHuyen.find(h => String(h.ma_huyen) === String(item.ma_huyen));
+            const xaList = listXaTheoHuyen[item.ma_huyen] || [];
+            const xa = xaList.find(x => String(x.ma_xa) === String(item.ma_xa));
+
+            return {
+                ...item,
+                ten_tinh: tinh ? tinh.ten_tinh : "",
+                ten_huyen: huyen ? huyen.ten_huyen : "",
+                ten_xa: xa ? xa.ten_xa : "",
+                createdAtFormat: item.dtra_date ? moment(item.dtra_date).format("DD/MM/YYYY") : ""
+            };
+        });
+        res.json({
+            dieutraList: dieutraList
+        })
+    } catch (err) {
+        console.error("Lỗi khi lấy danh sách điều tra:", err);
+        req.flash("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
+    }
+};
+//end api cho app
 module.exports.createDieuTraSrt = async (req, res) => {
     const { matinh } = req.params;
     let ListHuyen = await HuyenModel.getByProvince(matinh)
@@ -240,14 +290,29 @@ module.exports.createDieuTraSrt = async (req, res) => {
 
 module.exports.createDieuTraSrtPost = async (req, res) => {
     try {
-        const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the } = req.body;
+        const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb } = req.body;
         const dtra_date = new Date();
         // Lấy user_id từ session (hoặc null nếu không có)
-        const user_id = req.accout?.id || 1;
+        const user_id = req.account?.id || 0;
 
         // Ép kiểu số
-        const so_sau_non = parseInt(sosau) || 0;
-        const so_cay = parseInt(socay) || 0;
+        const so_sau_non = parseInt(sosau);
+        const so_cay = parseInt(socay);
+        const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
+        // Validate bắt buộc
+        if (!loai_cay || !["thongmavi", "thongnhua"].includes(loai_cay)) {
+            res.status(400).json({
+                code: "error",
+                message: "Loài cây không hợp lệ"
+            });
+            return;
+        }
+        if (duong_kinh_tb === undefined || isNaN(duong_kinh_tb_num) || duong_kinh_tb_num <= 0) {
+            res.status(400).json({
+                code: "error",
+                message: "Đường kính TB phải nhập và > 0"
+            });
+        }
 
         // Tạo bản ghi mới
         const newDieuTra = await DieuTraModel.create({
@@ -258,7 +323,10 @@ module.exports.createDieuTraSrtPost = async (req, res) => {
             so_cay,
             dtra_date,
             user_id,
-            dia_chi_cu_the: dia_chi_cu_the || ""
+            dia_chi_cu_the: dia_chi_cu_the,
+            loai_cay: loai_cay,
+            duong_kinh_tb: duong_kinh_tb_num
+
         });
 
         console.log("Bản ghi mới:", newDieuTra);
@@ -324,8 +392,7 @@ module.exports.editDieuTraSrt = async (req, res) => {
 module.exports.editDieuTraSrtPatch = async (req, res) => {
 
     const { id } = req.params;
-    const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the } = req.body;
-    console.log("doanh nè")
+    const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb } = req.body;
     try {
 
 
@@ -338,6 +405,7 @@ module.exports.editDieuTraSrtPatch = async (req, res) => {
         // 2. Ép kiểu số
         const so_sau_non = parseInt(sosau) || 0;
         const so_cay = parseInt(socay) || 0;
+        const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
 
         // 3. Update bản ghi (giữ nguyên user_id và dtra_date)
         const updatedDieuTra = await DieuTraModel.update(id, {
@@ -348,9 +416,12 @@ module.exports.editDieuTraSrtPatch = async (req, res) => {
             so_cay,
             dtra_date: dieutra.dtra_date,   // giữ nguyên ngày tạo
             user_id: dieutra.user_id,       // giữ nguyên user_id
-            dia_chi_cu_the: dia_chi_cu_the || dieutra.dia_chi_cu_the
+            dia_chi_cu_the: dia_chi_cu_the || dieutra.dia_chi_cu_the,
+            loai_cay: loai_cay,
+            duong_kinh_tb: duong_kinh_tb_num
         });
 
+        req.flash("success", "Cập nhật thành công")
         // 4. Trả về JSON
         res.json({ code: "success", data: updatedDieuTra });
 

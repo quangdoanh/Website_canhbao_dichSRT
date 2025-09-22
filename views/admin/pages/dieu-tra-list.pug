@@ -56,6 +56,8 @@ block main
             th.inner-center Xã
             th Số sâu non
             th Số cây
+            th Loại cây
+            th Đường kính TB
             th Ngày điều tra
             th Hành động
         tbody
@@ -70,6 +72,8 @@ block main
               td.inner-center= item.ten_xa
               td= item.so_sau_non
               td= item.so_cay
+              td= item.loai_cay === "thongmavi" ? "Thông Mã Vĩ" : item.loai_cay === "thongnhua" ? "Thông Nhựa" : ""
+              td= item.duong_kinh_tb || ""
               td= item.createdAtFormat
               td
                 .inner-buttons

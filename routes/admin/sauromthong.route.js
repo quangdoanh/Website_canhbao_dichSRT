@@ -12,11 +12,14 @@ router.get('/dulieusrt/:matinh/edit/:id', SRTController.editDulieuSRT);
 router.patch('/dulieusrt/:matinh/edit/:id', SRTController.editPatchDulieuSRT);
 // =========== ĐIỀU TRA ======== //
 router.get('/dieutrasrt/:matinh/list', SRTController.listDieuTraSrt)
+router.get('/api/dieutrasrt/:matinh/list', SRTController.appListDieuTraSrt);
+
 router.get('/dieutrasrt/:matinh/create', SRTController.createDieuTraSrt);
 router.post('/dieutrasrt/:matinh/create', SRTController.createDieuTraSrtPost);
 router.get('/dieutrasrt/:matinh/edit/:id', SRTController.editDieuTraSrt);
 router.patch('/dieutrasrt/:matinh/edit/:id', SRTController.editDieuTraSrtPatch);
 router.patch('/dieutrasrt/:matinh/delete/:id', SRTController.deleteDieuTraSrtPatch);
+
 
 // ============== MAP ========== //
 router.get('/mapsrt/:matinh/list', SRTController.listMapSrt);

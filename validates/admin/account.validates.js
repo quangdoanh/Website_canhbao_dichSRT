@@ -52,7 +52,7 @@ module.exports.registerPost = (req, res, next) => {
                 "password.number": "Mật khẩu phải chứa ít nhất một chữ số!",
                 "password.special": "Mật khẩu phải chứa ít nhất một ký tự đặc biệt!"
             }),
-        province: Joi.string().optional(),
+        ma_tinh: Joi.string().optional(),
 
     });
 

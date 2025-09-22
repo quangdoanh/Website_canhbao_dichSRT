@@ -5,7 +5,25 @@ nav.sider
       a.dashboard(href=`/${pathAdmin}/dashboard`)
         i.fa-solid.fa-gauge-high
         |  Tổng quan
+    li
+      a.dashboard.item_menu(href=`/${pathAdmin}/weather-data/list`)
+        i.fa-solid.fa-cloud
+        |  Dữ liệu thời tiết
+    li
+      div.item_menu
+        i.fa-solid.fa-tree
+        |  Quản lý mất rừng
+        i.fa-solid.fa-chevron-down.arrow
+      ul.submenu
+        li
+          div.item_city 
+            <i class="fa-solid fa-check"></i>
+             a(href=`/${pathAdmin}/degrad/list/confirmed`) Đã xác nhận
 
+        li
+          div.item_city 
+            <i class="fa-solid fa-xmark"></i>
+            a(href=`/${pathAdmin}/degrad/list/pending`) Chưa xác nhận
     //- Dropdown: Sâu róm thông
     li
       div.item_menu
