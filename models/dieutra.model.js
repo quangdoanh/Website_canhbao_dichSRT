@@ -3,9 +3,16 @@ const { softDelete } = require("./about.model");
 
 const DieuTra = {
   // Lấy tất cả bản ghi
-  async getAll() {
+  async getAllByMaTinh(ma_tinh) {
     try {
-      const result = await pool.query("SELECT * FROM dieu_tra WHERE status = 1 ORDER BY dtra_date DESC");
+      const query = `
+      SELECT *
+      FROM dieu_tra
+      WHERE status = 1 AND ma_tinh = $1
+      ORDER BY dtra_date DESC
+    `;
+      const values = [ma_tinh];
+      const result = await pool.query(query, values);
       return result.rows;
     } catch (error) {
       throw error;
@@ -98,8 +105,9 @@ const DieuTra = {
       throw error;
     }
   },
-  async search(keyword) {
-    const sql = `
+  async search(keyword, ma_tinh = null) {
+    try {
+      let sql = `
       SELECT dt.*, t.ten_tinh, h.ten_huyen, x.ten_xa
       FROM dieu_tra dt
       LEFT JOIN tinh  t ON dt.ma_tinh = t.ma_tinh
@@ -112,10 +120,23 @@ const DieuTra = {
           OR h.ten_huyen    ILIKE '%' || $1 || '%'
           OR x.ten_xa       ILIKE '%' || $1 || '%'
         )
-      ORDER BY dt.dtra_date DESC
     `;
-    const result = await pool.query(sql, [keyword]);
-    return result.rows;
+
+      const values = [keyword];
+
+      // Nếu có ma_tinh, thêm điều kiện
+      if (ma_tinh) {
+        sql += ` AND dt.ma_tinh = $2`;
+        values.push(ma_tinh);
+      }
+
+      sql += ` ORDER BY dt.dtra_date DESC`;
+
+      const result = await pool.query(sql, values);
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
   }
 };
 

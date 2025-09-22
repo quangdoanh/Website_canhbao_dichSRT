@@ -1,0 +1,39 @@
+extends ../layouts/default.pug
+
+block main
+    h1.box-title Sửa bản đồ
+  
+    .section-8
+      form#map-edit-form
+        .inner-group.inner-two-col(style="display:none")
+          label(class="inner-label" for="matinh") Mã tỉnh
+          input(type="text" id="matinh" name="matinh" value=matinh) 
+        .inner-group.inner-two-col(style="display:none")
+          label(class="inner-label" for="id") Mã id map
+          input(type="text" id="id" name="id" value=dataMap.id)
+        .inner-group.inner-two-col
+          label(class="inner-label" for="title") Thông tin
+          input(type="text" id="title" name="title" value=dataMap.thongtin)  
+        .inner-group
+          label(class="inner-label" for="map") Loại bản đồ
+          select(id="map" name="map" class="huyen")
+            option(value="Bản đồ ranh giới hành chính" selected=(dataMap.loaibando === "Bản đồ ranh giới hành chính")) Bản đồ ranh giới hành chính
+            option(value="Bản đồ hiện trạng rừng" selected=(dataMap.loaibando === "Bản đồ hiện trạng rừng")) Bản đồ hiện trạng rừng
+            option(value="Bản đồ rừng thông" selected=(dataMap.loaibando === "Bản đồ rừng thông")) Bản đồ rừng thông
+            option(value="Bản đồ các khu vực bị sâu róm thông" selected=(dataMap.loaibando === "Bản đồ các khu vực bị sâu róm thông")) Bản đồ các khu vực bị sâu róm thông
+            option(value="Bản đồ nhiệt độ" selected=(dataMap.loaibando === "Bản đồ nhiệt độ")) Bản đồ nhiệt độ
+            option(value="Bản đồ lượng mưa" selected=(dataMap.loaibando === "Bản đồ lượng mưa")) Bản đồ lượng mưa
+            option(value="Bản đồ địa hình" selected=(dataMap.loaibando === "Bản đồ địa hình")) Bản đồ địa hình
+            option(value="Bản đồ thổ nhưỡng" selected=(dataMap.loaibando === "Bản đồ thổ nhưỡng")) Bản đồ thổ nhưỡng
+            option(value="khac" selected=(dataMap.loaibando === "khac")) Bản đồ khác
+        .inner-group.inner-two-col
+          label(class="inner-label" for="file") Chọn file
+          input(type="file" id="file" name="file" accept=".rar" data-file=`${dataMap.file}`)
+          small Chỉ chọn file .rar &lt; 50MB (lớn hơn vui lòng liên hệ BQT)
+        .inner-group.inner-two-col
+          label(class="inner-label" for="content") Mô tả
+          textarea(id="content" textarea-mce name="content") #{dataMap.mota || ""}
+        .inner-button.inner-two-col
+          button Cập nhập
+      .inner-back
+        a(href=`/${pathAdmin}/sauromthong/mapsrt/${matinh}/list`) Quay lại danh sách

@@ -10,16 +10,13 @@ block main
         <i class="fa-solid fa-filter"></i> Bộ lọc
       .inner-item
         select(filter-status)
-          option(value="") Trạng thái
+          option(value="") Huyện
           option(value="active") Hoạt động
           option(value="inactive") Tạm dừng
-      .inner-item.inner-date
-        input(type="date" filter-start-date)
-        span - 
-        input(type="date" filter-end-date)
+      
       .inner-item
         select(filter-role)
-          option(value="") Nhóm quyền
+          option(value="") Xã
           option(value="1") Nhóm quyền 1
           option(value="2") Nhóm quyền 2
           option(value="3") Nhóm quyền 3
@@ -42,7 +39,7 @@ block main
       .inner-search
         i(class="fa-solid fa-magnifying-glass")
         input(type="text" placeholder="Tìm kiếm" search)
-        .inner-button-create
+      .inner-button-create
           a(href=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/create`) + Tạo mới
 
   //- Section 6: Bảng danh sách
@@ -62,6 +59,7 @@ block main
             th Ngày điều tra
             th Hành động
         tbody
+        if dieutraList.length 
           each item in dieutraList
             tr
               td.inner-center
@@ -79,6 +77,10 @@ block main
                     i(class="fa-regular fa-pen-to-square")
                   button.inner-delete(button-delete-patch data-api=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/delete/${item.id}`)
                     i(class="fa-regular fa-trash-can")
+        else
+          tr
+            td(colspan=9 style="text-align:center") Không có dữ liệu
+
   //- Section 7: Pagination
   .section-7
     span.inner-label Hiển thị 1 - 3 của 3

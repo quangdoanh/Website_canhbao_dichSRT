@@ -1,4 +1,4 @@
-const SauRomThongModel = require('../../models/sau_rom_thong.model');
+const BenhHaiKeo = require('../../models/benhhaikeo.model');
 const HuyenModel = require('../../models/huyen.model');
 const XaModel = require('../../models/xa.model')
 const TinhModel = require("../../models/tinh.model");
@@ -6,42 +6,27 @@ const DieuTraModel = require('../../models/dieutra.model');
 const moment = require("moment");
 const uploadMapModel = require('../../models/upload_map.model');
 
-module.exports.listDulieuSRT = async (req, res) => {
-    const { matinh } = req.params; // lấy từ URL
-    let listDulieuSRT = []
+module.exports.listDulieuBHLK = async (req, res) => {
+    console.log("BHLK")
+    const { matinh } = req.params;
+    let listDulieuBHLK = []
     try {
-
-        // Phân trang 
         const limit = 15;
         let page = 1;
 
         if (req.query.page) {
             const pageCurrent = parseInt(req.query.page)
-            if (pageCurrent > 0) {
-                page = pageCurrent
-            }
+            if (pageCurrent > 0) page = pageCurrent
         }
         const skip = (page - 1) * limit
+        const TotalDuLieuBHLK = await BenhHaiKeo.getAllByMaTinh(matinh);
+        const totalPage = Math.ceil(TotalDuLieuBHLK.length / limit);
 
-        const TotalDuLieuSRT = await SauRomThongModel.getAllByMaTinh(matinh);
+        const pagination = { skip, TotalDuLieuBHLK, totalPage }
+        const data = await BenhHaiKeo.findByMaTinh(matinh, skip, limit);
 
-        console.log("Tổng dữ liệu:", TotalDuLieuSRT.length)
-
-        const totalPage = Math.ceil(TotalDuLieuSRT.length / limit);
-
-        let pagination = {
-            skip: skip,
-            TotalDuLieuSRT: TotalDuLieuSRT,
-            totalPage: totalPage
-        }
-
-        const data = await SauRomThongModel.findByMaTinh(matinh, skip, limit);
-
-        //console.log("Tổng dữ liệu:", pagination)
-
-        listDulieuSRT = data.map(item => ({
+        listDulieuBHLK = data.map(item => ({
             id: item.id,
-            // diadiem_dieutra: item.dieutra || "",
             tinh: item.tinh,
             huyen: item.huyen,
             xa: item.xa,
@@ -53,138 +38,88 @@ module.exports.listDulieuSRT = async (req, res) => {
             namtr: item.namtr,
             churung: item.churung
         }))
-        console.log("Tổng dữ liệu:", listDulieuSRT.length)
-        res.render("admin/pages/dulieuSRT-list", {
-            pageTitle: "Dữ liệu SRT",
-            listDulieuSRT: listDulieuSRT,
-            pagination: pagination,
-            matinh: matinh
+        res.render("admin/pages/dulieuBHLK-list", {
+            pageTitle: "Dữ liệu BHLK",
+            listDulieuBHLK,
+            pagination,
+            matinh
         });
     } catch (err) {
         console.error(err);
         res.status(500).send("Lỗi server");
     }
-
-
-
 }
-module.exports.editDulieuSRT = async (req, res) => {
 
+module.exports.editDulieuBHLK = async (req, res) => {
     const { matinh, id } = req.params;
-    let dataSRT
+    let dataBHLK
     try {
-        dataSRT = await SauRomThongModel.findById(id);
-
-        // hiện tại sauromthongmodel chưa có địa điểm điều tra
-        //dataSRT.diadiem_dieutra = ""
-
-        // console.log("dataSRT", dataSRT)
-    } catch (error) {
-        console.error(err);
-        res.status(500).send("Lỗi server");
-    }
-
-
-
-    res.render("admin/pages/dulieuSRT-edit", {
-        pageTitle: "Cập nhật Dữ liệu SRT",
-        dataSRT: dataSRT,
-        matinh: matinh
-
-
-    });
-}
-module.exports.editPatchDulieuSRT = async (req, res) => {
-
-    const { id } = req.params;
-    console.log(req.body)
-    try {
-
-        if (req.body.phancap != '3') {
-            console.log('khác 3')
-            if (await SauRomThongModel.deletewebById(id) && await SauRomThongModel.updatePhanCapById(id, req.body.phancap)) {
-                res.json({
-                    code: "success",
-                    message: "Sửa thành công"
-                })
-                console.log("srt da xoa:", await SauRomThongModel.findById(id))
-            } else {
-                res.json({
-                    code: "error",
-                    message: "Sửa thất bại"
-                })
-            }
-
-        }
-
-    } catch (error) {
-        console.error(err);
-        res.status(500).send("Lỗi server");
-    }
-
-
-}
-module.exports.createDulieuSRT = async (req, res) => {
-    const { matinh } = req.params;
-    let ListXaTheoHuyen = [];
-    let ListHuyen = []
-    try {
-
-
-        ListHuyen = await HuyenModel.getByProvince(matinh)
-        console.log("huyện", ListHuyen)
-
-
-        for (const huyen of ListHuyen) {
-            // Lấy xã theo mã huyện
-            const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
-
-            ListXaTheoHuyen.push({
-                huyen: huyen.ma_huyen,
-                dsXa: dsXa
-            });
-        }
-
+        dataBHLK = await BenhHaiKeo.findById(id);
     } catch (err) {
         console.error(err);
         res.status(500).send("Lỗi server");
     }
 
-    res.render("admin/pages/dulieuSRT-create", {
-        pageTitle: "Tạo Dữ liệu SRT",
-        ListHuyen: ListHuyen,
-        ListXaTheoHuyen: ListXaTheoHuyen,
-        matinh: matinh
-
+    res.render("admin/pages/dulieuBHLK-edit", {
+        pageTitle: "Cập nhật Dữ liệu BHLK",
+        dataBHLK,
+        matinh
     });
 }
 
-module.exports.listDieuTraSrt = async (req, res) => {
-    const { matinh } = req.params;
-
+module.exports.editPatchDulieuBHLK = async (req, res) => {
+    const { id } = req.params;
     try {
-        // 1. Lấy tất cả bản ghi dieu_tra
+        if (req.body.phancap != '3') {
+            if (await BenhHaiKeo.deletewebById(id) && await BenhHaiKeo.updatePhanCapById(id, req.body.phancap)) {
+                res.json({ code: "success", message: "Sửa thành công" })
+            } else {
+                res.json({ code: "error", message: "Sửa thất bại" })
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+}
+
+module.exports.createDulieuBHLK = async (req, res) => {
+    const { matinh } = req.params;
+    let ListXaTheoHuyen = [];
+    let ListHuyen = []
+    try {
+        ListHuyen = await HuyenModel.getByProvince(matinh)
+        for (const huyen of ListHuyen) {
+            const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
+            ListXaTheoHuyen.push({ huyen: huyen.ma_huyen, dsXa });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+
+    res.render("admin/pages/dulieuBHLK-create", {
+        pageTitle: "Tạo Dữ liệu BHLK",
+        ListHuyen,
+        ListXaTheoHuyen,
+        matinh
+    });
+}
+
+// ===================== DIỄU TRA =====================
+module.exports.listDieuTraBHLK = async (req, res) => {
+    const { matinh } = req.params;
+    try {
         const keyword = req.query.keyword || "";
+        let dieutraList = keyword ? await DieuTraModel.search(keyword, matinh) : await DieuTraModel.getAllByMaTinh(matinh);
 
-        let dieutraList;
-        if (keyword) {
-            dieutraList = await DieuTraModel.search(keyword, matinh);
-        } else {
-            dieutraList = await DieuTraModel.getAllByMaTinh(matinh);
-        };
-
-        // 2. Lấy danh sách tỉnh, huyện theo tỉnh
-        const listTinh = await TinhModel.getAll(); // {ma_tinh, ten_tinh}
-        const listHuyen = await HuyenModel.getByProvince(matinh); // {ma_huyen, ten_huyen}
-
-        // 3. Lấy danh sách xã theo từng huyện
+        const listTinh = await TinhModel.getAll();
+        const listHuyen = await HuyenModel.getByProvince(matinh);
         const listXaTheoHuyen = {};
         for (const huyen of listHuyen) {
-            const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
-            listXaTheoHuyen[huyen.ma_huyen] = dsXa; // map: ma_huyen -> danh sách xã
+            listXaTheoHuyen[huyen.ma_huyen] = await XaModel.getByDistrict(huyen.ma_huyen);
         }
 
-        // 4. Map tên tỉnh, huyện, xã và định dạng ngày
         dieutraList = dieutraList.map(item => {
             const tinh = listTinh.find(t => String(t.ma_tinh) === String(item.ma_tinh));
             const huyen = listHuyen.find(h => String(h.ma_huyen) === String(item.ma_huyen));
@@ -200,56 +135,41 @@ module.exports.listDieuTraSrt = async (req, res) => {
             };
         });
 
-        // 5. Render Pug
         res.render("admin/pages/dieu-tra-list", {
             pageTitle: "Danh sách điều tra",
             matinh,
             dieutraList
         });
-
     } catch (err) {
-        console.error("Lỗi khi lấy danh sách điều tra:", err);
+        console.error(err);
         req.flash("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
     }
-};
-module.exports.createDieuTraSrt = async (req, res) => {
+}
+
+module.exports.createDieuTraBHLK = async (req, res) => {
     const { matinh } = req.params;
-    let ListHuyen = await HuyenModel.getByProvince(matinh)
-    let ListXaTheoHuyen = [];
-
+    const ListHuyen = await HuyenModel.getByProvince(matinh)
+    const ListXaTheoHuyen = [];
     for (const huyen of ListHuyen) {
-        // Lấy xã theo mã huyện
         const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
-
-        //     console.log(`Huyện: ${huyen.ten_huyen} (${huyen.ma_huyen})`);
-        // console.log("Danh sách xã:", dsXa);
-
-        ListXaTheoHuyen.push({
-            huyen: huyen.ma_huyen,
-            dsXa: dsXa
-        });
+        ListXaTheoHuyen.push({ huyen: huyen.ma_huyen, dsXa });
     }
-
     res.render("admin/pages/dieu-tra-create", {
-        pageTitle: "Tạo Dữ liệu ",
-        matinh: matinh,
-        ListHuyen: ListHuyen,
-        ListXaTheoHuyen: ListXaTheoHuyen
+        pageTitle: "Tạo Dữ liệu",
+        matinh,
+        ListHuyen,
+        ListXaTheoHuyen
     });
 }
 
-module.exports.createDieuTraSrtPost = async (req, res) => {
+module.exports.createDieuTraBHLKPost = async (req, res) => {
     try {
         const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the } = req.body;
         const dtra_date = new Date();
-        // Lấy user_id từ session (hoặc null nếu không có)
         const user_id = req.accout?.id || 1;
-
-        // Ép kiểu số
         const so_sau_non = parseInt(sosau) || 0;
         const so_cay = parseInt(socay) || 0;
 
-        // Tạo bản ghi mới
         const newDieuTra = await DieuTraModel.create({
             ma_tinh: matinh,
             ma_huyen: huyen,
@@ -261,10 +181,7 @@ module.exports.createDieuTraSrtPost = async (req, res) => {
             dia_chi_cu_the: dia_chi_cu_the || ""
         });
 
-        console.log("Bản ghi mới:", newDieuTra);
-        // Thông báo thành công
         req.flash("success", "Tạo mới thành công");
-        // Trả về JSON bao gồm dtra_date
         res.json({ code: "success", data: newDieuTra });
     } catch (err) {
         console.error(err);
@@ -272,8 +189,7 @@ module.exports.createDieuTraSrtPost = async (req, res) => {
     }
 }
 
-
-module.exports.editDieuTraSrt = async (req, res) => {
+module.exports.editDieuTraBHLK = async (req, res) => {
     try {
         const { matinh, id } = req.params;
 
@@ -281,7 +197,7 @@ module.exports.editDieuTraSrt = async (req, res) => {
         const dieutra = await DieuTraModel.getById(id);
         if (!dieutra) {
             req.flash("error", "Không tìm thấy bản ghi!");
-            return res.redirect(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`);
+            return res.redirect(`/${pathAdmin}/benhhailakeo/dieutraBHLK/${matinh}/list`);
         }
 
         // 2. Lấy tên huyện và xã để hiển thị
@@ -321,7 +237,7 @@ module.exports.editDieuTraSrt = async (req, res) => {
 };
 
 
-module.exports.editDieuTraSrtPatch = async (req, res) => {
+module.exports.editDieuTraBHLKPatch = async (req, res) => {
 
     const { id } = req.params;
     const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the } = req.body;
@@ -360,7 +276,7 @@ module.exports.editDieuTraSrtPatch = async (req, res) => {
     }
 };
 
-module.exports.deleteDieuTraSrtPatch = async (req, res) => {
+module.exports.deleteDieuTraBHLKPatch = async (req, res) => {
 
     console.log("Chạy vào đây")
     try {
@@ -382,120 +298,58 @@ module.exports.deleteDieuTraSrtPatch = async (req, res) => {
     }
 };
 
-module.exports.listMapSrt = async (req, res) => {
+// ===================== MAP =====================
+module.exports.listMapBHLK = async (req, res) => {
     const { matinh } = req.params;
     let mapList = []
-    try {
-        mapList = await uploadMapModel.getAll(matinh)
-    } catch (error) {
-        console.error(err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
-    }
-
-    res.render("admin/pages/map-list", {
-        pageTitle: "Danh sách  bản đồ",
-        mapList: mapList,
-        matinh: matinh
-    });
+    try { mapList = await uploadMapModel.getAll(matinh) } catch (err) { console.error(err); res.status(500).json({ code: "error", message: "Lỗi server!" }); }
+    res.render("admin/pages/map-list", { pageTitle: "Danh sách bản đồ", mapList, matinh });
 }
-module.exports.createMapSrt = async (req, res) => {
+
+module.exports.createMapBHLK = async (req, res) => {
     const { matinh } = req.params;
-
-    res.render("admin/pages/map-create", {
-        pageTitle: " Tạo bản đồ",
-        matinh: matinh
-    });
+    res.render("admin/pages/map-create", { pageTitle: "Tạo bản đồ", matinh });
 }
-module.exports.createPostMapSrt = async (req, res) => {
+
+module.exports.createPostMapBHLK = async (req, res) => {
     try {
         const { matinh } = req.params;
         const { thongtin, map, mota } = req.body;
-
-        console.log(thongtin, map, mota)
         const file = req.file ? req.file.path : null;
 
-        const newMap = await uploadMapModel.create({
-            thongtin,
-            loaibando: map,
-            file,
-            mota,
-            ma_tinh: matinh
-        });
+        const newMap = await uploadMapModel.create({ thongtin, loaibando: map, file, mota, ma_tinh: matinh });
 
-        console.log(matinh)
-        console.log(newMap)
-
-        return res.json({
-            code: "success",
-            message: "Thêm dữ liệu thành công",
-            data: newMap
-        });
+        return res.json({ code: "success", message: "Thêm dữ liệu thành công", data: newMap });
     } catch (err) {
-        console.error("Upload error:", err);
-        return res.status(500).json({
-            code: "error",
-            message: "Lỗi server: " + err.message,
-        });
+        console.error(err);
+        return res.status(500).json({ code: "error", message: "Lỗi server: " + err.message });
     }
-};
+}
 
-module.exports.editMapSrt = async (req, res) => {
+module.exports.editMapBHLK = async (req, res) => {
     const { matinh, id } = req.params
     let dataMap;
-    try {
-        dataMap = await uploadMapModel.findById(id)
-        console.log("FILE:", dataMap.file)
+    try { dataMap = await uploadMapModel.findById(id) } catch (err) { console.error(err); return res.status(500).json({ code: "error", message: "Lỗi server: " + err.message }); }
 
-
-    } catch (error) {
-        console.error("Upload error:", err);
-        return res.status(500).json({
-            code: "error",
-            message: "Lỗi server: " + err.message,
-        });
-    }
-
-    res.render("admin/pages/map-edit", {
-        pageTitle: " Sửa  bản đồ",
-        matinh: matinh,
-        dataMap: dataMap
-    });
+    res.render("admin/pages/map-edit", { pageTitle: "Sửa bản đồ", matinh, dataMap });
 }
-module.exports.editPatchMapSrt = async (req, res) => {
+
+module.exports.editPatchMapBHLK = async (req, res) => {
     try {
         const { id } = req.params;
         const { thongtin, map, mota, file } = req.body;
-
-        const updatedFields = {
-            thongtin,
-            loaibando: map,
-            mota,
-            file: req.file ? req.file.path : file // file luôn có giá trị
-        };
-
+        const updatedFields = { thongtin, loaibando: map, mota, file: req.file ? req.file.path : file };
         const updatedMap = await uploadMapModel.updateById(id, updatedFields);
 
-        if (!updatedMap) {
-            return res.status(404).json({
-                code: "error",
-                message: "Không tìm thấy bản ghi để cập nhật"
-            });
-        }
-
-        return res.json({
-            code: "success",
-            message: "Cập nhật dữ liệu thành công",
-            data: updatedMap
-        });
+        if (!updatedMap) return res.status(404).json({ code: "error", message: "Không tìm thấy bản ghi để cập nhật" });
+        return res.json({ code: "success", message: "Cập nhật dữ liệu thành công", data: updatedMap });
     } catch (err) {
-        console.error("Update error:", err);
-        return res.status(500).json({
-            code: "error",
-            message: "Lỗi server: " + err.message,
-        });
+        console.error(err);
+        return res.status(500).json({ code: "error", message: "Lỗi server: " + err.message });
     }
 }
-module.exports.deleteMapSrt = async (req, res) => {
+
+module.exports.deleteMapBHLK = async (req, res) => {
 
 
     try {

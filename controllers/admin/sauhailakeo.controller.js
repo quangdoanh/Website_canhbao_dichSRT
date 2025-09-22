@@ -1,4 +1,4 @@
-const SauRomThongModel = require('../../models/sau_rom_thong.model');
+const SauHaiLaKeo = require('../../models/sau_hai_lakeo.model');
 const HuyenModel = require('../../models/huyen.model');
 const XaModel = require('../../models/xa.model')
 const TinhModel = require("../../models/tinh.model");
@@ -6,9 +6,10 @@ const DieuTraModel = require('../../models/dieutra.model');
 const moment = require("moment");
 const uploadMapModel = require('../../models/upload_map.model');
 
-module.exports.listDulieuSRT = async (req, res) => {
+module.exports.listDulieuSHLK = async (req, res) => {
+    console.log("BHLK")
     const { matinh } = req.params; // lấy từ URL
-    let listDulieuSRT = []
+    let listDulieuSHLK = []
     try {
 
         // Phân trang 
@@ -23,23 +24,24 @@ module.exports.listDulieuSRT = async (req, res) => {
         }
         const skip = (page - 1) * limit
 
-        const TotalDuLieuSRT = await SauRomThongModel.getAllByMaTinh(matinh);
+        const TotalDuLieuSHLK = await SauHaiLaKeo.getAllByMaTinh(matinh);
 
-        console.log("Tổng dữ liệu:", TotalDuLieuSRT.length)
 
-        const totalPage = Math.ceil(TotalDuLieuSRT.length / limit);
+        console.log("Tổng dữ liệu:", TotalDuLieuSHLK.length)
+
+        const totalPage = Math.ceil(TotalDuLieuSHLK.length / limit);
 
         let pagination = {
             skip: skip,
-            TotalDuLieuSRT: TotalDuLieuSRT,
+            TotalDuLieuSHLK: TotalDuLieuSHLK,
             totalPage: totalPage
         }
 
-        const data = await SauRomThongModel.findByMaTinh(matinh, skip, limit);
+        const data = await SauHaiLaKeo.findByMaTinh(matinh, skip, limit);
 
         //console.log("Tổng dữ liệu:", pagination)
 
-        listDulieuSRT = data.map(item => ({
+        listDulieuSHLK = data.map(item => ({
             id: item.id,
             // diadiem_dieutra: item.dieutra || "",
             tinh: item.tinh,
@@ -53,10 +55,10 @@ module.exports.listDulieuSRT = async (req, res) => {
             namtr: item.namtr,
             churung: item.churung
         }))
-        console.log("Tổng dữ liệu:", listDulieuSRT.length)
-        res.render("admin/pages/dulieuSRT-list", {
-            pageTitle: "Dữ liệu SRT",
-            listDulieuSRT: listDulieuSRT,
+        console.log("Tổng dữ liệu:", listDulieuSHLK.length)
+        res.render("admin/pages/dulieuSHLK-list", {
+            pageTitle: "Dữ liệu SHLK",
+            listDulieuSHLK: listDulieuSHLK,
             pagination: pagination,
             matinh: matinh
         });
@@ -68,17 +70,17 @@ module.exports.listDulieuSRT = async (req, res) => {
 
 
 }
-module.exports.editDulieuSRT = async (req, res) => {
+module.exports.editDulieuSHLK = async (req, res) => {
 
     const { matinh, id } = req.params;
-    let dataSRT
+    let dataSHLK
     try {
-        dataSRT = await SauRomThongModel.findById(id);
+        dataSHLK = await SauHaiLaKeo.findById(id);
 
-        // hiện tại sauromthongmodel chưa có địa điểm điều tra
-        //dataSRT.diadiem_dieutra = ""
+        // hiện tại SauHaiLaKeo chưa có địa điểm điều tra
+        //dataSHLK.diadiem_dieutra = ""
 
-        // console.log("dataSRT", dataSRT)
+        // console.log("dataSHLK", dataSHLK)
     } catch (error) {
         console.error(err);
         res.status(500).send("Lỗi server");
@@ -86,15 +88,15 @@ module.exports.editDulieuSRT = async (req, res) => {
 
 
 
-    res.render("admin/pages/dulieuSRT-edit", {
-        pageTitle: "Cập nhật Dữ liệu SRT",
-        dataSRT: dataSRT,
+    res.render("admin/pages/dulieuSHLK-edit", {
+        pageTitle: "Cập nhật Dữ liệu SHLK",
+        dataSHLK: dataSHLK,
         matinh: matinh
 
 
     });
 }
-module.exports.editPatchDulieuSRT = async (req, res) => {
+module.exports.editPatchDulieuSHLK = async (req, res) => {
 
     const { id } = req.params;
     console.log(req.body)
@@ -102,12 +104,12 @@ module.exports.editPatchDulieuSRT = async (req, res) => {
 
         if (req.body.phancap != '3') {
             console.log('khác 3')
-            if (await SauRomThongModel.deletewebById(id) && await SauRomThongModel.updatePhanCapById(id, req.body.phancap)) {
+            if (await SauHaiLaKeo.deletewebById(id) && await SauHaiLaKeo.updatePhanCapById(id, req.body.phancap)) {
                 res.json({
                     code: "success",
                     message: "Sửa thành công"
                 })
-                console.log("srt da xoa:", await SauRomThongModel.findById(id))
+                console.log("SHLK da xoa:", await SauHaiLaKeo.findById(id))
             } else {
                 res.json({
                     code: "error",
@@ -124,7 +126,7 @@ module.exports.editPatchDulieuSRT = async (req, res) => {
 
 
 }
-module.exports.createDulieuSRT = async (req, res) => {
+module.exports.createDulieuSHLK = async (req, res) => {
     const { matinh } = req.params;
     let ListXaTheoHuyen = [];
     let ListHuyen = []
@@ -150,8 +152,8 @@ module.exports.createDulieuSRT = async (req, res) => {
         res.status(500).send("Lỗi server");
     }
 
-    res.render("admin/pages/dulieuSRT-create", {
-        pageTitle: "Tạo Dữ liệu SRT",
+    res.render("admin/pages/dulieuSHLK-create", {
+        pageTitle: "Tạo Dữ liệu SHLK",
         ListHuyen: ListHuyen,
         ListXaTheoHuyen: ListXaTheoHuyen,
         matinh: matinh
@@ -159,7 +161,7 @@ module.exports.createDulieuSRT = async (req, res) => {
     });
 }
 
-module.exports.listDieuTraSrt = async (req, res) => {
+module.exports.listDieuTraSHLK = async (req, res) => {
     const { matinh } = req.params;
 
     try {
@@ -212,7 +214,7 @@ module.exports.listDieuTraSrt = async (req, res) => {
         req.flash("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
     }
 };
-module.exports.createDieuTraSrt = async (req, res) => {
+module.exports.createDieuTraSHLK = async (req, res) => {
     const { matinh } = req.params;
     let ListHuyen = await HuyenModel.getByProvince(matinh)
     let ListXaTheoHuyen = [];
@@ -238,7 +240,7 @@ module.exports.createDieuTraSrt = async (req, res) => {
     });
 }
 
-module.exports.createDieuTraSrtPost = async (req, res) => {
+module.exports.createDieuTraSHLKPost = async (req, res) => {
     try {
         const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the } = req.body;
         const dtra_date = new Date();
@@ -273,7 +275,7 @@ module.exports.createDieuTraSrtPost = async (req, res) => {
 }
 
 
-module.exports.editDieuTraSrt = async (req, res) => {
+module.exports.editDieuTraSHLK = async (req, res) => {
     try {
         const { matinh, id } = req.params;
 
@@ -281,7 +283,7 @@ module.exports.editDieuTraSrt = async (req, res) => {
         const dieutra = await DieuTraModel.getById(id);
         if (!dieutra) {
             req.flash("error", "Không tìm thấy bản ghi!");
-            return res.redirect(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`);
+            return res.redirect(`/${pathAdmin}/sauhailekao/dieutraSHLK/${matinh}/list`);
         }
 
         // 2. Lấy tên huyện và xã để hiển thị
@@ -321,7 +323,7 @@ module.exports.editDieuTraSrt = async (req, res) => {
 };
 
 
-module.exports.editDieuTraSrtPatch = async (req, res) => {
+module.exports.editDieuTraSHLKPatch = async (req, res) => {
 
     const { id } = req.params;
     const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the } = req.body;
@@ -360,7 +362,7 @@ module.exports.editDieuTraSrtPatch = async (req, res) => {
     }
 };
 
-module.exports.deleteDieuTraSrtPatch = async (req, res) => {
+module.exports.deleteDieuTraSHLKPatch = async (req, res) => {
 
     console.log("Chạy vào đây")
     try {
@@ -382,7 +384,7 @@ module.exports.deleteDieuTraSrtPatch = async (req, res) => {
     }
 };
 
-module.exports.listMapSrt = async (req, res) => {
+module.exports.listMapSHLK = async (req, res) => {
     const { matinh } = req.params;
     let mapList = []
     try {
@@ -398,7 +400,7 @@ module.exports.listMapSrt = async (req, res) => {
         matinh: matinh
     });
 }
-module.exports.createMapSrt = async (req, res) => {
+module.exports.createMapSHLK = async (req, res) => {
     const { matinh } = req.params;
 
     res.render("admin/pages/map-create", {
@@ -406,7 +408,7 @@ module.exports.createMapSrt = async (req, res) => {
         matinh: matinh
     });
 }
-module.exports.createPostMapSrt = async (req, res) => {
+module.exports.createPostMapSHLK = async (req, res) => {
     try {
         const { matinh } = req.params;
         const { thongtin, map, mota } = req.body;
@@ -439,7 +441,7 @@ module.exports.createPostMapSrt = async (req, res) => {
     }
 };
 
-module.exports.editMapSrt = async (req, res) => {
+module.exports.editMapSHLK = async (req, res) => {
     const { matinh, id } = req.params
     let dataMap;
     try {
@@ -461,7 +463,7 @@ module.exports.editMapSrt = async (req, res) => {
         dataMap: dataMap
     });
 }
-module.exports.editPatchMapSrt = async (req, res) => {
+module.exports.editPatchMapSHLK = async (req, res) => {
     try {
         const { id } = req.params;
         const { thongtin, map, mota, file } = req.body;
@@ -495,7 +497,7 @@ module.exports.editPatchMapSrt = async (req, res) => {
         });
     }
 }
-module.exports.deleteMapSrt = async (req, res) => {
+module.exports.deleteMapSHLK = async (req, res) => {
 
 
     try {

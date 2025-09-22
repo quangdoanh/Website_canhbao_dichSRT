@@ -33,7 +33,10 @@ const loadWFSByCondition = (layerName, conditions) => {
   if (wfsLayer) map.removeLayer(wfsLayer);
   let cqlFilter = `xa='${conditions.xa}' AND tk='${conditions.tk}' AND khoanh='${conditions.khoanh}' AND lo='${conditions.lo}'`;
 
+  console.log(cqlFilter)
+
   const url = `${wfsUrl}?service=WFS&version=1.1.0&request=GetFeature&typeName=iTwood_Workspace:${layerName}&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cqlFilter)}`;
+
 
   fetch(url)
     .then(res => res.json())
@@ -63,11 +66,15 @@ const loadWFSByCondition = (layerName, conditions) => {
 
         const content = `
           <div class="info-popup">
-            <table>
+            <table style="font-family: 'Times New Roman', Times, serif;">
               <tr><th>Xã</th><td>${props.xa || ''}</td></tr>
               <tr><th>Tiểu Khu</th><td>${props.tk || ''}</td></tr>
               <tr><th>Khoanh</th><td>${props.khoanh || ''}</td></tr>
               <tr><th>Lô</th><td>${props.lo || ''}</td></tr>
+              <tr><th>Diện tích</th><td>${props.dtich || ''}</td></tr>
+              <tr><th>Loại rừng</th><td>${props.sldlr || ''}</td></tr>
+              <tr><th>Năm trồng</th><td>${props.namtr || ''}</td></tr>
+              <tr><th>Chủ rừng</th><td>${props.churung || ''}</td></tr>
             </table>
           </div>
         `;
@@ -84,10 +91,6 @@ const loadWFSByCondition = (layerName, conditions) => {
 };
 
 
-
-// load mặc định khi vào trang web
-loadWMS("Sauromthong_6tinh");
-
 /* COMBOBOX LOAD MAP WMS */
 
 const comboBoxMap = document.getElementById("layerSelect")
@@ -103,7 +106,6 @@ comboBoxMap.addEventListener("change", (e) => {
     // Gắn thêm (hoặc thay thế) query param bando
     url.searchParams.set("bando", selected);
 
-    // Cập nhật URL trên trình duyệt (không reload trang)
     window.location.href = url;
 
     console.log("URL mới:", url.toString());
@@ -112,19 +114,25 @@ comboBoxMap.addEventListener("change", (e) => {
 
 });
 
-/* KHI LOAD LẠI COMBOBOX LẤY THEO URL */
+/* KHI LOAD LẠI LẤY THEO COMBOBOX */
 window.addEventListener("DOMContentLoaded", () => {
   const url = new URL(window.location.href);
-  const bando = url.searchParams.get("bando");
+  let bando = url.searchParams.get("bando");
 
-  if (bando) {
-    // Gán giá trị vào select
-    comboBoxMap.value = bando;
-
-    // Gọi loadWMS luôn
-    loadWMS(bando);
+  if (!bando) {
+    // Nếu chưa có query param → lấy giá trị mặc định từ combobox
+    bando = comboBoxMap.value;
+    url.searchParams.set("bando", bando);
+    window.location.href = url
   }
+
+  // Gán giá trị vào combobox
+  comboBoxMap.value = bando;
+
+  // Gọi loadWMS theo combobox
+  loadWMS(bando);
 });
+;
 
 /*  FIND WFS THEO ITEM TRONG BANG THEO COMBOBOX  */
 document.querySelectorAll('.info-table tbody tr').forEach(row => {

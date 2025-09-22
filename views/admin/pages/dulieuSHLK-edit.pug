@@ -1,56 +1,56 @@
 extends ../layouts/default.pug
 block main
-    h1.box-title Chỉnh sửa Du lieu SRT
+    h1.box-title Chỉnh sửa Du lieu 
 
     .section-8
-      form#srt-edit-form
+      form#SHLK-edit-form
         .inner-group(style="display: none;")
           label(class="inner-label" for="id") Id
-          input(type="text" id="id" name="id" value=dataSRT.id)
+          input(type="text" id="id" name="id" value=dataSHLK.id)
         .inner-group
           label(class="inner-label" for="huyenDisabled") Huyện
           select(id="huyenDisabled" disabled)
-            option(value=dataSRT.mahuyen selected) #{dataSRT.huyen}
+            option(value=dataSHLK.mahuyen selected) #{dataSHLK.huyen}
           // Hidden input để validate & submit
-          input(type="hidden" id="huyen" name="huyen" value=dataSRT.mahuyen)
+          input(type="hidden" id="huyen" name="huyen" value=dataSHLK.mahuyen)
 
         .inner-group
           label(class="inner-label" for="xaDisabled") Xã
           select(id="xaDisabled" disabled)
-            option(value=dataSRT.maxa selected) #{dataSRT.xa}
-          input(type="hidden" id="xa" name="xa" value=dataSRT.maxa)
+            option(value=dataSHLK.maxa selected) #{dataSHLK.xa}
+          input(type="hidden" id="xa" name="xa" value=dataSHLK.maxa)
 
         .inner-group(style="display:none")
           label(class="inner-label" for="matinh") Id_tỉnh
-          input(type="text" id="matinh" name="matinh" value=dataSRT.matinh readonly)
+          input(type="text" id="matinh" name="matinh" value=dataSHLK.matinh readonly)
 
         .inner-group
           label(class="inner-label" for="tk") Tiểu khu
-          input(type="text" id="tk" name="tk" value=dataSRT.tk readonly)
+          input(type="text" id="tk" name="tk" value=dataSHLK.tk readonly)
 
         .inner-group
           label(class="inner-label" for="khoanh") Khoanh
-          input(type="text" id="khoanh" name="khoanh" value=dataSRT.khoanh readonly)
+          input(type="text" id="khoanh" name="khoanh" value=dataSHLK.khoanh readonly)
 
         .inner-group
           label(class="inner-label" for="lo") Lô
-          input(type="text" id="lo" name="lo" value=dataSRT.lo readonly)
+          input(type="text" id="lo" name="lo" value=dataSHLK.lo readonly)
 
         .inner-group
           label(class="inner-label" for="dtich") Diện tích
-          input(type="text" id="dtich" name="dtich" value=dataSRT.dtich readonly)
+          input(type="text" id="dtich" name="dtich" value=dataSHLK.dtich readonly)
 
         .inner-group
           label(class="inner-label" for="loairung") Loại rừng
-          input(type="text" id="loairung" name="loairung" value=dataSRT.sldlr readonly)
+          input(type="text" id="loairung" name="loairung" value=dataSHLK.sldlr readonly)
 
         .inner-group
           label(class="inner-label" for="namtr") Năm trồng
-          input(type="text" id="namtr" name="namtr" value=dataSRT.namtr readonly)
+          input(type="text" id="namtr" name="namtr" value=dataSHLK.namtr readonly)
 
         .inner-group
           label(class="inner-label" for="churung") Chủ rừng
-          input(type="text" id="churung" name="churung" value=dataSRT.churung readonly)
+          input(type="text" id="churung" name="churung" value=dataSHLK.churung readonly)
 
         .inner-group
           label(class="inner-label" for="phancap") Phân cấp
@@ -63,4 +63,4 @@ block main
           button Cập nhật
 
       .inner-back
-        a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/list`) Quay lại danh sách
+        a(href=`/${pathAdmin}/sauhailakeo/dulieuSHLK/${matinh}/list`) Quay lại danh sách

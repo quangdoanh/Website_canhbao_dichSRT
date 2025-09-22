@@ -68,6 +68,35 @@ if (sider) {
     })
   })
 
+  // Pagination 
+  const Pagination = document.querySelector("[pagination]")
+
+  if (Pagination) {
+    const url = new URL(window.location.href) // tạo 1 url tại đia chỉ hiện tại
+
+    Pagination.addEventListener("change", () => {
+      const option = Pagination.value
+      if (option) {
+        url.searchParams.set("page", option)
+      } else {
+        url.searchParams.delete("page")
+      }
+      console.log(option)
+
+      window.location.href = url.href
+    })
+
+    // Hiển thị mặc định
+    const valueCurrent = url.searchParams.get("page")
+    if (valueCurrent) {
+      Pagination.value = valueCurrent
+    }
+
+
+  }
+
+  // end
+
   // active theo url 
   let submenuLinks = sider.querySelectorAll(".menu");
   console.log(submenuLinks)
@@ -225,6 +254,21 @@ if (listFilepondImageMulti.length > 0) {
 }
 // End Filepond Image Multi
 
+
+// FilePond RAR
+const fileRarInput = document.querySelector("#file");
+let filePondRar = null;
+
+if (fileRarInput) {
+  // Đăng ký plugin nếu cần (chỉ cần FileValidateType)
+  FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+  filePondRar = FilePond.create(fileRarInput, {
+    acceptedFileTypes: ['.rar'],
+    labelIdle: "Kéo thả hoặc nhấp để chọn file .rar",
+    maxFileSize: "50MB",
+  });
+}
 
 //  User Create Form
 const UserCreateForm = document.querySelector(
@@ -448,6 +492,7 @@ if (UserEditForm) {
 }
 
 //  User Edit Form
+
 // Button Delete
 const listButtonDelete = document.querySelectorAll("[button-delete]");
 if (listButtonDelete.length > 0) {
@@ -1210,3 +1255,157 @@ if (listButtonDeletePathc.length > 0) {
 }
 
 // End Xóa mềm
+
+// creat map 
+const mapCreateForm = document.querySelector("#map-create-form");
+
+if (mapCreateForm) {
+
+
+  // Khởi tạo JustValidate
+  const validation = new JustValidate("#map-create-form");
+
+  validation
+    // Thông tin
+    .addField("#title", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập thông tin!",
+      },
+    ])
+    // Loại bản đồ
+    .addField("#map", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng chọn loại bản đồ!",
+      },
+    ])
+    // File .rar < 50MB
+    .addField("#file", [
+      {
+        validator: () => {
+          if (!filePondRar) return false;       // dùng filePondRar
+          const files = filePondRar.getFiles(); // lấy file từ FilePond RAR
+          if (!files || files.length === 0) return false;
+
+          const file = files[0].file;
+          const maxSize = 50 * 1024 * 1024; // 50MB
+          const validExt = file.name.toLowerCase().endsWith(".rar");
+
+          return file.size <= maxSize && validExt;
+        },
+        errorMessage: "Vui lòng chọn file .rar và nhỏ hơn 50MB!",
+      },
+    ])
+    // Submit form
+    .onSuccess((event) => {
+      const matinh = event.target.matinh.value;
+      const title = event.target.title.value;
+      const map = event.target.map.value;
+      const content = tinymce.get("content").getContent() || "";
+
+      // Lấy file từ FilePond
+      const files = filePondRar.getFiles();
+      const file = files.length > 0 ? files[0].file : null;
+
+      const formData = new FormData();
+      formData.append("thongtin", title);
+      formData.append("map", map);
+      if (file) formData.append("file", file);
+      formData.append("mota", content);
+
+      fetch(`/${pathAdmin}/sauromthong/mapsrt/${matinh}/create`, {
+        method: "POST",
+        body: formData,
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Dữ liệu trả về:", data);
+          if (data.code === "error") {
+            alert(data.message);
+          }
+          if (data.code === "success") {
+            window.location.href = `/${pathAdmin}/sauromthong/mapsrt/${matinh}/list`;
+          }
+        });
+    });
+}
+
+
+
+const mapEditForm = document.querySelector("#map-edit-form");
+
+if (mapEditForm && fileRarInput && filePondRar) {
+  const fileUrl = fileRarInput.dataset.file; // URL file cũ
+  const fileName = fileUrl ? decodeURIComponent(fileUrl.split('/').pop()) : null;
+
+  // Load file cũ nếu có
+  if (fileUrl) {
+    filePondRar.addFile(fileUrl, {
+      type: 'remote',
+      file: {
+        name: fileName,                  // <-- tên file sẽ hiển thị trên UI
+        size: 1,                         // nếu không biết size, đặt 0 tạm
+        type: 'application/x-rar-compressed',
+        isOld: true // <-- đánh dấu file cũ
+      }
+    }).catch(() => console.warn('Không thể tải file cũ'));
+  }
+
+
+  new JustValidate("#map-edit-form")
+    .addField("#title", [{ rule: "required", errorMessage: "Vui lòng nhập thông tin!" }])
+    .addField("#map", [{ rule: "required", errorMessage: "Vui lòng chọn loại bản đồ!" }])
+    .addField("#file", [{
+      validator: () => {
+        const files = filePondRar.getFiles();
+        if (!files.length) return true; // không chọn file mới -> hợp lệ
+        const f = files[0].file;
+        return f.name.toLowerCase().endsWith(".rar") && f.size <= 50 * 1024 * 1024;
+      },
+      errorMessage: "File phải là .rar và nhỏ hơn 50MB!"
+    }])
+    .onSuccess(event => {
+      const matinh = event.target.querySelector('[name="matinh"]').value;
+      const id = event.target.querySelector('[name="id"]').value;
+      const title = event.target.title.value;
+      const map = event.target.map.value;
+      // Lấy file từ FilePond
+      const files = filePondRar.getFiles();
+      const file = files[0]?.file;;
+      const mota = tinymce.get("content")?.getContent() || "";
+
+      console.log(file)
+
+      const formData = new FormData();
+      formData.append("thongtin", title);
+      formData.append("map", map);
+      // Nếu người dùng chọn file mới, append file
+      if (file) {
+        if (file.isOld) {
+          console.log("file cũ")
+          console.log(fileRarInput.dataset.file)
+          formData.append("file", fileRarInput.dataset.file);
+        } else {
+          console.log("file mới")
+          formData.append("file", file);
+        }
+      }
+      formData.append("mota", mota);
+
+      fetch(`/${pathAdmin}/sauromthong/mapsrt/${matinh}/edit/${id}`, {
+        method: "PATCH",
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "error") alert(data.message);
+          else if (data.code === "success") {
+            console.log("Cập nhật thành công!");
+            window.location.href = `/${pathAdmin}/sauromthong/mapsrt/${matinh}/list`;
+          }
+        })
+        .catch(() => alert("Có lỗi xảy ra, vui lòng thử lại!"));
+    });
+}
+

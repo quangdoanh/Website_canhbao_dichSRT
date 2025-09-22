@@ -19,7 +19,7 @@ module.exports.verifyToken = async (req, res, next) => {
     // Chỉ kiểm tra account có tồn tại và active
     const existAccount = await AccountAdmin.findOneByIdAndEmail(id, email);
     const Role = await RoleModel.getRoleById(existAccount.role);
-    console.log("Sau verify:", existAccount);
+    //console.log("Sau verify:", existAccount);
     existAccount.rolename = Role.name;
     if (!existAccount) {
       res.clearCookie("token");
@@ -29,7 +29,7 @@ module.exports.verifyToken = async (req, res, next) => {
     // Gán thông tin user vào request và locals (để view pug dùng được)
     req.account = existAccount;
     res.locals.account = existAccount;
-    console.log(req.account);
+    //console.log(req.account);
     next();
   } catch (error) {
     console.error("JWT verify error:", error.message);
