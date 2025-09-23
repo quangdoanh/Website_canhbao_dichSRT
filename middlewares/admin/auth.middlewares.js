@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const AccountAdmin = require('../../models/account-admin.model');
+const AccountAdmin = require('../../models/user.model');
 const variableConfig = require('../../config/variable');
 const RoleModel = require('../../models/role.model');
 

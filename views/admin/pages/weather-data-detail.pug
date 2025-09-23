@@ -36,7 +36,7 @@ block main
 
       //- Nhiệt độ TB
       .inner-group
-        label(class="inner-label" for="temp_mean") Nhiệt độ TB (°C)
+        label(class="inner-label" for="temp_mean") Nhiệt độ hiện tại (°C)
         input(type="text" id="temp_mean" name="temp_mean" value=(dataDetail.temp_mean || "Không xác định") readonly)
 
       //- Lượng mưa Min
@@ -51,7 +51,7 @@ block main
 
       //- Lượng mưa TB
       .inner-group
-        label(class="inner-label" for="rain_mean") Lượng mưa TB (mm)
+        label(class="inner-label" for="rain_mean") Lượng mưa hiện tại (mm)
         input(type="text" id="rain_mean" name="rain_mean" value=(dataDetail.rain_mean || "Không xác định") readonly)
 
       //- Tốc độ gió Min
@@ -66,7 +66,7 @@ block main
 
       //- Tốc độ gió TB
       .inner-group
-        label(class="inner-label" for="wind_mean") Tốc độ gió TB (m/s)
+        label(class="inner-label" for="wind_mean") Tốc độ gió hiện tại (m/s)
         input(type="text" id="wind_mean" name="wind_mean" value=(dataDetail.wind_mean || "Không xác định") readonly)
 
       //- Cấp số

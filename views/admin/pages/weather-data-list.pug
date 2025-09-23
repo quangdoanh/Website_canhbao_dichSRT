@@ -13,6 +13,7 @@ block main
           option(value="") Trạng thái
           option(value="active") Hoạt động
           option(value="inactive") Tạm dừng
+          
       .inner-item.inner-date
         input(type="date" filter-start-date value="2025-09-01")
         span - 
@@ -20,12 +21,6 @@ block main
       .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
 
-  //- Section 5: Hành động & tìm kiếm
-  .section-5
-    .inner-wrap
-      .inner-search
-        i(class="fa-solid fa-magnifying-glass")
-        input(type="text" placeholder="Tìm kiếm theo địa chỉ" search)
 
   //- Section 6: Bảng danh sách
   .section-6
@@ -41,7 +36,7 @@ block main
             th Nhiệt độ TB (°C)
             th Lượng mưa TB (mm)
             th Tốc độ gió TB (m/s)
-            th Cấp số
+            th Chỉ số k
             th Ngày cập nhật
             th Hành động
         tbody
