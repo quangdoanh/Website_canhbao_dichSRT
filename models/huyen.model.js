@@ -22,6 +22,17 @@ const HuyenModel = {
     );
     return result.rows;
   },
+  async getByMaTinh(ma_tinh) {
+    const query = `
+    SELECT *
+    FROM huyen
+    WHERE ma_tinh = $1
+    ORDER BY ma_huyen ASC
+  `;
+    const result = await pool.query(query, [ma_tinh]);
+    return result.rows;
+  }
+
 };
 
 module.exports = HuyenModel;

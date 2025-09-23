@@ -99,7 +99,7 @@ if (contactCreateForm) {
         message: event.target.message.value
       };
       console.log(data);
-      fetch(`contact/create`, { 
+      fetch(`contact/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -120,3 +120,48 @@ if (contactCreateForm) {
 }
 
 //end-contact-create-form
+
+
+//---------------------- FILTER --------------
+// Filter Tinh
+const filterTinh = document.querySelector("[filter-tinh]")
+if (filterTinh) {
+  const url = new URL(window.location.href)
+  filterTinh.addEventListener("change", () => {
+    const value = filterTinh.value
+    if (value) {
+      url.searchParams.set("tinh", value)
+    } else {
+      url.searchParams.delete("tinh")
+    }
+    window.location.href = url.href
+  })
+  // hiển thị mặc định
+
+  const valueCurrent = url.searchParams.get("tinh")
+  if (valueCurrent)
+    filterTinh.value = valueCurrent
+}
+
+const filterHuyen = document.querySelector("[filter-huyen]")
+console.log("huyen", filterHuyen)
+if (filterHuyen) {
+  const url = new URL(window.location.href)
+  filterHuyen.addEventListener("change", () => {
+    const value = filterHuyen.value
+    if (value) {
+      url.searchParams.set("huyen", value)
+    } else {
+      url.searchParams.delete("huyen")
+    }
+    window.location.href = url.href
+  })
+  // hiển thị mặc định
+
+  const valueCurrent = url.searchParams.get("huyen")
+  if (valueCurrent)
+    filterHuyen.value = valueCurrent
+}
+// End
+
+

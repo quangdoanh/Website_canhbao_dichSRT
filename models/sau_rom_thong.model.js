@@ -1,15 +1,34 @@
 const pool = require("../config/database");
 const Sauromthong_6tinhModel = {
-  async findTop20ByDienTich() {
-    const query = `
+  async findTop20ByDienTich(matinh = null, mahuyen = null) {
+    const conditions = [];
+    const params = [];
+
+    // Nếu có tỉnh
+    if (matinh !== null) {
+      params.push(matinh);
+      conditions.push(`matinh = $${params.length}`);
+    }
+
+    // Nếu có huyện
+    if (mahuyen !== null) {
+      params.push(mahuyen);
+      conditions.push(`mahuyen = $${params.length}`);
+    }
+
+    // Ghép query
+    let query = `
     SELECT *
     FROM public."sauromthong_6tinh_web"
+    ${conditions.length ? "WHERE " + conditions.join(" AND ") : ""}
     ORDER BY dtich DESC
     LIMIT 20
   `;
-    const result = await pool.query(query);
-    return result.rows; // trả về mảng 20 bản ghi
+
+    const result = await pool.query(query, params);
+    return result.rows;
   },
+
   async findByMaTinh(matinh, skip = 0, limit = 15) {
     try {
       const query = `

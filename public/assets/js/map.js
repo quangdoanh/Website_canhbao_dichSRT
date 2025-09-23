@@ -157,6 +157,27 @@ document.querySelectorAll('.info-table tbody tr').forEach(row => {
   });
 });
 
+/* FIND THEO BANG RUNG - ADMIN */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const params = new URLSearchParams(window.location.search);
+  const xa = params.get("xa");
+  const tk = params.get("tk");
+  const khoanh = params.get("khoanh");
+  const lo = params.get("lo");
+  console.log("Full search:", window.location.search);
+  console.log("chạy vafp rừng", params.get("xa"))
+  if (xa && tk && khoanh && lo) {
+    loadWFSByCondition(comboBoxMap.value, { xa, tk, khoanh, lo });
+    const infoTable = document.querySelector(".info-table");
+    if (infoTable) {
+      infoTable.style.display = "none";
+    }
+  }
+});
+
+
 
 // ===== Layer để chứa các đối tượng vẽ =====
 let drawnItems = new L.FeatureGroup();

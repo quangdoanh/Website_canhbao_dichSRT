@@ -1757,14 +1757,27 @@ a {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #4caf50;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(26px);
 }
+
 /* bật tắt bài viết */
 
+/* readonly */
+input[readonly],
+select[disabled] {
+  background-color: #fdecec;
+  /* nền xám nhạt */
+  color: #e8e4e4;
+  /* chữ xám */
+  cursor: not-allowed;
+  /* đổi con trỏ */
+  opacity: 0.8;
+  /* làm nhạt nhẹ */
+}
 
-
+/* end */

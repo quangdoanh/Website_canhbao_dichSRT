@@ -3,6 +3,9 @@ const Sauromthong_6tinhModel = require(`../../models/sau_rom_thong.model`)
 const Log = require(`../../helpers/loguser.helper`);
 const Sauhailakeo_5tinhModel = require("../../models/sau_hai_lakeo.model");
 const Benhhai_lakeoModel = require("../../models/benhhaikeo.model");
+const TinhModel = require("../../models/tinh.model");
+const HuyenModel = require("../../models/huyen.model");
+const XaModel = require("../../models/xa.model");
 
 module.exports.homeSavePolygon = async (req, res) => {
     if (req.account == "guest") {
@@ -84,23 +87,45 @@ module.exports.homeDeletePolygon = async (req, res) => {
 }
 module.exports.home = async (req, res) => {
 
-    const user = req.account?.email;
-    if (user) {
-        Log.logUser(user, req.originalUrl, req.method, "Truy cập trang chủ")
-    }
+    // const user = req.account?.email;
+    // if (user) {
+    //     Log.logUser(user, req.originalUrl, req.method, "Truy cập trang chủ")
+    // }
     let dataList = [];
+    let ListTinh = [], ListHuyen = [], ListXa = [];
+
+    let matinh = null;
+    let mahuyen = null;
+
+
+    ListTinh = await TinhModel.getAll();
+    if (req.query.tinh) {
+        matinh = Number(req.query.tinh);
+        ListHuyen = await HuyenModel.getByMaTinh(req.query.tinh);
+    }
+    if (req.query.huyen) {
+        mahuyen = Number(req.query.huyen);
+    }
+    ListXa = await XaModel.getAll();
+
     const dataMap = req.query.bando;
     if (dataMap == "Sauhailakeo_5tinh") {
-        dataList = await Sauhailakeo_5tinhModel.findTop20ByDienTich();
+        dataList = await Sauhailakeo_5tinhModel.findTop20ByDienTich(matinh, mahuyen)
+
     } else if (dataMap == "Sauromthong_6tinh") {
-        dataList = await Sauromthong_6tinhModel.findTop20ByDienTich()
+        console.log(matinh, mahuyen)
+        dataList = await Sauromthong_6tinhModel.findTop20ByDienTich(matinh, mahuyen)
+
     } else {
-        dataList = await Benhhai_lakeoModel.findTop20ByDienTich()
+        dataList = await Benhhai_lakeoModel.findTop20ByDienTich(matinh, mahuyen)
     }
     //console.log(sauromthongList)
 
     res.render('client/pages/index', {
         pageTitle: "Trang Chủ",
-        dataList: dataList
+        dataList: dataList,
+        ListTinh: ListTinh,
+        ListXa: ListXa,
+        ListHuyen: ListHuyen
     });
 }

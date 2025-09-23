@@ -408,18 +408,16 @@ header {
 /* Footer */
 .footer {
   background-color: var(--color-primary);
-
-  border-radius: 30px 30px 0 0;
-  padding: 40px 0 40px 0;
+  padding: 35px 0 35px 0;
 }
 
 .footer .inner-middle {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 40px;
+  padding-bottom: 30px;
   border-bottom: 1px solid #CCD1D2;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .footer .inner-middle .inner-links ul {
@@ -465,7 +463,7 @@ header {
 }
 
 .footer .inner-bottom .inner-logo {
-  width: 224px;
+  width: 100px;
 }
 
 .footer .inner-bottom .inner-logo img {
@@ -1004,3 +1002,48 @@ header {
 }
 
 /* end */
+
+.section-4 {
+  margin-bottom: 15px;
+}
+
+.section-4 .inner-wrap {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid #D5D5D5;
+  background-color: #fff;
+  border-radius: 14px;
+}
+
+.section-4 .inner-item {
+  padding: 7.75px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-right: 1px solid #D5D5D5;
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--color-text);
+}
+
+.section-4 .inner-item:last-child {
+  border-right: 0;
+}
+
+.section-4 .inner-label i {
+  font-size: 22px;
+}
+
+.section-4 .inner-item select,
+.section-4 .inner-item input[type="date"] {
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--color-text);
+  border: 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.section-4 .inner-item input[type="date"] {
+  width: 100px;
+}

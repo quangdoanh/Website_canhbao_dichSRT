@@ -5,7 +5,7 @@ block content
     #map
 
       .info-table
-        .info-header Thông tin hiển thị cho tỉnh Hà Tĩnh
+        .info-header Thông tin hiển thị cảnh báo mức thứ 3
 
         // Layer control
         .layer-control
@@ -14,6 +14,24 @@ block content
             option(value="Sauromthong_6tinh") Sâu róm thông 6 tỉnh
             option(value="Benhhaikeo_8tinh") Bệnh hại lá keo 8 tỉnh
             option(value="Sauhailakeo_5tinh") Sâu hại lá keo 5 tỉnh
+        .section-4
+          .inner-wrap
+            .inner-item.inner-label
+              <i class="fa-solid fa-filter"></i> Bộ lọc
+            .inner-item
+              select(filter-tinh name="tinh")
+                option(value="") Tỉnh
+                each tinh in ListTinh
+                  option(value=tinh.ma_tinh) #{tinh.ten_tinh}
+            .inner-item
+              select(filter-huyen name="huyen")
+                option(value="") Huyện
+                if ListHuyen.length
+                each huyen in ListHuyen
+                  option(value=huyen.ma_huyen)= huyen.ten_huyen
+                else
+                  option(value="") Chưa chọn tỉnh
+
 
         // Bộ lọc (filter)
         //- .filter
@@ -38,16 +56,22 @@ block content
               //- th Phân cấp
               //- th Diện tích
           tbody
-           each item in dataList
+           if dataList.length
+          each item in dataList
             tr(
               data-xa=item.xa
               data-tk=item.tk
               data-khoanh=item.khoanh
-              data-lo=item.lo)
+              data-lo=item.lo
+            )
               td #{item.xa}
               td #{item.tk}
               td #{item.khoanh}
               td #{item.lo}
+          else
+            tr
+              td(colspan="4" style="text-align:center") Không có dữ liệu
+
               //- td #{item.phancap}
 
 

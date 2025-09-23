@@ -38,7 +38,7 @@ block main
             th Sensor
             th Ngày phát hiện
             th Xác nhận
-            th Hành động
+            th.inner-center Hành động
         tbody
             if degradList && degradList.length
                 each item, index in degradList
@@ -67,6 +67,14 @@ block main
                             .inner-buttons
                                 a.inner-edit(href=`/admin/degrad/detail/${item.id}`)
                                     <i class="fa-solid fa-eye"></i>
+                            .inner-buttons
+                              a.inner-map(
+                                    href=`/?bando=Sauromthong_6tinh&xa=${item.ten_xa}&tk=${item.tk}&khoanh=${item.khoanh}&lo=${item.lo}`
+                                    target="_blank"
+                                  )
+                                    i.fa-solid.fa-map-location-dot
+
+
             else
                 tr
                 td(colspan="11" style="text-align:center; padding:10px;") Không có dữ liệu

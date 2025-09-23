@@ -139,7 +139,7 @@ if (sider) {
     const pathName = new URL(href).pathname;
     const splitPathName = pathName.split("/");
 
-    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2] && splitPathNameCurrent[3] == splitPathName[3]) {
+    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2] && splitPathNameCurrent[3] == splitPathName[3] && splitPathNameCurrent[4] == splitPathName[4]) {
       // Active link con
       // console.log("đg dan", splitPathName[3])
       // console.log("đg dan 2", splitPathName[4])
@@ -350,14 +350,14 @@ if (UserCreateForm) {
       const password = event.target.password.value;
       const ma_tinh = event.target.ma_tinh.value;
 
-      const data ={
-        fullName:fullName,
-        email:email,
-        phone:phone,
-        role:role,
-        status:status,
-        password:password,
-        ma_tinh:ma_tinh
+      const data = {
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        role: role,
+        status: status,
+        password: password,
+        ma_tinh: ma_tinh
 
       }
       fetch(`/${pathAdmin}/user/create`, {
@@ -458,14 +458,14 @@ if (UserEditForm) {
       const password = event.target.password.value;
       const ma_tinh = event.target.ma_tinh.value;
 
-      const data ={
-        fullName:fullName,
-        email:email,
-        phone:phone,
-        role:role,
-        status:status,
-        password:password,
-        ma_tinh:ma_tinh
+      const data = {
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        role: role,
+        status: status,
+        password: password,
+        ma_tinh: ma_tinh
 
       }
 

@@ -1,14 +1,32 @@
 const pool = require("../config/database");
 
 const Benhhai_lakeoModel = {
-    async findTop20ByDienTich() {
-        const query = `
-      SELECT *
-      FROM public."benhhaikeo_8tinh_web"
-      ORDER BY dtich DESC
-        LIMIT 20
-    `;
-        const result = await pool.query(query);
+    async findTop20ByDienTich(matinh = null, mahuyen = null) {
+        const conditions = [];
+        const params = [];
+
+        // Nếu có tỉnh
+        if (matinh !== null) {
+            params.push(matinh);
+            conditions.push(`matinh = $${params.length}`);
+        }
+
+        // Nếu có huyện
+        if (mahuyen !== null) {
+            params.push(mahuyen);
+            conditions.push(`mahuyen = $${params.length}`);
+        }
+
+        // Ghép query
+        let query = `
+            SELECT *
+            FROM public."benhhaikeo_8tinh_web"
+            ${conditions.length ? "WHERE " + conditions.join(" AND ") : ""}
+            ORDER BY dtich DESC
+            LIMIT 20
+          `;
+
+        const result = await pool.query(query, params);
         return result.rows;
     },
     async findByMaTinh(matinh, skip = 0, limit = 15) {
