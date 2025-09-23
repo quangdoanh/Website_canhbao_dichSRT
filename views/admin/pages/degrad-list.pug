@@ -80,13 +80,14 @@ block main
                             .inner-buttons
                                 a.inner-edit(href=`/${pathAdmin}/degrad/detail/${item.id}`)
                                     <i class="fa-solid fa-eye"></i>
-                            .inner-buttons
-                              a.inner-map(
-                                    href=`/?bando=Sauromthong_6tinh&xa=${item.ten_xa}&tk=${item.tk}&khoanh=${item.khoanh}&lo=${item.lo}`
-                                    target="_blank"
-                                    style ="color: inherit;"
-                                  )
-                                    i.fa-solid.fa-map-location-dot
+                            if(item.status == 1)
+                              .inner-buttons
+                                a.inner-map(
+                                      href=`/?bando=Sauromthong_6tinh&xa=${item.ten_xa}&tk=${item.tk}&khoanh=${item.khoanh}&lo=${item.lo}`
+                                      target="_blank"
+                                      style ="color: inherit;"
+                                    )
+                                      i.fa-solid.fa-map-location-dot
 
 
             else
