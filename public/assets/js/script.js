@@ -131,17 +131,21 @@ if (filterTinh) {
     const value = filterTinh.value
     if (value) {
       url.searchParams.set("tinh", value)
+      // Xóa param huyện khi chọn tỉnh mới
+      url.searchParams.delete("huyen")
     } else {
       url.searchParams.delete("tinh")
+      url.searchParams.delete("huyen") // Xóa luôn để chắc chắn
     }
     window.location.href = url.href
   })
-  // hiển thị mặc định
 
+  // hiển thị mặc định
   const valueCurrent = url.searchParams.get("tinh")
   if (valueCurrent)
     filterTinh.value = valueCurrent
 }
+
 
 const filterHuyen = document.querySelector("[filter-huyen]")
 console.log("huyen", filterHuyen)
