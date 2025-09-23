@@ -18,7 +18,7 @@ const WeatherModel = {
     const query = `
       SELECT * 
       FROM weather_data 
-      ORDER BY id ASC
+      ORDER BY ngay_cap_nhat DESC
       LIMIT $1 OFFSET $2
     `;
     const result = await pool.query(query, [limit, offset]);

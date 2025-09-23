@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const AccountsAdminModel = require("../../models/account-admin.model");
+const AccountsAdminModel = require("../../models/user.model");
 const UserModel = require("../../models/user.model");
 const Log = require(`../../helpers/loguser.helper`)
 module.exports.login = (req, res) => {

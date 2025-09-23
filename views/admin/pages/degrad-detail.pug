@@ -98,8 +98,8 @@ block main
     .inner-back
         a(
             href=(dataDetail.status === 0 
-            ? "/admin/degrad/list/pending" 
+            ? `/${pathAdmin}/degrad/list/pending` 
             : dataDetail.status === 1 
-            ? "/admin/degrad/list/confirmed" 
-            : "/admin/degrad/list")
+            ? `/${pathAdmin}/degrad/list/confirmed` 
+            : `/${pathAdmin}/degrad/list`)
         ) Quay lại danh sách
