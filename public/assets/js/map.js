@@ -50,7 +50,7 @@ const loadWFSByCondition = (layerName, conditions) => {
 
       // Thêm các feature vào bản đồ
       wfsLayer = L.geoJSON(data.features, {
-        style: { color: "red", weight: 3, fillColor: "yellow", fillOpacity: 0.3, interactive: true },
+        style: { color: "blue", weight: 3, fillColor: "yellow", fillOpacity: 0.3, interactive: true },
       }).addTo(map);
 
       map.fitBounds(wfsLayer.getBounds());
@@ -92,7 +92,6 @@ const loadWFSByCondition = (layerName, conditions) => {
 
 
 /* COMBOBOX LOAD MAP WMS */
-
 const comboBoxMap = document.getElementById("layerSelect")
 comboBoxMap.addEventListener("change", (e) => {
   const selected = e.target.value;
@@ -158,7 +157,6 @@ document.querySelectorAll('.info-table tbody tr').forEach(row => {
 });
 
 /* FIND THEO BANG RUNG - ADMIN */
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const params = new URLSearchParams(window.location.search);
@@ -183,7 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
 let drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-// === zooom to nhỏ =====/
+/* ========================== 
+   Zoom to nho nền bản đồ
+  ============================*/
 map.removeControl(map.zoomControl);
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -207,7 +207,7 @@ let drawControl = new L.Control.Draw({
 map.addControl(drawControl);
 
 // Biến lưu polygon vừa vẽ
-let latestLayer = null;
+//let latestLayer = null;
 
 // Khi vẽ xong → chỉ add vào bản đồ, chưa lưu
 // map.on(L.Draw.Event.CREATED, (e) => {
@@ -330,9 +330,6 @@ const saveControl = L.Control.extend({
   }
 });
 
-
-
-// Thêm control vào map
 const saveBtn = new saveControl();
 //map.addControl(saveBtn);
 
@@ -412,6 +409,46 @@ const basemapControl = L.Control.extend({
 
 const mapControl = new basemapControl();
 map.addControl(mapControl);
+
+/* ========================== 
+   Chú thích bản đồ
+  ============================*/
+
+const legendControl = L.Control.extend({
+  options: { position: 'bottomleft' }, // vị trí góc trái dưới
+
+  onAdd: (map) => {
+    const container = L.DomUtil.create('div', 'legendControl');
+
+    // Tiêu đề
+    const title = L.DomUtil.create('div', 'legend-title', container);
+    title.innerText = 'Chú thích';
+
+    // Danh sách các mức
+    const items = [
+      { color: 'blue', label: 'Xanh - Cấp 1' },
+      { color: 'green', label: 'Lục - Cấp 2' },
+      { color: 'red', label: 'Đỏ - Cấp 3' }
+    ];
+
+    items.forEach(item => {
+      const row = L.DomUtil.create('div', 'legend-item', container);
+
+      const box = L.DomUtil.create('span', 'legend-box', row);
+      box.style.backgroundColor = item.color;
+
+      const text = L.DomUtil.create('span', 'legend-text', row);
+      text.innerText = item.label;
+    });
+
+    L.DomEvent.disableClickPropagation(container);
+    return container;
+  }
+});
+
+// Thêm vào map
+map.addControl(new legendControl());
+
 
 // xóa polygon 
 const deletePolygon = (str) => {

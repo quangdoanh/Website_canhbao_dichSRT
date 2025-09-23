@@ -17,10 +17,10 @@ module.exports.homeSavePolygon = async (req, res) => {
     }
 
     // Lưu log
-    const user = req.account?.email;
-    if (user) {
-        Log.logUser(user, req.originalUrl, req.method, "Lưu Polygon")
-    }
+    // const user = req.account?.email;
+    // if (user) {
+    //     Log.logUser(user, req.originalUrl, req.method, "Lưu Polygon")
+    // }
     // end
 
     try {
@@ -64,10 +64,10 @@ module.exports.homeDeletePolygon = async (req, res) => {
         });
     }
     // Lưu log
-    const user = req.account?.email;
-    if (user) {
-        Log.logUser(user, req.originalUrl, req.method, "Xóa Polygon")
-    }
+    // const user = req.account?.email;
+    // if (user) {
+    //     Log.logUser(user, req.originalUrl, req.method, "Xóa Polygon")
+    // }
     // end
     try {
         const id = req.params.id;
@@ -99,6 +99,7 @@ module.exports.home = async (req, res) => {
 
 
     ListTinh = await TinhModel.getAll();
+    console.log("tỉnh ", ListTinh)
     if (req.query.tinh) {
         matinh = Number(req.query.tinh);
         ListHuyen = await HuyenModel.getByMaTinh(req.query.tinh);

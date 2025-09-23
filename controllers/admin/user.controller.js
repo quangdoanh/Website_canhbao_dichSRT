@@ -5,6 +5,7 @@ const LogUserModel = require("../../models/log_user.model")
 const RoleModel = require("../../models/role.model");
 const TinhModel = require("../../models/tinh.model")
 const AccountsAdminModel = require("../../models/account-admin.model")
+const Log = require("../../helpers/loguser.helper")
 
 const moment = require("moment/moment")
 module.exports.list = async (req, res) => {
@@ -83,11 +84,11 @@ module.exports.list = async (req, res) => {
   }
 };
 module.exports.userCreate = async (req, res) => {
-  const Tinh =  await TinhModel.getAll();
+  const Tinh = await TinhModel.getAll();
   const RoleList = await RoleModel.getAll();
   res.render("admin/pages/user-create", {
     pageTitle: "Tạo tài khoản ",
-    Tinh:Tinh,
+    Tinh: Tinh,
     RoleList: RoleList,
   });
 };
@@ -119,6 +120,10 @@ module.exports.userCreatePost = async (req, res) => {
 
     // Lưu vào DB thông qua model (model sẽ hash password)
     await UserModel.addNew(newUserData);
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Tạo người dùng")
+    }
 
     req.flash("success", "Tạo tài khoản thành công");
     res.json({
@@ -140,7 +145,7 @@ module.exports.UserEdit = async (req, res) => {
     res.render("admin/pages/user-edit", {
       pageTitle: "Trang chỉnh sửa",
       accountUserDetail: accountUser,
-      Tinh:Tinh,
+      Tinh: Tinh,
       RoleList: RoleList,
     });
   } catch (err) {
@@ -172,6 +177,11 @@ module.exports.UserEditPatch = async (req, res) => {
     }
     const updatedAccount = await UserModel.updateAccount(id, data);
 
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Sửa thông tin người dùng")
+    }
+
     if (!updatedAccount) {
       return res.json({
         code: "error",
@@ -195,6 +205,10 @@ module.exports.UserDelete = async (req, res) => {
   try {
     const { id } = req.params;
     await UserModel.deleteById(parseInt(id));
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Xóa thông tin người dùng")
+    }
     req.flash("success", "Xóa thành công");
     res.json({ code: "success" });
   } catch (err) {
@@ -214,11 +228,19 @@ module.exports.changeMultiPatch = async (req, res) => {
           status: option,
           update_by: req.account.id,
         });
+        const user = req.account?.email;
+        if (user) {
+          Log.logUser(user, req.originalUrl, req.method, "Chuyển trạng thái tk người dùng")
+        }
         req.flash("success", "Đổi trạng thái thành công!");
         break;
 
       case "delete":
         await UserModel.deleteMultiByIds(ids);
+
+        if (user) {
+          Log.logUser(user, req.originalUrl, req.method, "Xóa người dùng")
+        }
         req.flash("success", "Xóa thành công!");
         break;
 

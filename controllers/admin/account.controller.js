@@ -52,7 +52,7 @@ module.exports.loginPost = async (req, res) => {
           expiresIn: rememberPassword ? "30d" : "1d"
         }
       );
-      console.log("token admin: "+token)
+      console.log("token admin: " + token)
       console.log("JWT_SECRET: 1", process.env.JWT_SECRET);
 
 
@@ -126,10 +126,10 @@ module.exports.loginPost = async (req, res) => {
       });
 
       // ghi log đăng nhập  user
-      const user = email;
-      if (user) {
-        Log.logUser(user, req.originalUrl, req.method, "Đăng nhập")
-      }
+      // const user = email;
+      // if (user) {
+      //   Log.logUser(user, req.originalUrl, req.method, "Đăng nhập")
+      // }
       // 
 
 
@@ -152,21 +152,6 @@ module.exports.loginPost = async (req, res) => {
 };
 
 module.exports.logoutPost = async (req, res) => {
-
-  // // Lưu log
-
-  // const token = req.cookies.token;
-  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  // const { id, email } = decoded;
-  // console.log(decoded)
-
-  // // Chỉ kiểm tra account có tồn tại và active
-  // const existAccount = await UserModel.findOneByIdAndEmail(id, email);
-  // if (existAccount) {
-  //   existAccount.email;
-  //   Log.logUser(user, req.originalUrl, req.method, "Đăng xuất")
-  //   // end
-  // }
 
 
   res.clearCookie("token");

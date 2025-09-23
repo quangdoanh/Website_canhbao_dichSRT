@@ -5,6 +5,7 @@ const TinhModel = require("../../models/tinh.model");
 const DieuTraModel = require('../../models/dieutra.model');
 const moment = require("moment");
 const uploadMapModel = require('../../models/upload_map.model');
+const Log = require("../../helpers/loguser.helper")
 
 module.exports.listDulieuBHLK = async (req, res) => {
     console.log("BHLK")
@@ -72,6 +73,12 @@ module.exports.editPatchDulieuBHLK = async (req, res) => {
     try {
         if (req.body.phancap != '3') {
             if (await BenhHaiKeo.deletewebById(id) && await BenhHaiKeo.updatePhanCapById(id, req.body.phancap)) {
+                const user = req.account?.email;
+                if (user) {
+                    Log.logUser(user, req.originalUrl, req.method, "Sửa dữ liệu bhlk")
+                }
+
+
                 res.json({ code: "success", message: "Sửa thành công" })
             } else {
                 res.json({ code: "error", message: "Sửa thất bại" })
@@ -180,6 +187,10 @@ module.exports.createDieuTraBHLKPost = async (req, res) => {
             user_id,
             dia_chi_cu_the: dia_chi_cu_the || ""
         });
+        const user = req.account?.email;
+        if (user) {
+            Log.logUser(user, req.originalUrl, req.method, "Tạo dữ liệu điều tra")
+        }
 
         req.flash("success", "Tạo mới thành công");
         res.json({ code: "success", data: newDieuTra });
@@ -266,6 +277,10 @@ module.exports.editDieuTraBHLKPatch = async (req, res) => {
             user_id: dieutra.user_id,       // giữ nguyên user_id
             dia_chi_cu_the: dia_chi_cu_the || dieutra.dia_chi_cu_the
         });
+        const user = req.account?.email;
+        if (user) {
+            Log.logUser(user, req.originalUrl, req.method, "Sửa dữ liệu điều tra")
+        }
 
         // 4. Trả về JSON
         res.json({ code: "success", data: updatedDieuTra });
@@ -286,6 +301,10 @@ module.exports.deleteDieuTraBHLKPatch = async (req, res) => {
 
         if (!updatedDieuTra) {
             return res.status(404).json({ code: "error", message: "Bản ghi không tồn tại!" });
+        }
+        const user = req.account?.email;
+        if (user) {
+            Log.logUser(user, req.originalUrl, req.method, "Xóa dữ liệu điều cha")
         }
         req.flash("success", "Xóa thành công")
         res.json({
@@ -318,6 +337,10 @@ module.exports.createPostMapBHLK = async (req, res) => {
         const file = req.file ? req.file.path : null;
 
         const newMap = await uploadMapModel.create({ thongtin, loaibando: map, file, mota, ma_tinh: matinh });
+        const user = req.account?.email;
+        if (user) {
+            Log.logUser(user, req.originalUrl, req.method, "Tạo map ")
+        }
 
         return res.json({ code: "success", message: "Thêm dữ liệu thành công", data: newMap });
     } catch (err) {
@@ -340,6 +363,10 @@ module.exports.editPatchMapBHLK = async (req, res) => {
         const { thongtin, map, mota, file } = req.body;
         const updatedFields = { thongtin, loaibando: map, mota, file: req.file ? req.file.path : file };
         const updatedMap = await uploadMapModel.updateById(id, updatedFields);
+        const user = req.account?.email;
+        if (user) {
+            Log.logUser(user, req.originalUrl, req.method, "Sửa dữ liệu bản đồ")
+        }
 
         if (!updatedMap) return res.status(404).json({ code: "error", message: "Không tìm thấy bản ghi để cập nhật" });
         return res.json({ code: "success", message: "Cập nhật dữ liệu thành công", data: updatedMap });
@@ -356,6 +383,10 @@ module.exports.deleteMapBHLK = async (req, res) => {
 
         const { id } = req.params;
         const success = await uploadMapModel.deleteById(id);
+        const user = req.account?.email;
+        if (user) {
+            Log.logUser(user, req.originalUrl, req.method, "Xóa dữ liệu bản đồ")
+        }
 
         if (success) {
             res.json({

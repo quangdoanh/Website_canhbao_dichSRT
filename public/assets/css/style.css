@@ -467,7 +467,7 @@ header {
 }
 
 .footer .inner-bottom .inner-logo img {
-  width: 100%;
+  width: 60%;
   height: auto;
 }
 
@@ -742,7 +742,7 @@ header {
 
 /* Map */
 #map {
-  height: 700px;
+  height: 93vh;
   width: 100%;
   border-radius: 8px;
   position: relative;
@@ -752,9 +752,9 @@ header {
 
 
 /* base map */
-.basemapControl {
+/* .basemapControl {
   font-family: sans-serif;
-}
+} */
 
 .basemap-main {
   width: 90px;
@@ -826,7 +826,7 @@ header {
 /* Container bảng */
 .info-table {
   position: absolute;
-  top: 180px;
+  top: 100px;
   /* cách trên bản đồ */
   left: 20px;
   /* cách trái bản đồ */
@@ -905,7 +905,7 @@ header {
 }
 
 .info-table {
-  max-height: 400px;
+  max-height: 380px;
   /* chiều cao tối đa của bảng */
   overflow-y: auto;
   /* bật thanh cuộn dọc */
@@ -1046,4 +1046,45 @@ header {
 
 .section-4 .inner-item input[type="date"] {
   width: 100px;
+}
+
+/* Chú thích map */
+.legendControl {
+  background: rgba(255, 255, 255, 0.9);
+  /* nền trắng hơi trong suốt */
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #222;
+  line-height: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.legend-title {
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  /* gạch mờ */
+}
+
+.legend-box {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border: 1px solid #999;
+  border-radius: 2px;
+}
+
+.legend-text {
+  font-size: 12px;
+  color: #444;
 }

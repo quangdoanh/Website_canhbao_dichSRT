@@ -1,5 +1,6 @@
 const RoleModel = require("../../models/role.model");
 const permissionConfig = require("../../config/permission");
+const Log = require("../../helpers/loguser.helper")
 
 module.exports.roleList = async (req, res) => {
   try {
@@ -94,6 +95,10 @@ module.exports.roleEditPatch = async (req, res) => {
     if (!updatedRole) {
       return res.json({ code: "error", message: "Id không tồn tại!" });
     }
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Sửa nhóm quyền")
+    }
 
     req.flash("success", "Cập nhật nhóm quyền thành công!");
     res.json({ code: "success", role: updatedRole });
@@ -110,6 +115,10 @@ module.exports.roleDelete = async (req, res) => {
     if (!deletedRole) {
       return res.json({ code: "error", message: "Id không tồn tại!" });
     }
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Xóa nhóm quyền")
+    }
 
     req.flash("success", "Xóa nhóm quyền thành công!");
     res.json({ code: "success" });
@@ -125,6 +134,11 @@ module.exports.changeMultiDelete = async (req, res) => {
     switch (option) {
       case "delete":
         await RoleModel.deleteMultiByIds(ids);
+        const user = req.account?.email;
+        if (user) {
+          Log.logUser(user, req.originalUrl, req.method, "Xóa  nhóm quyền")
+        }
+
         req.flash("success", "Xóa thành công!");
         break;
     }

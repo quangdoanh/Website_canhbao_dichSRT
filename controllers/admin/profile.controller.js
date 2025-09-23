@@ -1,5 +1,6 @@
 const RoleModel = require('../../models/role.model')
 const UserModel = require("../../models/user.model");
+const Log = require("../../helpers/loguser.helper")
 module.exports.edit = async (req, res) => {
   res.render("admin/pages/profile-edit", {
     pageTitle: "Chỉnh sửa thông tin cá nhân",
@@ -26,8 +27,8 @@ module.exports.editPatch = async (req, res) => {
     const account = await UserModel.findByID(parseInt(req.account.id));
     if (!account) {
       return res.status(400).json({
-        code:"error",
-        message:"Không tồn tại trong hệ thống"
+        code: "error",
+        message: "Không tồn tại trong hệ thống"
       });
     }
     const data = {
@@ -37,15 +38,20 @@ module.exports.editPatch = async (req, res) => {
     // Update
     await UserModel.updateAccount(parseInt(req.account.id), data);
 
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Đổi thông tin tài khoản")
+    }
+
     req.flash("success", "Cập nhật thông tin thành công");
     res.json({
-        code:"success"
+      code: "success"
     })
   } catch (err) {
     console.error(err);
     res.status(500).json({
-        code:"error",
-        message:"Có lỗi khi cập nhật thông tin"
+      code: "error",
+      message: "Có lỗi khi cập nhật thông tin"
     })
   }
 };
@@ -94,6 +100,11 @@ module.exports.changePasswordPatch = async (req, res) => {
       update_by: id
     });
 
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Đổi mật khẩu tài khoản")
+    }
+
     req.flash("success", "Đổi mật khẩu thành công");
     res.json({ code: "success" });
 
@@ -119,16 +130,16 @@ module.exports.editApp = async (req, res) => {
     }
     const role = await RoleModel.getById(account.role)
     const data = {
-        id: account.id,
-        full_name: account.full_name,
-        phone: account.phone,
-        email: account.email,
-        rolename:role.name
-      }
-    console.log("dư liệu nè",data);
+      id: account.id,
+      full_name: account.full_name,
+      phone: account.phone,
+      email: account.email,
+      rolename: role.name
+    }
+    console.log("dư liệu nè", data);
     res.json({
       code: "success",
-      data:data
+      data: data
     });
   } catch (err) {
     console.error(err);

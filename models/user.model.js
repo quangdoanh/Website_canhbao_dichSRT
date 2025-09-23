@@ -86,7 +86,6 @@ const UserModel = {
       email,
       phone,
       role,
-      avatar,
       status,
       created_at,
       create_by,

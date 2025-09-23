@@ -1,6 +1,6 @@
 const DegradModel = require("../../models/degrad.model");
 const moment = require("moment");
-
+const Log = require("../../helpers/loguser.helper")
 module.exports.listPending = async (req, res) => {
   try {
     const limit = 20;
@@ -74,16 +74,16 @@ module.exports.listConfirmed = async (req, res) => {
   }
 };
 
-module.exports.degradDetail =async (req,res) => {
-    const {id} = req.params;
-    console.log(id)
-    const dataDetail = await DegradModel.findById(parseInt(id));
-    dataDetail.acqui_dateFormat =  moment(dataDetail.acqui_date).format("DD/MM/YYYY")
-    console.log(dataDetail);
-    res.render("admin/pages/degrad-detail",{
-        pageTitle:"Chi tiết dữ liệu mất rừng",
-        dataDetail:dataDetail
-    })
+module.exports.degradDetail = async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  const dataDetail = await DegradModel.findById(parseInt(id));
+  dataDetail.acqui_dateFormat = moment(dataDetail.acqui_date).format("DD/MM/YYYY")
+  console.log(dataDetail);
+  res.render("admin/pages/degrad-detail", {
+    pageTitle: "Chi tiết dữ liệu mất rừng",
+    dataDetail: dataDetail
+  })
 }
 // Cập nhật trạng thái cho 1 bản ghi
 module.exports.changeStatus = async (req, res) => {
@@ -95,9 +95,14 @@ module.exports.changeStatus = async (req, res) => {
     if (!updated) {
       return res.json({ code: "error", message: "Không tìm thấy bản ghi!" });
     }
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái mất rừng")
+    }
+
     req.flash("success", "Đổi trạng thái thành công!");
     res.json({ code: "success" });
-  } catch (err) {   
+  } catch (err) {
     console.error(err);
     res.json({
       code: "error",
@@ -124,6 +129,11 @@ module.exports.changeMultiPatch = async (req, res) => {
         break;
       default:
         return res.json({ code: "error", message: "Tùy chọn không hợp lệ!" });
+    }
+
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái của  mất rừng")
     }
 
     req.flash("success", "Đổi trạng thái thành công!");

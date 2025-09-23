@@ -1,4 +1,6 @@
 const AboutModel = require("../../models/about.model");
+const Log = require("../../helpers/loguser.helper")
+
 const moment = require("moment");
 module.exports.list = async (req, res) => {
   try {
@@ -41,9 +43,16 @@ module.exports.create = async (req, res) => {
   });
 };
 module.exports.createPost = async (req, res) => {
+
+  const user = req.account?.email;
+  if (user) {
+    Log.logUser(user, req.originalUrl, req.method, "Tạo bài giới thiệu")
+  }
+
+
   try {
     const { title, content } = req.body;
-    
+
     let avatar = null;
 
     if (req.file && req.file.path) {
@@ -74,6 +83,9 @@ module.exports.createPost = async (req, res) => {
 };
 
 module.exports.changeStatus = async (req, res) => {
+
+
+
   try {
     const { id } = req.params;
     const { status } = req.body; // nhận status = 0 hoặc 1
@@ -82,6 +94,14 @@ module.exports.changeStatus = async (req, res) => {
     res.json({
       code: "success",
     });
+
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Đổi ẩn/hiện bài giới thiệu")
+    }
+
+
+
   } catch (err) {
     console.error(err);
     res.json({
@@ -147,6 +167,12 @@ module.exports.aboutEditPatch = async (req, res) => {
       });
     }
 
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Sửa bài giới thiệu")
+    }
+
+
     req.flash("success", "Cập nhật thành công");
     res.json({ code: "success" });
   } catch (err) {
@@ -177,6 +203,12 @@ module.exports.changeMultiPatch = async (req, res) => {
       default:
         return res.json({ code: "error", message: "Tùy chọn không hợp lệ!" });
     }
+
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "ẩn/hiện tất cả bài giới thiệu")
+    }
+
 
     req.flash("success", "Đổi trạng thái thành công!");
     res.json({ code: "success" });
