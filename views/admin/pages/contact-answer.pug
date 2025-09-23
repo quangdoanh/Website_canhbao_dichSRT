@@ -15,6 +15,9 @@ block main
           label(class="inner-label" for="email") Email
           input(type="text" id="email" name="email" readonly value=contactDetail.email)
         .inner-group.inner-two-col
+          label(class="inner-label" for="topic") Chủ đề
+          input(type="text" id="topic" name="topic" readonly value=(contactDetail.topicLabel || "Không xác định"))
+        .inner-group.inner-two-col
           label(class="inner-label" for="message") Câu hỏi
           textarea(id="message" name="message" readonly)= contactDetail.message
         .inner-group.inner-two-col

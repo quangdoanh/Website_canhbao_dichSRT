@@ -1,5 +1,17 @@
 const ContactModel = require("../../models/contact.model");
 const moment = require("moment");
+function getTopicLabel(topic) {
+  switch (topic) {
+    case "sau-rom-thong":
+      return "Sâu róm Thông";
+    case "sau-hai-lakeo":
+      return "Sâu hại lá Keo";
+    case "benh-hai-lakeo":
+      return "Bệnh hại lá Keo";
+    default:
+      return "Không xác định";
+  }
+}
 module.exports.list = async (req, res) => {
   try {
     const contactList = await ContactModel.getAll();
@@ -23,6 +35,7 @@ module.exports.contactAnswer = async (req, res) => {
   try {
     const id = req.params.id;
     const contactDetail = await ContactModel.getById(parseInt(id));
+    contactDetail.topicLabel = getTopicLabel(contactDetail.topic);
     console.log(contactDetail);
     res.render("admin/pages/contact-answer", {
       pageTitle: "Phản hồi liên hệ",

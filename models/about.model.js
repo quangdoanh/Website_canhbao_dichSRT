@@ -88,10 +88,22 @@ const AboutModel = {
     return result.rows[0];
   },
   async updateStatus(id, status) {
-    const query = `UPDATE about SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *`;
+    if (status == 1) {
+      // Set tất cả các bài khác về 0
+      const queryReset = `UPDATE about SET status = 0 WHERE id <> $1`;
+      await pool.query(queryReset, [id]);
+    }
+
+    const query = `
+      UPDATE about
+      SET status = $1, updated_at = NOW()
+      WHERE id = $2
+      RETURNING *
+    `;
     const result = await pool.query(query, [status, id]);
     return result.rows[0];
-  },
+  }
+  ,
   async updateStatusMultiByIds(ids, status) {
     if (!Array.isArray(ids) || ids.length === 0) return false;
 

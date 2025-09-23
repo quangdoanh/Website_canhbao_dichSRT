@@ -1,0 +1,27 @@
+extends ../layouts/default
+
+block content
+  .faq-page
+    .container
+      h2.page-title Câu hỏi về #{topicName}
+      hr
+
+      if faqList && faqList.length
+        h3.faq-list-title Danh sách câu hỏi và trả lời
+        ul.faq-list
+          each item, index in faqList
+            li.faq-item
+              button.question(type="button")
+                .text-wrap
+                  span Q#{index + 1}: #{item.message}
+                  br
+                  small Người gửi: #{item.email} – Ngày gửi: #{new Date(item.created_at).toLocaleDateString("vi-VN")}
+                i.icon-toggle.fa-solid.fa-chevron-down
+              .answer
+                if item.answer
+                  p #{item.answer}
+                else
+                  p em Chưa có câu trả lời
+                small Ngày trả lời: #{new Date(item.updated_at).toLocaleDateString("vi-VN")}
+      else
+        p Không có câu hỏi nào.

@@ -49,6 +49,7 @@ block main
             th Họ tên
             th Email
             th Số điện thoại
+            th Chủ đề
             th Trạng thái
             th Ngày tạo
             th Hành động
@@ -60,6 +61,15 @@ block main
               td= contact.full_name
               td= contact.email
               td= contact.phone || "-"
+              td
+                if contact.topic == "sau-rom-thong"
+                  | Sâu róm Thông
+                else if contact.topic == "sau-hai-lakeo"
+                  | Sâu hại lá Keo
+                else if contact.topic == "benh-hai-lakeo"
+                  | Bệnh hại lá Keo
+                else
+                  | #{contactDetail.topic||"Không xác định"}
               td 
                 if contact.status == 1
                   .badge.badge-green Đã trả lời

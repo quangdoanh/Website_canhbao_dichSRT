@@ -90,13 +90,17 @@ if (contactCreateForm) {
     .addField("#message", [
       { rule: "required", errorMessage: "Vui lòng nhập nội dung!" }
     ])
+    .addField("#topic", [
+      { rule: "required", errorMessage: "Vui lòng chọn chủ đề!" }
+    ])
     .onSuccess((event) => {
       event.preventDefault(); // Ngăn submit mặc định
       const data = {
         full_name: event.target.full_name.value,
         email: event.target.email.value,
         phone: event.target.phone.value,
-        message: event.target.message.value
+        message: event.target.message.value,
+        topic: event.target.topic.value
       };
       console.log(data);
       fetch(`contact/create`, {
@@ -107,7 +111,8 @@ if (contactCreateForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            contactForm.reset();
+            alert("Gửi yêu cầu thành công")
+            contactCreateForm.reset();
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
           }
@@ -169,3 +174,20 @@ if (filterHuyen) {
 // End
 
 
+// faq
+const faqItems = document.querySelectorAll(".faq-item");
+
+  faqItems.forEach(item => {
+    const question = item.querySelector(".question");
+    question.addEventListener("click", () => {
+      item.classList.toggle("active");
+
+      const answer = item.querySelector(".answer");
+      if (item.classList.contains("active")) {
+        answer.style.display = "block";
+      } else {
+        answer.style.display = "none";
+      }
+    });
+  });
+//end faq

@@ -27,5 +27,24 @@ block content
             input(type="text" name="full_name" id="full_name" placeholder="Họ và tên (bắt buộc)" required)
             input(type="email" name="email" id="email" placeholder="Email (bắt buộc)" required)
             input(type="text" name="phone" id="phone" placeholder="Điện thoại")
+            select(name="topic" id="topic" required)
+              option(value="" disabled selected) Chọn chủ đề (bắt buộc)
+              option(value="sau-rom-thong") Sâu róm Thông
+              option(value="sau-hai-lakeo") Sâu hại lá Keo
+              option(value="benh-hai-lakeo") Bệnh hại lá Keo
+
             textarea(name="message" id="message" placeholder="Nội dung" rows="6")
             button(class="inner-button") GỬI ĐI
+            //- 3 box danh mục
+      .contact-topics
+        h3 Chọn chủ đề để xem câu hỏi
+        .topics-wrap
+          a.topic-box(href="/faq/sau-rom-thong")
+            i.fa-solid.fa-bug
+            span Sâu róm Thông
+          a.topic-box(href="/faq/sau-hai-lakeo")
+            i.fa-solid.fa-bug
+            span Sâu hại lá Keo
+          a.topic-box(href="/faq/benh-hai-lakeo")
+            i.fa-solid.fa-virus
+            span Bệnh hại lá Keo

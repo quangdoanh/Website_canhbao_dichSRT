@@ -1,18 +1,18 @@
 const pool = require("../config/database");
 
 const ContactModel = {
-   async addNew({ full_name, email, phone, message }) {
+   async addNew({ full_name, email, phone, message,topic }) {
   const query = `
-    INSERT INTO contacts (full_name, email, phone, message, status)
-    VALUES ($1, $2, $3, $4, 0)
+    INSERT INTO contacts (full_name, email, phone, message,topic, status)
+    VALUES ($1, $2, $3, $4,$5, 0)
     RETURNING *
   `;
-  const values = [full_name, email, phone || null, message];
+  const values = [full_name, email, phone || null, message,topic];
   const { rows } = await pool.query(query, values);
   return rows[0];
     }, 
-  // Lấy tất cả contact (có thể lọc theo status hoặc keyword)
-   async getAll({ status = null, keyword = null } = {}) {
+  // Lấy tất cả contact (có thể lọc theo status, keyword hoặc topic)
+  async getAll({ status = null, keyword = null, topic = null } = {}) {
     const conditions = [];
     const values = [];
     let index = 1;
@@ -26,6 +26,12 @@ const ContactModel = {
     if (keyword) {
       conditions.push(`(full_name ILIKE $${index} OR email ILIKE $${index} OR message ILIKE $${index})`);
       values.push(`%${keyword}%`);
+      index++;
+    }
+
+    if (topic) {
+      conditions.push(`topic = $${index}`);
+      values.push(topic);
       index++;
     }
 
@@ -48,7 +54,7 @@ const ContactModel = {
   },
 
   // Cập nhật trả lời và trạng thái
- async answerAndUpdateStatus(id, { answer, status }) {
+  async answerAndUpdateStatus(id, { answer, status }) {
     const query = `
       UPDATE contacts
       SET answer = $1,
