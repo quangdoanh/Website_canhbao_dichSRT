@@ -98,7 +98,13 @@ if (sider) {
   // end
 
   // active theo url 
-  let submenuLinks = sider.querySelectorAll(".menu");
+
+  /*
+  =============
+  SÂU RÓM THÔNG
+  ===============
+  */
+  let submenuLinks = sider.querySelectorAll(".menusrt");
   console.log(submenuLinks)
   submenuLinks.forEach(link => {
     const href = link.href;
@@ -129,9 +135,9 @@ if (sider) {
       }
       menuList.forEach(i => i.classList.remove('active', `open`));
 
-
     }
   });
+
 
   let submenu2Links = sider.querySelectorAll(".menu2");
   submenu2Links.forEach(link => {
@@ -653,6 +659,58 @@ if (filterRole) {
   }
 }
 // End Filter Role
+
+
+// Filter name
+const filterName = document.querySelector("[filter-name]")
+
+if (filterName) {
+  const url = new URL(window.location.href)
+  filterName.addEventListener("change", () => {
+    const value = filterName.value
+    if (value) {
+      url.searchParams.set("name", value)
+    } else {
+      url.searchParams.delete("name")
+    }
+    window.location.href = url.href
+  })
+  // hiển thị mặc định
+  const valueCurrent = url.searchParams.get("name")
+  if (valueCurrent) {
+    filterName.value = valueCurrent
+  }
+  console.log(filterName.value)
+  console.log("-------")
+  console.log(valueCurrent)
+
+}
+// end filter method
+
+const filterMethod = document.querySelector("[filter-method]")
+
+if (filterMethod) {
+  const url = new URL(window.location.href)
+  filterMethod.addEventListener("change", () => {
+    const value = filterMethod.value
+    if (value) {
+      url.searchParams.set("method", value)
+    } else {
+      url.searchParams.delete("method")
+    }
+    window.location.href = url.href
+  })
+  // hiển thị mặc định
+  const valueCurrent = url.searchParams.get("method")
+  if (valueCurrent) {
+    filterMethod.value = valueCurrent
+  }
+}
+// end Filter 
+
+
+// 
+
 // Filter reset
 const filterReset = document.querySelector("[filter-reset]");
 if (filterReset) {
@@ -1146,7 +1204,7 @@ if (dieutraForm) {
       };
 
 
-      fetch(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/create`, {
+      fetch(`/${pathAdmin}/dieutra/${matinh}/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -1154,7 +1212,7 @@ if (dieutraForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            window.location.href = `/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/dieutra/${matinh}/list`;
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
           }
@@ -1231,7 +1289,7 @@ if (dieutraEditForm) {
 
       console.log("Dữ liệu gửi lên server:", data);
 
-      fetch(`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/edit/${id}`, {
+      fetch(`/${pathAdmin}/dieutra/${matinh}/edit/${id}`, {
         method: "PATCH", // hoặc POST nếu backend không hỗ trợ PUT
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -1239,7 +1297,7 @@ if (dieutraEditForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            window.location.href = `/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/dieutra/${matinh}/list`;
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
           }
@@ -1335,7 +1393,7 @@ if (mapCreateForm) {
       if (file) formData.append("file", file);
       formData.append("mota", content);
 
-      fetch(`/${pathAdmin}/sauromthong/mapsrt/${matinh}/create`, {
+      fetch(`/${pathAdmin}/map/${matinh}/create`, {
         method: "POST",
         body: formData,
       })
@@ -1346,7 +1404,7 @@ if (mapCreateForm) {
             alert(data.message);
           }
           if (data.code === "success") {
-            window.location.href = `/${pathAdmin}/sauromthong/mapsrt/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/map/${matinh}/list`;
           }
         });
     });
@@ -1414,7 +1472,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
       }
       formData.append("mota", mota);
 
-      fetch(`/${pathAdmin}/sauromthong/mapsrt/${matinh}/edit/${id}`, {
+      fetch(`/${pathAdmin}/map/${matinh}/edit/${id}`, {
         method: "PATCH",
         body: formData
       })
@@ -1423,7 +1481,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
           if (data.code === "error") alert(data.message);
           else if (data.code === "success") {
             console.log("Cập nhật thành công!");
-            window.location.href = `/${pathAdmin}/sauromthong/mapsrt/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/map/${matinh}/list`;
           }
         })
         .catch(() => alert("Có lỗi xảy ra, vui lòng thử lại!"));
@@ -1476,10 +1534,10 @@ if (profileEditForm) {
     .onSuccess((event) => {
       const fullName = event.target.fullName.value;
       const phone = event.target.phone.value;
-      
+
       const dataFinal = {
-        full_name:fullName,
-        phone:phone
+        full_name: fullName,
+        phone: phone
       }
 
       fetch(`/${pathAdmin}/profile/edit`, {
@@ -1487,7 +1545,7 @@ if (profileEditForm) {
         headers: {
           "Content-Type": "application/json",   // THÊM DÒNG NÀY
         },
-        body: JSON.stringify(dataFinal) ,
+        body: JSON.stringify(dataFinal),
       })
         .then((res) => res.json())
         .then((data) => {

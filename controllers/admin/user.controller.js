@@ -265,21 +265,60 @@ module.exports.changeMultiPatch = async (req, res) => {
 module.exports.log = async (req, res) => {
 
   try {
-    const logUserList = await LogUserModel.getAll();
+
+    const limit = 20;
+    let page = 1;
+
+
+    const { method, name, startDate, endDate } = req.query
+    console.log(method, name, startDate, endDate)
+
+    // đổi múi giờ 
+
+
+    if (req.query.page) {
+      const pageCurrent = parseInt(req.query.page)
+      if (pageCurrent > 0) {
+        page = pageCurrent
+      }
+    }
+    const skip = (page - 1) * limit
+
+    const TotalLogUser = await LogUserModel.getAll();
+
+    const totalPage = Math.ceil(TotalLogUser.length / limit)
+
+    let pagination = {
+      skip: skip,
+      TotalLogUser: TotalLogUser,
+      totalPage: totalPage
+    }
+
+    const logUserList = await LogUserModel.FilterLogUser({
+      method,
+      name,
+      startDate,
+      endDate,
+      skip,
+      limit
+    });
+
+
 
     for (const item of logUserList) {
-
-
       item.timeDo = moment(item.time).format("HH:mm - DD/MM/YYYY");
 
     }
 
+    const accountUserList = await UserModel.getAll()
 
     //console.log(logUserList);
 
     res.render("admin/pages/user-log", {
       pageTitle: "Lịch sử người dùng",
-      logUserList: logUserList
+      logUserList: logUserList,
+      accountUserList: accountUserList,
+      pagination: pagination
 
     });
   } catch (err) {

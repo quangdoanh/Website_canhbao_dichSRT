@@ -1,5 +1,6 @@
 const pool = require("../config/database");
 const bcrypt = require("bcryptjs");
+const { getAll } = require("./province.model");
 
 const UserModel = {
     async findByID(id) {
@@ -290,6 +291,20 @@ const UserModel = {
             throw err;
         }
     },
+    async getAll() {
+        try {
+            const query = `SELECT * 
+                        FROM public.users 
+                        WHERE role = '6'
+                        ORDER BY id DESC`;
+            const { rows } = await pool.query(query);
+            return rows;  // trả về danh sách user
+        } catch (err) {
+            console.error("Error getAll:", err);
+            throw err;
+        }
+    }
+
 };
 
 module.exports = UserModel;
