@@ -11,17 +11,28 @@ module.exports.faqByTopic = async (req, res) => {
   try {
     const topic = req.params.topic;
 
-    // Kiểm tra topic có hợp lệ không
     if (!faqTopics[topic]) {
       return res.status(404).send("Chủ đề không tồn tại");
     }
 
-    // Lấy danh sách câu hỏi theo topic
-    const faqList = await ContactModel.getAll({ topic });
+    // --- Phân trang ---
+    const limit = 10; // số câu hỏi trên 1 trang
+    let page = parseInt(req.query.page) || 1;
+    if (page < 1) page = 1;
+
+    const totalRecords = await ContactModel.countPublic(topic);
+    const totalPages = Math.ceil(totalRecords / limit);
+    if (page > totalPages && totalPages > 0) page = totalPages;
+
+    const offset = (page - 1) * limit;
+
+    const faqList = await ContactModel.getPublicWithPagination(topic, limit, offset);
 
     res.render("client/pages/faq", {
       faqList,
       topicName: faqTopics[topic],
+      pagination: { page, totalPages, totalRecords },
+      limit
     });
   } catch (error) {
     console.error("Lỗi FAQ:", error);

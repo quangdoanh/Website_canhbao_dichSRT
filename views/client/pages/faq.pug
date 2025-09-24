@@ -13,7 +13,7 @@ block content
             li.faq-item
               button.question(type="button")
                 .text-wrap
-                  span Q#{index + 1}: #{item.message}
+                  span Q#{(pagination.page - 1) * limit + index + 1}: #{item.message}
                   br
                   small Người gửi: #{item.email} – Ngày gửi: #{new Date(item.created_at).toLocaleDateString("vi-VN")}
                 i.icon-toggle.fa-solid.fa-chevron-down
@@ -25,3 +25,15 @@ block content
                 small Ngày trả lời: #{new Date(item.updated_at).toLocaleDateString("vi-VN")}
       else
         p Không có câu hỏi nào.
+
+      // Phân trang
+      if pagination && pagination.totalPages > 1
+        .section-7
+          - const start = (pagination.page - 1) * limit + 1;
+          - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+          span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+
+          select.inner-pagination(name="page" onchange="location.href='?page=' + this.value")
+            each val in [...Array(pagination.totalPages).keys()]
+              - const pageNum = val + 1;
+              option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}
