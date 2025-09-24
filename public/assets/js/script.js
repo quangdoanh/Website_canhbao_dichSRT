@@ -177,17 +177,44 @@ if (filterHuyen) {
 // faq
 const faqItems = document.querySelectorAll(".faq-item");
 
-  faqItems.forEach(item => {
-    const question = item.querySelector(".question");
-    question.addEventListener("click", () => {
-      item.classList.toggle("active");
+faqItems.forEach(item => {
+  const question = item.querySelector(".question");
 
-      const answer = item.querySelector(".answer");
-      if (item.classList.contains("active")) {
-        answer.style.display = "block";
-      } else {
-        answer.style.display = "none";
+  question.addEventListener("click", () => {
+    // Đóng tất cả trước
+    faqItems.forEach(otherItem => {
+      if (otherItem !== item) {
+        otherItem.classList.remove("active");
+        otherItem.querySelector(".answer").style.display = "none";
       }
     });
+
+    // Toggle cho item hiện tại
+    item.classList.toggle("active");
+    const answer = item.querySelector(".answer");
+    if (item.classList.contains("active")) {
+      answer.style.display = "block";
+    } else {
+      answer.style.display = "none";
+    }
   });
-//end faq
+});
+// pagination
+const pagination = document.querySelector("[pagination]");
+if (pagination) {
+  const url = new URL(window.location.href);
+  pagination.addEventListener("change", () => {
+    const value = pagination.value;
+    if (value) {
+      url.searchParams.set("page", value);
+    } else {
+      url.searchParams.delete("page");
+    }
+    window.location.href = url.href;
+  });
+  const valueCurrent = url.searchParams.get("page");
+  if (valueCurrent) {
+    pagination.value = valueCurrent;
+  }
+}
+// end pagination

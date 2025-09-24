@@ -14,29 +14,49 @@ function getTopicLabel(topic) {
 }
 module.exports.list = async (req, res) => {
   try {
-    const contactList = await ContactModel.getAll();
+    const limit = 20; // số bản ghi trên mỗi trang
+    let page = parseInt(req.query.page) || 1; // lấy page từ URL
+    if (page < 1) page = 1;
 
-    for (const item of contactList) {
+    // Bước 1: đếm tổng số bản ghi
+    const totalRecords = await ContactModel.countAll();
+    const totalPages = Math.ceil(totalRecords / limit);
+    if (page > totalPages && totalPages > 0) page = totalPages;
+
+    // Bước 2: tính offset
+    const offset = (page - 1) * limit;
+
+    // Bước 3: lấy danh sách phân trang
+    const contactList = await ContactModel.getAllWithPagination({
+      limit,
+      offset
+    });
+
+    // Bước 4: format ngày + nhãn topic
+    contactList.forEach((item) => {
       item.createdAtFormat = moment(item.created_at).format("DD/MM/YYYY");
-    }
-    console.log(contactList);
+      item.topicLabel = getTopicLabel(item.topic);
+    });
+
+    // Bước 5: render ra view
     res.render("admin/pages/contact-list", {
       pageTitle: "Danh sách liên hệ",
-      contactList: contactList,
+      contactList,
+      pagination: { page, totalPages, totalRecords },
+      limit
     });
   } catch (error) {
     console.error(error);
     res.json({ code: "error", message: "Lỗi server" });
-    res.redirect(`/${pathAdmin}/contact/list`);
   }
 };
+
 
 module.exports.contactAnswer = async (req, res) => {
   try {
     const id = req.params.id;
     const contactDetail = await ContactModel.getById(parseInt(id));
     contactDetail.topicLabel = getTopicLabel(contactDetail.topic);
-    console.log(contactDetail);
     res.render("admin/pages/contact-answer", {
       pageTitle: "Phản hồi liên hệ",
       contactDetail: contactDetail
@@ -44,7 +64,6 @@ module.exports.contactAnswer = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.json({ code: "error", message: "Lỗi server" });
-    res.redirect(`/${pathAdmin}/contact/list`);
   }
 };
 module.exports.contactAnswerPatch = async (req, res) => {
@@ -74,6 +93,7 @@ module.exports.contactAnswerPatch = async (req, res) => {
       return;
     }
 
+    req.flash("success", "Phản hồi đã được lưu!");
     return res.json({
       code: "success",
       message: "Phản hồi đã được lưu!",
@@ -81,6 +101,60 @@ module.exports.contactAnswerPatch = async (req, res) => {
   } catch (err) {
     console.error("Lỗi cập nhật trả lời:", err);
     res.json({ code: "error", message: "Lỗi server" });
-    res.redirect(`/${pathAdmin}/contact/list`);
   }
 };
+//ẩn hiện câu hỏi và câu trả lời
+module.exports.togglePublic = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isPublic } = req.body; // true hoặc false
+    console.log(isPublic);
+
+    const updated = await ContactModel.updatePublic(id, isPublic);
+
+    if (!updated) {
+      return res.json({
+        code: "error",
+        message: "Không tìm thấy liên hệ để cập nhật!",
+      });
+    }
+
+    return res.json({
+      code: "success",
+      message: `Liên hệ đã được ${isPublic ? "hiển thị" : "ẩn"}!`,
+    });
+  } catch (err) {
+    console.error("Lỗi cập nhật is_public:", err);
+    res.json({ code: "error", message: "Lỗi server" });
+  }
+};
+//end ẩn hiện câu hỏi và câu trả lời
+
+
+// changeMulti
+module.exports.changeMulti = async (req, res) => {
+  try {
+    const { ids, option } = req.body; // isPublic từ client về là "true"/"false"
+    console.log("raw isPublic:", option);
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.json({ code: "error", message: "Danh sách ID không hợp lệ!" });
+    }
+
+    // ép kiểu string -> boolean
+    const isPublicBool = (option === "true" || option === true);
+
+    const updated = await ContactModel.updatePublicMulti(ids, isPublicBool);
+    req.flash("success",`Đã cập nhật ${updated.length} bản ghi thành công!` )
+    return res.json({
+      code: "success",
+      message: `Đã cập nhật ${updated.length} bản ghi thành công!`,
+      data: updated,
+    });
+  } catch (err) {
+    console.error("Lỗi changeMulti:", err);
+    res.json({ code: "error", message: "Lỗi server!" });
+  }
+};
+
+//end changeMulti

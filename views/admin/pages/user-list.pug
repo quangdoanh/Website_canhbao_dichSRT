@@ -16,6 +16,7 @@ block main
       .inner-item.inner-date
         input(type="date" filter-start-date)
         span - 
+
         input(type="date" filter-end-date)
       .inner-item
         select(filter-role)
@@ -64,28 +65,32 @@ block main
             th Hành động
         tbody
           each item in accountUserList
-            tr
-              td.inner-center
-                input(type="checkbox" class="inner-check" check-item = item.id)
-              td.inner-center #{item.full_name}
-              td #{item.email}
-              td #{item.phone}
-              td #{item.roleName}
-              td #{item.createdByName || "N/A"}
-              td
-                if item.status === "active"
-                  .badge.badge-green Hoạt động
-                else if item.status === "inactive"
-                  .badge.badge-red Tạm dừng
-                else if item.status === "initial"
-                  .badge.badge-orange Khởi tạo
-              td #{item.ten_tinh}
-              td
-                .inner-buttons
-                  a.inner-edit(href=`/${pathAdmin}/user/edit/${item.id}`)
-                    i(class="fa-regular fa-pen-to-square")
-                  button.inner-delete(button-delete data-api=`/${pathAdmin}/user/delete/${item.id}`)
-                    i(class="fa-regular fa-trash-can")
+            if accountUserList && accountUserList.length
+              tr
+                td.inner-center
+                  input(type="checkbox" class="inner-check" check-item = item.id)
+                td.inner-center #{item.full_name}
+                td #{item.email}
+                td #{item.phone}
+                td #{item.roleName}
+                td #{item.createdByName || "N/A"}
+                td
+                  if item.status === "active"
+                    .badge.badge-green Hoạt động
+                  else if item.status === "inactive"
+                    .badge.badge-red Tạm dừng
+                  else if item.status === "initial"
+                    .badge.badge-orange Khởi tạo
+                td #{item.ten_tinh}
+                td
+                  .inner-buttons
+                    a.inner-edit(href=`/${pathAdmin}/user/edit/${item.id}`)
+                      i(class="fa-regular fa-pen-to-square")
+                    button.inner-delete(button-delete data-api=`/${pathAdmin}/user/delete/${item.id}`)
+                      i(class="fa-regular fa-trash-can")
+            else 
+              tr
+                td(colspan="11" style="text-align:center; padding:10px;") Không có dữ liệu
   //- Section 7: Pagination
   .section-7
     - const start = (pagination.page - 1) * limit + 1;

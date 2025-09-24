@@ -35,26 +35,30 @@ block main
             th Hành động
         tbody
             each item in aboutList
+              if aboutList && aboutList.length > 0
                 tr
-                td.inner-center #{item.title}
-                td.inner-center
-                    if item.avatar
-                        img(src=item.avatar class="inner-avatar")
-                td #{item.createdAtFormat}
-                td.inner-center
-                    label.switch
-                        input(
-                            type="checkbox"
-                            checked=(item.status === 1 ? true : false)
-                            toggle-status
-                            data-id=item.id
-                            data-api=`/${pathAdmin}/about/change-status/${item.id}`
-                        )
-                        span.slider.round
-                td
-                    .inner-buttons
-                        a.inner-edit(href=`/${pathAdmin}/about/edit/${item.id}`)
-                            i(class="fa-regular fa-pen-to-square")
+                  td.inner-center #{item.title}
+                  td.inner-center
+                      if item.avatar
+                          img(src=item.avatar class="inner-avatar")
+                  td #{item.createdAtFormat}
+                  td.inner-center
+                      label.switch
+                          input(
+                              type="checkbox"
+                              checked=(item.status === 1 ? true : false)
+                              toggle-status
+                              data-id=item.id
+                              data-api=`/${pathAdmin}/about/change-status/${item.id}`
+                          )
+                          span.slider.round
+                  td
+                      .inner-buttons
+                          a.inner-edit(href=`/${pathAdmin}/about/edit/${item.id}`)
+                              i(class="fa-regular fa-pen-to-square")
+              else
+                tr
+                  td(colspan="9" class="inner-center") Không có dữ liệu
     //- Section 7
     //- Section 7: Pagination
     .section-7
