@@ -40,7 +40,7 @@ block main
         i(class="fa-solid fa-magnifying-glass")
         input(type="text" placeholder="Tìm kiếm" search)
       .inner-button-create
-          a(href=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/create`) + Tạo mới
+          a(href=`/${pathAdmin}/dieutra/${matinh}/create`) + Tạo mới
 
   //- Section 6: Bảng danh sách
   .section-6
@@ -77,9 +77,9 @@ block main
               td= item.createdAtFormat
               td
                 .inner-buttons
-                  a.inner-edit(href=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/edit/${item.id}`)
+                  a.inner-edit(href=`/${pathAdmin}/dieutra/${matinh}/edit/${item.id}`)
                     i(class="fa-regular fa-pen-to-square")
-                  button.inner-delete(button-delete-patch data-api=`/${pathAdmin}/sauromthong/dieutrasrt/${matinh}/delete/${item.id}`)
+                  button.inner-delete(button-delete-patch data-api=`/${pathAdmin}/dieutra/${matinh}/delete/${item.id}`)
                     i(class="fa-regular fa-trash-can")
         else
           tr

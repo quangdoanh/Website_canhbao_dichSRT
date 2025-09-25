@@ -35,7 +35,7 @@ block main
           i(class="fa-solid fa-magnifying-glass")
           input(type="text" placeholder="Tìm kiếm" search)
         .inner-button-create
-          a(href=`/${pathAdmin}/sauromthong/mapsrt/${matinh}/create`) + Tạo mới
+          a(href=`/${pathAdmin}/map/${matinh}/create`) + Tạo mới
 
   //- End Section 5
 
@@ -66,9 +66,9 @@ block main
               td(class="inner-center") #{item.thongtin}
               td
                 .inner-buttons
-                  a(href=`/${pathAdmin}/sauromthong/mapsrt/${matinh}/edit/${item.id}` class="inner-edit")
+                  a(href=`/${pathAdmin}/map/${matinh}/edit/${item.id}` class="inner-edit")
                     i.fa-regular.fa-pen-to-square
-                  a(class="inner-delete" button-delete data-api=`/${pathAdmin}/sauromthong/mapsrt/${matinh}/delete/${item.id}`)
+                  a(class="inner-delete" button-delete data-api=`/${pathAdmin}/map/${matinh}/delete/${item.id}`)
                     i.fa-regular.fa-trash-can
         else
           tr

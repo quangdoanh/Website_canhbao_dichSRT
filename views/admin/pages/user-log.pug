@@ -10,17 +10,16 @@ block main
         i.fa-solid.fa-filter
         | Bộ lọc
       .inner-item
-        select(filter-status)
+        select(filter-method)
           option(value="") Phương Thức
-          option(value="GET") GET
+          option(value="PATCH") PATCH
           option(value="POST") POST
           option(value="DELETE") DELETE
       .inner-item
-        select(filter-user)
-          option(value="") Người dùng
-          option(value="") Nguyễn Văn A
-          option(value="") Trần Thị B
-          option(value="") Lê Văn C
+        select(filter-name)
+          option(value="") Người thực hiện
+          each item in accountUserList
+            option(value=`${item.email}`) #{item.email || ""}
       .inner-item.inner-date
         input(type="date" filter-start-date)
         span -
@@ -30,19 +29,19 @@ block main
         | Xóa bộ lọc
 
   //- Section 5: Hành động & tìm kiếm
-  .section-5
-    .inner-wrap
-      .inner-change-status(change-multi data-api="/account-admin/change-multi")
-        .inner-item
-          select
-            option(value="") -- Hành động --
+  //- .section-5
+  //-   .inner-wrap
+  //-     .inner-change-status(change-multi data-api="/account-admin/change-multi")
+  //-       .inner-item
+  //-         select
+  //-           option(value="") -- Hành động --
 
-            option(value="delete") Xóa
-        .inner-item
-          button Áp dụng
-      .inner-search
-        i.fa-solid.fa-magnifying-glass
-        input(type="text" placeholder="Tìm kiếm" search)
+  //-           option(value="delete") Xóa
+  //-       .inner-item
+  //-         button Áp dụng
+  //-     .inner-search
+  //-       i.fa-solid.fa-magnifying-glass
+  //-       input(type="text" placeholder="Tìm kiếm" search)
 
   //- Section 6: Bảng danh sách
   .section-6
@@ -50,8 +49,8 @@ block main
       table
         thead
           tr
-            th.inner-center
-              input(type="checkbox" class="inner-check" check-all)
+            //- th.inner-center
+            //-   input(type="checkbox" class="inner-check" check-all)
             th.inner-center Người dùng
             th.inner-center API
             th.inner-center Phương thức
@@ -60,8 +59,8 @@ block main
         tbody
          each item in logUserList
           tr
-            td.inner-center
-              input(type="checkbox" class="inner-check" check-item="1")
+            //- td.inner-center
+            //-   input(type="checkbox" class="inner-check" check-item="1")
             td.inner-center #{item.user}
             td.inner-center #{item.endpoint}
             td.inner-center #{item.method}
@@ -74,7 +73,8 @@ block main
 
   //- Section 7: Pagination
   .section-7
-    span.inner-label Hiển thị 1 - 2 của 2
-    select.inner-pagination(name="page")
-      option(value="1" selected) Trang 1
+    span(class="inner-label") Hiển thị #{pagination.skip + 1} - #{logUserList.length + pagination.skip} của #{pagination.TotalLogUser.length}
+    select(class="inner-pagination" pagination)
+      - for(let i = 1 ; i <= pagination.totalPage ; i++)
+            option(value=i) Trang #{i}
 

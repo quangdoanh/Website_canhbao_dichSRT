@@ -12,9 +12,12 @@ const benhhaikeoRoutes = require('./benhhailakeo.route')
 const weatherRouters = require('./weather.route');
 const degradRouters = require('./degrad.route');
 const profileRoutes = require('./profile.route');
+const UploadMapRoutes = require('./uploadmap.route')
+const DieuTraRoutes = require('./dieutra.route')
 // const userRoutes = require("./user.route");
 
 const authMiddleware = require("../../middlewares/admin/auth.middlewares");
+const { required } = require('joi');
 
 router.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -23,6 +26,8 @@ router.use((req, res, next) => {
 router.use('/benhhailakeo', authMiddleware.verifyToken, benhhaikeoRoutes);
 router.use('/sauromthong', authMiddleware.verifyToken, sauromthongRoutes);
 router.use('/sauhailakeo', authMiddleware.verifyToken, sauhailakeoRotues);
+router.use('/map', authMiddleware.verifyToken, UploadMapRoutes)
+router.use('/dieutra', authMiddleware.verifyToken, DieuTraRoutes)
 router.use('/account', accountRoutes);
 router.use('/dashboard', authMiddleware.verifyToken, dashboardRoutes);
 // router.use('/account-admin', authMiddleware.verifyToken, adminRoutes);
@@ -32,7 +37,7 @@ router.use('/about', authMiddleware.verifyToken, aboutRoutes);
 router.use('/contact', authMiddleware.verifyToken, contactRoutes);
 router.use('/weather-data', authMiddleware.verifyToken, weatherRouters);
 router.use('/degrad', authMiddleware.verifyToken, degradRouters);
-router.use('/profile',authMiddleware.verifyToken, profileRoutes);
+router.use('/profile', authMiddleware.verifyToken, profileRoutes);
 
 
 
