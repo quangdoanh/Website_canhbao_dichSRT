@@ -6,9 +6,31 @@ nav.sider
         i.fa-solid.fa-gauge-high
         |  Tổng quan
     li
-      a.dashboard.item_menu(href=`/${pathAdmin}/weather-data/list`)
-        i.fa-solid.fa-cloud
-        |  Dữ liệu thời tiết
+      div.item_menu
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        |  Cảnh báo
+        i.fa-solid.fa-chevron-down.arrow
+      ul.submenu2
+        li
+          a.menu2(href=`/${pathAdmin}/weather-data/list`) 
+            i.fa-solid.fa-cloud-sun-rain
+            |  Dữ liệu thời tiết
+        li
+          a.menu2(href=`/${pathAdmin}/sauromthong/list`) 
+            i.fa-solid.fa-mosquito
+            |  Cảnh báo SRT
+        li
+          a.menu2(href=`/${pathAdmin}/dieutra/list`) 
+            i.fa-solid.fa-magnifying-glass
+            |  Dữ liệu điều tra
+        li
+          a.menu2(href=`/${pathAdmin}/map/list`) 
+            i.fa-solid.fa-map-location-dot
+            |  Dữ liệu bản đồ
+    //- li
+    //-   a.dashboard.item_menu(href=`/${pathAdmin}/weather-data/list`)
+    //-     i.fa-solid.fa-cloud
+    //-     |  Dữ liệu thời tiết
     li
       //- div.item_menu
       //-   <i class="fa-solid fa-eye"></i>
@@ -31,6 +53,7 @@ nav.sider
       div.item_menu
         i.fa-solid.fa-eye
         |  Giám sát
+        i.fa-solid.fa-chevron-down.arrow
       ul.submenu
         li
           div.item_city 

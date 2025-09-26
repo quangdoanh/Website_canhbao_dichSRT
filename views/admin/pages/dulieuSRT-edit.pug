@@ -1,12 +1,16 @@
 extends ../layouts/default.pug
 block main
-    h1.box-title Chỉnh sửa Du lieu SRT
+    h1.box-title Chỉnh sửa Dữ liệu SRT
 
     .section-8
       form#srt-edit-form
         .inner-group(style="display: none;")
           label(class="inner-label" for="id") Id
           input(type="text" id="id" name="id" value=dataSRT.id)
+        .inner-group
+          label(class="inner-label" for="tinhDisabled") Tinh
+          select(id="tinhDisabled" disabled)
+            option(value=dataSRT.matinh selected) #{dataSRT.tinh}
         .inner-group
           label(class="inner-label" for="huyenDisabled") Huyện
           select(id="huyenDisabled" disabled)
@@ -54,13 +58,14 @@ block main
 
         .inner-group
           label(class="inner-label" for="phancap") Phân cấp
-          select(id="phancap" name="phancap" style="font-weight: bold")
+          select(id="phancap" name="phancap" style="font-weight: bold") 
+            option(value=dataSRT.phancap selected) #{dataSRT.phancap}
             option(value=1 ) 1
             option(value=2 ) 2
-            option(value=3 selected) 3
+            option(value=3 ) 3
 
         .inner-button.inner-two-col
           button Cập nhật
 
       .inner-back
-        a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/list`) Quay lại danh sách
+        a(href=`/${pathAdmin}/sauromthong/list`) Quay lại danh sách

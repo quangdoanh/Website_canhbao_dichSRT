@@ -1,0 +1,98 @@
+extends ../layouts/default.pug
+include ../mixins/optionTinh.pug
+include ../mixins/optionHuyen.pug
+include ../mixins/optionXa.pug
+
+block main
+  h1.box-title Cập nhật bản ghi Thời tiết
+
+  .section-8
+    form#weather-edit-form
+      //- ID bản ghi (ẩn)
+      .inner-group(style="display:none")
+        label.inner-label(for="id") ID
+        input(type="text" id="id" name="id" value=dataDetail.id readonly)
+
+      //- Tỉnh
+      .inner-group
+        label.inner-label(for="tinh") Tỉnh
+        select(id="tinh" name="ma_tinh" class="tinh" required)
+          option(value="") -- Chọn Tỉnh --
+          if dataDetail.ma_tinh
+            option(value=dataDetail.ma_tinh selected)= dataDetail.ten_tinh
+          +optionTinh(listTinh, dataDetail.ma_tinh)
+
+      //- Huyện
+      .inner-group
+        label.inner-label(for="huyen") Huyện
+        select(id="huyen" name="ma_huyen" class="huyen" required)
+          option(value="") -- Chọn Huyện --
+          if dataDetail.ma_huyen
+            option(value=dataDetail.ma_huyen selected)= dataDetail.ten_huyen
+          +optionHuyen(listHuyen, dataDetail.ma_huyen)
+
+      //- Xã
+      .inner-group
+        label.inner-label(for="xa") Xã
+        select(id="xa" name="ma_xa" class="xa" required)
+          option(value="") -- Chọn Xã --
+          if dataDetail.ma_xa
+            option(value=dataDetail.ma_xa selected)= dataDetail.ten_xa
+          +optionXa(listXaTheoHuyen, dataDetail.ma_xa)
+      //- Nhiệt độ Min
+      .inner-group
+        label.inner-label(for="temp_min") Nhiệt độ Min (°C)
+        input(type="number" step="0.1" id="temp_min" name="temp_min" value=dataDetail.temp_min)
+
+      //- Nhiệt độ Max
+      .inner-group
+        label.inner-label(for="temp_max") Nhiệt độ Max (°C)
+        input(type="number" step="0.1" id="temp_max" name="temp_max" value=dataDetail.temp_max)
+
+      //- Nhiệt độ TB
+      .inner-group
+        label.inner-label(for="temp_mean") Nhiệt độ TB (°C)
+        input(type="number" step="0.1" id="temp_mean" name="temp_mean" value=dataDetail.temp_mean)
+
+      //- Lượng mưa Min
+      .inner-group
+        label.inner-label(for="rain_min") Lượng mưa Min (mm)
+        input(type="number" step="0.1" id="rain_min" name="rain_min" value=dataDetail.rain_min)
+
+      //- Lượng mưa Max
+      .inner-group
+        label.inner-label(for="rain_max") Lượng mưa Max (mm)
+        input(type="number" step="0.1" id="rain_max" name="rain_max" value=dataDetail.rain_max)
+
+      //- Lượng mưa TB
+      .inner-group
+        label.inner-label(for="rain_mean") Lượng mưa TB (mm)
+        input(type="number" step="0.1" id="rain_mean" name="rain_mean" value=dataDetail.rain_mean)
+
+      //- Tốc độ gió Min
+      .inner-group
+        label.inner-label(for="wind_min") Tốc độ gió Min (m/s)
+        input(type="number" step="0.1" id="wind_min" name="wind_min" value=dataDetail.wind_min)
+
+      //- Tốc độ gió Max
+      .inner-group
+        label.inner-label(for="wind_max") Tốc độ gió Max (m/s)
+        input(type="number" step="0.1" id="wind_max" name="wind_max" value=dataDetail.wind_max)
+
+      //- Tốc độ gió TB
+      .inner-group
+        label.inner-label(for="wind_mean") Tốc độ gió TB (m/s)
+        input(type="number" step="0.1" id="wind_mean" name="wind_mean" value=dataDetail.wind_mean)
+
+      //- Cấp số p  
+      .inner-group
+        label.inner-label(for="cap_so_p") Chỉ số k
+        input(type="number" step="1" min="0" id="cap_so_p" name="cap_so_p" value=(dataDetail.cap_so_p ))
+
+      //- Submit
+      .inner-button.inner-two-col
+        button Cập nhật
+
+    //- Back link
+    .inner-back
+      a(href=`/${pathAdmin}/weather-data/list`) Quay lại danh sách

@@ -1,17 +1,19 @@
 extends ../layouts/default.pug
-
+include ../mixins/optionTinh.pug
 block main
     h1.box-title Tạo bản đồ
   
     .section-8
       form#map-create-form
-        .inner-group.inner-two-col(style="display:none")
-          label(class="inner-label" for="matinh") Mã tỉnh
-          input(type="text" id="matinh" name="matinh" value=matinh) 
+        .inner-group.inner-two-col
+          label(class="inner-label" for="tinh") Tỉnh
+          select(id="tinh" name="tinh" class="tinh")
+            option(value="") ---Chọn---
+            +optionTinh(listTinh)
         .inner-group.inner-two-col
           label(class="inner-label" for="title") Thông tin
           input(type="text" id="title" name="title")
-        .inner-group
+        .inner-group.inner-two-col
             label(class="inner-label" for="map") Loại bản đồ
             select(id="map" name="map" class="huyen")
               option(value="Bản đồ ranh giới hành chính" selected) Bản đồ ranh giới hành chính
@@ -33,4 +35,4 @@ block main
         .inner-button.inner-two-col
           button Tạo mới
       .inner-back
-        a(href=`/${pathAdmin}/map/${matinh}/list`) Quay lại danh sách
+        a(href=`/${pathAdmin}/map/list`) Quay lại danh sách

@@ -2,17 +2,35 @@ mixin optionXa(listXaTheoHuyen)
   //- Render tất cả xã, kèm data-huyen để lọc
   each item in listXaTheoHuyen
     each xa in item.dsXa
-      option(value=xa.ma_xa data-huyen=item.huyen)= xa.ten_xa
+      option(value=xa.ma_xa data-huyen=item.huyen )= xa.ten_xa
 
     
   //- Script lọc xã theo huyện
   script.
+    const tinhSelect = document.querySelector("select.tinh");
     const xaSelect = document.querySelector("select.xa");
     const huyenSelect = document.querySelector("select.huyen");
 
     console.log(huyenSelect)
     console.log(xaSelect)
-
+    function filterHuyenByTinh(ma_tinh) {
+      const options = huyenSelect.querySelectorAll("option[data-tinh]");
+      options.forEach(opt => {
+        if (!ma_tinh || opt.getAttribute("data-tinh") === ma_tinh) {
+          opt.style.display = "";
+        } else {
+          opt.style.display = "none";
+        }
+      });// reset về -- Chọn Huyện --
+      const selectedOption = huyenSelect.querySelector("option[selected]");
+      if (selectedOption) {
+        huyenSelect.value = selectedOption.value;
+      } else {
+        huyenSelect.value = "";
+      }
+      // đồng thời clear xã
+      filterXaByHuyen("");
+    }
     function filterXaByHuyen(ma_huyen) {
       const options = xaSelect.querySelectorAll("option[data-huyen]");
       console.log("Huyện:",ma_huyen)
@@ -36,6 +54,33 @@ mixin optionXa(listXaTheoHuyen)
     huyenSelect.addEventListener("change", (e) => {
       filterXaByHuyen(e.target.value);
     });
-
+    tinhSelect.addEventListener("change", (e) => {
+      filterHuyenByTinh(e.target.value);
+    });
+  
     // Khởi tạo: ẩn hết xã trước
     filterXaByHuyen("");
+    let dataDetail = !{JSON.stringify(dataDetail) || 'null'};
+
+    if (dataDetail && dataDetail.ma_xa) {
+      // Khi focus vào tỉnh → chỉ giữ lại tỉnh chứa xã đó
+      tinhSelect.addEventListener("focus", () => {
+        [...tinhSelect.options].forEach(opt => {
+          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.tinh_from_xa));
+        });
+      });
+
+      // Khi focus vào huyện → chỉ giữ lại huyện chứa xã đó
+      huyenSelect.addEventListener("focus", () => {
+        [...huyenSelect.options].forEach(opt => {
+          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.huyen_from_xa));
+        });
+      });
+
+      // Khi focus vào xã → chỉ giữ lại xã đã chọn
+      xaSelect.addEventListener("focus", () => {
+        [...xaSelect.options].forEach(opt => {
+          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.ma_xa));
+        });
+      });
+    }

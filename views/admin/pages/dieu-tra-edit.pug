@@ -1,4 +1,5 @@
 extends ../layouts/default.pug
+include ../mixins/optionTinh.pug
 include ../mixins/optionHuyen.pug
 include ../mixins/optionXa.pug
 
@@ -9,56 +10,75 @@ block main
     form#dieutra-edit-form
       //- ID bản ghi (ẩn)
       .inner-group(style="display:none")
-        label(class="inner-label" for="id") Id bản ghi
-        input(type="text" id="id" name="id" value=dieutra.id)
-      //- Tỉnh (ẩn)
-      .inner-group(style="display:none")
-        label(class="inner-label" for="matinh") Id_Tỉnh
-        input(type="text" id="matinh" name="matinh" value=dieutra.ma_tinh readonly)
+        label.inner-label(for="id") ID
+        input(type="text" id="id" name="id" value=dieutra.id readonly)
+
+      //- Tỉnh
+      .inner-group
+        label.inner-label(for="tinh") Tỉnh
+        select(id="tinh" name="tinh" class="tinh" required)
+          option(value=dieutra.ma_tinh selected) #{dieutra.ten_tinh}
+          +optionTinh(ListTinh, dieutra.ma_tinh)
 
       //- Huyện
       .inner-group
-        label(class="inner-label" for="huyen") Huyện
-        select(id="huyen" name="huyen" class="huyen")
+        label.inner-label(for="huyen") Huyện
+        select(id="huyen" name="huyen" class="huyen" required)
           option(value=dieutra.ma_huyen selected) #{dieutra.ten_huyen}
-          // Các option khác từ mixin
-          +optionHuyen(ListHuyen)
+          +optionHuyen(ListHuyen, dieutra.ma_huyen)
 
       //- Xã
       .inner-group
-        label(class="inner-label" for="xa") Xã
-        select(id="xa" name="xa" class="xa")
+        label.inner-label(for="xa") Xã
+        select(id="xa" name="xa" class="xa" required)
           option(value=dieutra.ma_xa selected) #{dieutra.ten_xa}
-          +optionXa(ListXaTheoHuyen)
+          +optionXa(ListXaTheoHuyen, dieutra.ma_xa)
 
       //- Số sâu non
       .inner-group
-        label(class="inner-label" for="sosau") Số sâu non
+        label.inner-label(for="sosau") Số sâu non
         input(type="number" id="sosau" name="sosau" value=dieutra.so_sau_non)
 
       //- Số cây
       .inner-group
-        label(class="inner-label" for="socay") Số cây
+        label.inner-label(for="socay") Số cây
         input(type="number" id="socay" name="socay" value=dieutra.so_cay)
 
       //- Địa chỉ cụ thể
-      .inner-group.inner-two-col
-        label(class="inner-label" for="diachi") Địa chỉ cụ thể
+      .inner-group
+        label.inner-label(for="diachi") Địa chỉ cụ thể
         input(type="text" id="diachi" name="diachi" value=dieutra.dia_chi_cu_the)
-      //- Loại cây
+
+      //- Loài cây
       .inner-group
-        label(class="inner-label" for="loai_cay") Loại cây
-        select(id="loai_cay" name="loai_cay")
-          option(value="thongmavi" selected=dieutra.loai_cay==='thongmavi') Thông Mã Vĩ
-          option(value="thongnhua" selected=dieutra.loai_cay==='thongnhua') Thông Nhựa
-      //- Đường kính trung bình
+        label.inner-label(for="loai_cay") Loài cây
+        select(id="loai_cay" name="loai_cay" required)
+          option(value="") ---Chọn---
+          option(value="thongmavi" selected=dieutra.loai_cay==="thongmavi") Thông Mã Vĩ
+          option(value="thongnhua" selected=dieutra.loai_cay==="thongnhua") Thông Nhựa
+
+      //- Đường kính TB
       .inner-group
-        label(class="inner-label" for="duong_kinh_tb") Đường kính TB (cm)
-        input(type="number" step="0.01" id="duong_kinh_tb" name="duong_kinh_tb" value=dieutra.duong_kinh_tb)
-      //- Button submit
+        label.inner-label(for="duong_kinh_tb") Đường kính TB (cm)
+        input(type="number" step="0.5" min="0" id="duong_kinh_tb" name="duong_kinh_tb" value=dieutra.duong_kinh_tb)
+
+      //- Tiểu khu, Khoảnh, Lô
+      .inner-group.inner-two-col
+        label.inner-label(for="tk") Tiểu khu
+        input(type="text" id="tk" name="tk" value=dieutra.tk)
+
+      .inner-group.inner-two-col
+        label.inner-label(for="khoanh") Khoảnh
+        input(type="text" id="khoanh" name="khoanh" value=dieutra.khoanh)
+
+      .inner-group.inner-two-col
+        label.inner-label(for="lo") Lô
+        input(type="text" id="lo" name="lo" value=dieutra.lo)
+
+      //- Submit
       .inner-button.inner-two-col
         button(type="submit") Cập nhật
 
     //- Back link
     .inner-back
-      a(href=`/${pathAdmin}/dieutra/${matinh}/list`) Quay lại danh sách
+      a(href=`/${pathAdmin}/dieutra/list`) Quay lại danh sách

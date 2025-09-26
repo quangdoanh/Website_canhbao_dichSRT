@@ -1,14 +1,18 @@
 extends ../layouts/default.pug
 include ../mixins/optionHuyen.pug
 include ../mixins/optionXa.pug
+include ../mixins/optionTinh.pug
 block main
     h1.box-title Thêm mới
 
     .section-8
       form#dieutra-create-form
-        .inner-group(style="display:none")
-          label(class="inner-label" for="matinh") Id_Tỉnh
-          input(type="text" id="matinh" name="matinh" value=matinh readonly)
+        //- Tỉnh
+        .inner-group
+          label(class="inner-label" for="tinh") Tỉnh
+          select(id="tinh" name="tinh" class="tinh" required)
+            option(value="") ---Chọn---
+            +optionTinh(ListTinh)
         .inner-group
           label(class="inner-label" for="huyen") Huyện
           select(id="huyen" name="huyen" class="huyen")
@@ -25,7 +29,7 @@ block main
         .inner-group
           label(class="inner-label" for="socay") Số cây
           input(type="number" id="socay" name="socay")
-        .inner-group.inner-two-col
+        .inner-group
           label(class="inner-label" for="diachi") Địa chỉ cụ thể
           input(type="text" id="diachi" name="diachi")
         .inner-group
@@ -37,7 +41,16 @@ block main
         .inner-group
           label(class="inner-label" for="duong_kinh_tb") Đường kính TB (cm)
           input(type="number" id="duong_kinh_tb" name="duong_kinh_tb" step="0.5" min="0" required)
+        .inner-group.inner-two-col
+          label(class="inner-label" for="tk") Tiểu khu
+          input(type="text" id="tk" name="tk")
+        .inner-group.inner-two-col
+          label(class="inner-label" for="khoanh") Khoảnh
+          input(type="text" id="khoanh" name="khoanh")
+        .inner-group.inner-two-col
+          label(class="inner-label" for="lo") Lô
+          input(type="text" id="lo" name="lo")
         .inner-button.inner-two-col
           button Tạo mới
       .inner-back
-        a(href=`/${pathAdmin}/dieutra/${matinh}/list`) Quay lại danh sách
+        a(href=`/${pathAdmin}/dieutra/list`) Quay lại danh sách
