@@ -49,7 +49,7 @@ const Sauromthong_6tinhModel = {
   async findById(id) {
     const query = `
       SELECT * 
-      FROM public.sauromthong_6tinh_web
+      FROM public."Sauromthong_6tinh"
       WHERE id = $1
       LIMIT 1
     `;
@@ -86,7 +86,79 @@ const Sauromthong_6tinhModel = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+  //
+  async countAll(filters = {}) {
+    const values = [];
+    const conditions = [];
+    let index = 1;
 
-}
+    if (filters.ma_tinh) {
+      conditions.push(`matinh = $${index}`);
+      values.push(filters.ma_tinh);
+      index++;
+    }
+
+    if (filters.ma_huyen) {
+      conditions.push(`mahuyen = $${index}`);
+      values.push(filters.ma_huyen);
+      index++;
+    }
+
+    if (filters.ma_xa) {
+      conditions.push(`maxa = $${index}`);
+      values.push(filters.ma_xa);
+      index++;
+    }
+
+    const whereClause = conditions.length
+      ? `WHERE ${conditions.join(" AND ")}`
+      : "";
+
+    const sql = `SELECT COUNT(*) AS total FROM public."Sauromthong_6tinh" ${whereClause}`;
+    const result = await pool.query(sql, values);
+    return parseInt(result.rows[0].total, 10);
+  },
+
+  async getAllWithPagination(limit, offset, filters = {}) {
+    const values = [];
+    const conditions = [];
+    let index = 1;
+
+    if (filters.ma_tinh) {
+      conditions.push(`matinh = $${index}`);
+      values.push(filters.ma_tinh);
+      index++;
+    }
+
+    if (filters.ma_huyen) {
+      conditions.push(`mahuyen = $${index}`);
+      values.push(filters.ma_huyen);
+      index++;
+    }
+
+    if (filters.ma_xa) {
+      conditions.push(`maxa = $${index}`);
+      values.push(filters.ma_xa);
+      index++;
+    }
+
+    const whereClause = conditions.length
+      ? `WHERE ${conditions.join(" AND ")}`
+      : "";
+
+    const sql = `
+    SELECT *
+    FROM public."Sauromthong_6tinh"
+    ${whereClause}
+    ORDER BY id DESC
+    LIMIT $${index} OFFSET $${index + 1}
+  `;
+
+    values.push(limit, offset);
+
+    const result = await pool.query(sql, values);
+    return result.rows;
+  },
+};
 module.exports = Sauromthong_6tinhModel;

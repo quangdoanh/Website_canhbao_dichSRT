@@ -1,5 +1,7 @@
 extends ../layouts/default.pug
-
+include ../mixins/optionTinh.pug
+include ../mixins/optionHuyen.pug
+include ../mixins/optionXa.pug
 
 
 block main
@@ -10,15 +12,18 @@ block main
     .inner-wrap
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
-      .inner-item
-        select(filter-status)
-          option(value="") Huyện
-      .inner-item
-        select(filter-status)
-          option(value="") Xã
-      .inner-item
-        select(filter-status)
-          option(value="") Diện tích  
+        .inner-group
+          select(id="tinh" name="tinh" class="tinh" required filter-Ma_tinh)
+            option(value="") Tỉnh
+            +optionTinh(ListTinh)
+        .inner-group
+          select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen)
+            option(value="") Huyện
+            +optionHuyen(ListHuyen)
+        .inner-group
+          select(id="xa" name="xa" class="xa" filter-Ma_xa)
+            option(value="") Xã
+            +optionXa(ListXaTheoHuyen)  
       .inner-item.inner-reset
         <i class="fa-solid fa-rotate-left" filter-reset></i> Xóa bộ lọc
   //- End Section 4
@@ -26,18 +31,18 @@ block main
   //- Section 5
   .section-5
     .inner-wrap
-      .inner-change-status(change-multi)
-        .inner-item
-          select
-            option(value="") -- Hành động --
-            option(value="delete") Xóa
-        .inner-item
-          button(data-api=`/${pathAdmin}/category/change-multi`) Áp dụng
-      .inner-search
-        <i class="fa-solid fa-magnifying-glass"></i>
-        input(type="text" placeholder="Tìm kiếm" search)
+      //- .inner-change-status(change-multi)
+      //-   .inner-item
+      //-     select
+      //-       option(value="") -- Hành động --
+      //-       option(value="delete") Xóa
+      //-   .inner-item
+      //-     button(data-api=``) Áp dụng
+      //- //- .inner-search
+      //-   <i class="fa-solid fa-magnifying-glass"></i>
+      //-   input(type="text" placeholder="Tìm kiếm" search)
       .inner-button-create
-        a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/create`) + Tạo mới
+        a(href=`/${pathAdmin}/sauromthong/create`) + Tạo mới
   //- End Section 5
 
   //- Section 6
@@ -79,10 +84,10 @@ block main
               td(class="inner-center") #{item.churung}
               td
                 .inner-buttons
-                  a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/edit/${item.id}` class="inner-edit")
+                  a(href=`/${pathAdmin}/sauromthong/edit/${item.id}` class="inner-edit")
                     i.fa-regular.fa-pen-to-square
-                  a(class="inner-delete" button-delete data-api=`/${pathAdmin}/category/delete/${item.id}`)
-                    i.fa-regular.fa-trash-can
+                  //- a(class="inner-delete" button-delete data-api=`/${pathAdmin}/category/delete/${item.id}`)
+                  //-   i.fa-regular.fa-trash-can
         else
           tr
             td(colspan="13" class="inner-center") Không có dữ liệu
@@ -92,9 +97,13 @@ block main
 
   //-Section 7
   .section-7
-    span(class="inner-label") Hiển thị #{pagination.skip + 1} - #{listDulieuSRT.length + pagination.skip} của #{pagination.TotalDuLieuSRT.length}
-    select(class="inner-pagination" pagination)
-      - for(let i = 1 ; i <= pagination.totalPage ; i++)
-            option(value=i) Trang #{i}
-          
+    - const start = (pagination.page - 1) * limit + 1;
+    - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+    span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+
+    select.inner-pagination(pagination name="page")
+      each val in [...Array(pagination.totalPage).keys()]
+        - const pageNum = val + 1;
+        option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}
+
     //-End Section 7

@@ -859,59 +859,17 @@ const srtEditForm = document.querySelector("#srt-edit-form");
 
 if (srtEditForm) {
   const validation = new JustValidate("#srt-edit-form");
-
   validation
-    .addField("#tk", [{ rule: "required" }])
-    .addField("#khoanh", [{ rule: "required" }])
-    .addField("#lo", [{ rule: "required" }])
-    .addField("#dtich", [{ rule: "required" }])
-    .addField("#namtr", [{ rule: "required" }])
-    .addField("#churung", [{ rule: "required" }])
-    .addField("#phancap", [{ rule: "required" }])
-    .addField("#huyen", [{ rule: "required" }]) // hidden input
-    .addField("#xa", [{ rule: "required" }])    // hidden input
     .onSuccess((event) => {
-
-
-
       const id = event.target.id.value;
-      const tk = event.target.tk.value;
-      const khoanh = event.target.khoanh.value;
-      const lo = event.target.lo.value;
-      const dtich = event.target.dtich.value;
-      const namtr = event.target.namtr.value;
-      const churung = event.target.churung.value;
       const phancap = event.target.phancap.value;
-      // Lấy giá trị Huyện, Xã, Id_tỉnh
-      const huyen = event.target.huyen.value;
-      const xa = event.target.xa.value;
-      const matinh = event.target.matinh.value;
-      const permissions = [];
-
-      // permissions
-      const listElementPermission = srtEditForm.querySelectorAll(
-        'input[name="permissions"]:checked'
-      );
-      listElementPermission.forEach((input) => {
-        permissions.push(input.value);
-      });
-      // End permissions
       const dataFinal = {
         id,
-        tk,
-        khoanh,
-        lo,
-        dtich,
-        namtr,
-        churung,
-        phancap,
-        huyen,
-        xa,
-        permissions: permissions,
+        phancap
       };
       console.log("data", dataFinal)
 
-      fetch(`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/edit/${id}`, {
+      fetch(`/${pathAdmin}/sauromthong/edit/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -924,9 +882,8 @@ if (srtEditForm) {
             alert(data.message);
           }
           if (data.code == "success") {
-            alert(data.message);
-            console.log("thành công")
-            //window.location.href = `/${pathAdmin}/sauromthong/dulieusrt/${matinh}/list`;
+           
+            window.location.reload(); 
           }
         });
     });
@@ -1141,18 +1098,20 @@ if (contactAnswerForm) {
 // End contact answer Form
 // button -contact-answer-form
 const answerInput = document.getElementById("answer");
-      const updateBtn = document.getElementById("updateBtn");
-      const originalValue = answerInput.value;
+const updateBtn = document.getElementById("updateBtn");
 
-      if (updateBtn) {
-        answerInput.addEventListener("input", () => {
-          if (answerInput.value.trim() !== originalValue.trim()) {
-            updateBtn.style.display = "inline-block";
-          } else {
-            updateBtn.style.display = "none";
-          }
-        });
-      }
+if (answerInput && updateBtn) {
+  const originalValue = answerInput.value;
+
+  answerInput.addEventListener("input", () => {
+    if (answerInput.value.trim() !== originalValue.trim()) {
+      updateBtn.style.display = "inline-block";
+    } else {
+      updateBtn.style.display = "none";
+    }
+  });
+}
+
 // button -contact-answer-form
 
 
@@ -1175,13 +1134,16 @@ if (dieutraForm) {
       { rule: "number", errorMessage: "Số cây phải là số!" },
       { rule: "minNumber", value: 0, errorMessage: "Số cây phải >= 0" }
     ])
+    .addField("#tinh", [
+      { rule: "required", errorMessage: "Vui lòng chọn Tỉnh!" }
+    ])
     // Validate huyện
     .addField("#huyen", [
-      { rule: "required", errorMessage: "Vui lòng chọn huyện!" }
+      { rule: "required", errorMessage: "Vui lòng chọn Huyện!" }
     ])
     // Validate xã
     .addField("#xa", [
-      { rule: "required", errorMessage: "Vui lòng chọn xã!" }
+      { rule: "required", errorMessage: "Vui lòng chọn Xã!" }
     ])
     // Validate địa chỉ cụ thể
     .addField("#diachi", [
@@ -1199,31 +1161,46 @@ if (dieutraForm) {
       { rule: "number", errorMessage: "Đường kính TB phải là số!" },
       { rule: "minNumber", value: 0.01, errorMessage: "Đường kính TB phải > 0" }
     ])
+    .addField("#tk", [
+      { rule: "required", errorMessage: "Vui lòng nhập  Tiểu khu!" }
+    ])
+    .addField("#khoanh", [
+      { rule: "required", errorMessage: "Vui lòng nhập  Khoảnh!" }
+    ])
+    .addField("#lo", [
+      { rule: "required", errorMessage: "Vui lòng nhập  Lô!" }
+    ])
     .onSuccess((event) => {
       event.preventDefault();
 
-      const matinh = event.target.matinh.value;
-      const huyen = event.target.huyen.value;
-      const xa = event.target.xa.value;
+      const matinh = event.target.tinh.value;
+      const mahuyen = event.target.huyen.value;
+      const maxa = event.target.xa.value;
       const sosau = event.target.sosau.value;
       const socay = event.target.socay.value;
       const diachi = event.target.diachi.value.trim();
       const loai_cay = event.target.loai_cay.value;
       const duong_kinh_tb = event.target.duong_kinh_tb.value;
+      const tk = event.target.tk.value;
+      const khoanh = event.target.khoanh.value;
+      const lo = event.target.lo.value;
 
       const data = {
         matinh,
-        huyen,
-        xa,
+        mahuyen,
+        maxa,
         sosau,
         socay,
         dia_chi_cu_the: diachi,
         loai_cay,
-        duong_kinh_tb
+        duong_kinh_tb,
+        tk,
+        khoanh,
+        lo
       };
 
 
-      fetch(`/${pathAdmin}/dieutra/${matinh}/create`, {
+      fetch(`/${pathAdmin}/dieutra/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -1231,7 +1208,7 @@ if (dieutraForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            window.location.href = `/${pathAdmin}/dieutra/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/dieutra/list`;
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
           }
@@ -1264,6 +1241,9 @@ if (dieutraEditForm) {
       { rule: "number", errorMessage: "Số cây phải là số!" },
       { rule: "minNumber", value: 0, errorMessage: "Số cây phải >= 0" }
     ])
+    .addField("#tinh", [
+      { rule: "required", errorMessage: "Vui lòng chọn Tỉnh!" }
+    ])
     // Validate huyện
     .addField("#huyen", [
       { rule: "required", errorMessage: "Vui lòng chọn huyện!" }
@@ -1283,32 +1263,47 @@ if (dieutraEditForm) {
       { rule: "number", errorMessage: "Đường kính phải là số!" },
       { rule: "minNumber", value: 0, errorMessage: "Đường kính phải >= 0" }
     ])
+    .addField("#tk", [
+      { rule: "required", errorMessage: "Vui lòng nhập  Tiểu khu!" }
+    ])
+    .addField("#khoanh", [
+      { rule: "required", errorMessage: "Vui lòng nhập  Khoảnh!" }
+    ])
+    .addField("#lo", [
+      { rule: "required", errorMessage: "Vui lòng nhập  Lô!" }
+    ])
     .onSuccess((event) => {
       event.preventDefault();
 
       const id = event.target.id.value; // id bản ghi
-      const matinh = event.target.matinh.value;
-      const huyen = event.target.huyen.value;
-      const xa = event.target.xa.value;
+      const matinh = event.target.tinh.value;
+      const mahuyen = event.target.huyen.value;
+      const maxa = event.target.xa.value;
       const sosau = event.target.sosau.value;
       const socay = event.target.socay.value;
       const diachi = event.target.diachi.value.trim();
       const loai_cay = event.target.loai_cay.value;
       const duong_kinh_tb = event.target.duong_kinh_tb.value;
+      const tk = event.target.tk.value;
+      const khoanh = event.target.khoanh.value;
+      const lo = event.target.lo.value;
       const data = {
         matinh,
-        huyen,
-        xa,
+        mahuyen,
+        maxa,
         sosau,
         socay,
         dia_chi_cu_the: diachi,
         loai_cay,
-        duong_kinh_tb
+        duong_kinh_tb,
+        tk,
+        khoanh,
+        lo
       };
 
       console.log("Dữ liệu gửi lên server:", data);
 
-      fetch(`/${pathAdmin}/dieutra/${matinh}/edit/${id}`, {
+      fetch(`/${pathAdmin}/dieutra/edit/${id}`, {
         method: "PATCH", // hoặc POST nếu backend không hỗ trợ PUT
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
@@ -1316,7 +1311,7 @@ if (dieutraEditForm) {
         .then(res => res.json())
         .then(data => {
           if (data.code === "success") {
-            window.location.href = `/${pathAdmin}/dieutra/${matinh}/list`;
+            window.location.reload();
           } else {
             alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
           }
@@ -1397,22 +1392,24 @@ if (mapCreateForm) {
     ])
     // Submit form
     .onSuccess((event) => {
-      const matinh = event.target.matinh.value;
+      const matinh = event.target.tinh.value;
       const title = event.target.title.value;
       const map = event.target.map.value;
       const content = tinymce.get("content").getContent() || "";
 
+      console.log(matinh);
       // Lấy file từ FilePond
       const files = filePondRar.getFiles();
       const file = files.length > 0 ? files[0].file : null;
 
       const formData = new FormData();
+      formData.append("matinh", matinh)
       formData.append("thongtin", title);
       formData.append("map", map);
       if (file) formData.append("file", file);
       formData.append("mota", content);
 
-      fetch(`/${pathAdmin}/map/${matinh}/create`, {
+      fetch(`/${pathAdmin}/map/create`, {
         method: "POST",
         body: formData,
       })
@@ -1423,7 +1420,7 @@ if (mapCreateForm) {
             alert(data.message);
           }
           if (data.code === "success") {
-            window.location.href = `/${pathAdmin}/map/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/map/list`;
           }
         });
     });
@@ -1452,6 +1449,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
 
 
   new JustValidate("#map-edit-form")
+    .addField("#tinh", [{ rule: "required", errorMessage: "Vui chọn tỉnh" }])
     .addField("#title", [{ rule: "required", errorMessage: "Vui lòng nhập thông tin!" }])
     .addField("#map", [{ rule: "required", errorMessage: "Vui lòng chọn loại bản đồ!" }])
     .addField("#file", [{
@@ -1464,7 +1462,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
       errorMessage: "File phải là .rar và nhỏ hơn 50MB!"
     }])
     .onSuccess(event => {
-      const matinh = event.target.querySelector('[name="matinh"]').value;
+      const matinh = event.target.querySelector('[name="tinh"]').value;
       const id = event.target.querySelector('[name="id"]').value;
       const title = event.target.title.value;
       const map = event.target.map.value;
@@ -1476,6 +1474,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
       console.log(file)
 
       const formData = new FormData();
+      formData.append("matinh", matinh)
       formData.append("thongtin", title);
       formData.append("map", map);
       // Nếu người dùng chọn file mới, append file
@@ -1491,7 +1490,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
       }
       formData.append("mota", mota);
 
-      fetch(`/${pathAdmin}/map/${matinh}/edit/${id}`, {
+      fetch(`/${pathAdmin}/map/edit/${id}`, {
         method: "PATCH",
         body: formData
       })
@@ -1500,7 +1499,7 @@ if (mapEditForm && fileRarInput && filePondRar) {
           if (data.code === "error") alert(data.message);
           else if (data.code === "success") {
             console.log("Cập nhật thành công!");
-            window.location.href = `/${pathAdmin}/map/${matinh}/list`;
+            window.location.href = `/${pathAdmin}/map/list`;
           }
         })
         .catch(() => alert("Có lỗi xảy ra, vui lòng thử lại!"));
@@ -1651,3 +1650,209 @@ if (profileChangePasswordForm) {
     });
 }
 // End Profile Change Password Form
+
+
+// weather-edit
+// weather-edit-form
+const weatherEditForm = document.querySelector("#weather-edit-form");
+
+if (weatherEditForm) {
+  const validation = new JustValidate("#weather-edit-form");
+
+  validation
+    // // Validate Tỉnh
+    // .addField("#tinh", [
+    //   { rule: "required", errorMessage: "Vui lòng chọn Tỉnh!" }
+    // ])
+    // // Validate Huyện
+    // .addField("#huyen", [
+    //   { rule: "required", errorMessage: "Vui lòng chọn Huyện!" }
+    // ])
+    // Validate Xã
+    .addField("#xa", [
+      { rule: "required", errorMessage: "Vui lòng chọn Xã!" }
+    ])
+    // Validate Nhiệt độ Min
+    .addField("#temp_min", [
+      { rule: "required", errorMessage: "Vui lòng nhập nhiệt độ Min!" },
+      { rule: "number", errorMessage: "Nhiệt độ Min phải là số!" }
+    ])
+    // Validate Nhiệt độ Max
+    .addField("#temp_max", [
+      { rule: "required", errorMessage: "Vui lòng nhập nhiệt độ Max!" },
+      { rule: "number", errorMessage: "Nhiệt độ Max phải là số!" }
+    ])
+    // Validate Nhiệt độ TB
+    .addField("#temp_mean", [
+      { rule: "required", errorMessage: "Vui lòng nhập nhiệt độ TB!" },
+      { rule: "number", errorMessage: "Nhiệt độ TB phải là số!" }
+    ])
+    // Validate Lượng mưa Min
+    .addField("#rain_min", [
+      { rule: "required", errorMessage: "Vui lòng nhập lượng mưa Min!" },
+      { rule: "number", errorMessage: "Lượng mưa Min phải là số!" }
+    ])
+    // Validate Lượng mưa Max
+    .addField("#rain_max", [
+      { rule: "required", errorMessage: "Vui lòng nhập lượng mưa Max!" },
+      { rule: "number", errorMessage: "Lượng mưa Max phải là số!" }
+    ])
+    // Validate Lượng mưa TB
+    .addField("#rain_mean", [
+      { rule: "required", errorMessage: "Vui lòng nhập lượng mưa TB!" },
+      { rule: "number", errorMessage: "Lượng mưa TB phải là số!" }
+    ])
+    // Validate Gió Min
+    .addField("#wind_min", [
+      { rule: "required", errorMessage: "Vui lòng nhập tốc độ gió Min!" },
+      { rule: "number", errorMessage: "Tốc độ gió Min phải là số!" }
+    ])
+    // Validate Gió Max
+    .addField("#wind_max", [
+      { rule: "required", errorMessage: "Vui lòng nhập tốc độ gió Max!" },
+      { rule: "number", errorMessage: "Tốc độ gió Max phải là số!" }
+    ])
+    // Validate Gió TB
+    .addField("#wind_mean", [
+      { rule: "required", errorMessage: "Vui lòng nhập tốc độ gió TB!" },
+      { rule: "number", errorMessage: "Tốc độ gió TB phải là số!" }
+    ])
+    // Validate cấp số k
+    .addField("#cap_so_p", [
+      { rule: "required", errorMessage: "Vui lòng nhập cấp số!" },
+      { rule: "number", errorMessage: "Cấp số phải là số!" },
+      { rule: "minNumber", value: 0, errorMessage: "Cấp số phải >= 0" }
+    ])
+    .onSuccess((event) => {
+      event.preventDefault();
+
+      const id = event.target.id.value;
+      const data = {
+        ma_tinh: event.target.tinh.value,
+        ma_huyen: event.target.huyen.value,
+        ma_xa: event.target.xa.value,
+        temp_min:event.target.temp_min.value,
+        temp_max: event.target.temp_max.value,
+        temp_mean: event.target.temp_mean.value,
+        rain_min: event.target.rain_min.value,
+        rain_max: event.target.rain_max.value,
+        rain_mean: event.target.rain_mean.value,
+        wind_min: event.target.wind_min.value,
+        wind_max: event.target.wind_max.value,
+        wind_mean: event.target.wind_mean.value,
+        cap_so_p: event.target.cap_so_p.value
+      };
+
+      console.log("Dữ liệu gửi lên server:", data);
+
+      fetch(`/${pathAdmin}/weather-data/edit/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === "success") {
+            window.location.reload();
+          } else {
+            alert(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Có lỗi xảy ra, vui lòng thử lại!");
+        });
+    });
+}
+
+//end weather-edit
+
+
+
+// filter - ma_tinh
+const filterMaTinh = document.querySelector("[filter-Ma_tinh]");
+if (filterMaTinh) {
+  const url = new URL(window.location.href);
+  //lắng nghe thay đổi lựa chọn
+  filterMaTinh.addEventListener("change", () => {
+    const value = filterMaTinh.value;
+    if (value) {
+      url.searchParams.set("ma_tinh", value);
+    } else {
+      url.searchParams.delete("ma_tinh");
+    }
+    window.location.href = url.href;
+  });
+  //hiển thị cái lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("ma_tinh");
+  if (valueCurrent) {
+    filterMaTinh.value = valueCurrent;
+  }
+}
+//end filter - ma_tinh
+
+// filter - ma_huyen
+const filterMaHuyen = document.querySelector("[filter-Ma_huyen]");
+if (filterMaHuyen) {
+  const url = new URL(window.location.href);
+  //lắng nghe thay đổi lựa chọn
+  filterMaHuyen.addEventListener("change", () => {
+    const value = filterMaHuyen.value;
+    if (value) {
+      url.searchParams.set("ma_huyen", value);
+    } else {
+      url.searchParams.delete("ma_huyen");
+    }
+    window.location.href = url.href;
+  });
+  //hiển thị cái lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("ma_huyen");
+  if (valueCurrent) {
+    filterMaHuyen.value = valueCurrent;
+  }
+}
+//end filter - ma_huyen
+
+
+// filter - ma_huyen
+const filterMaXa = document.querySelector("[filter-Ma_xa]");
+if (filterMaXa) {
+  const url = new URL(window.location.href);
+  //lắng nghe thay đổi lựa chọn
+  filterMaXa.addEventListener("change", () => {
+    const value = filterMaXa.value;
+    if (value) {
+      url.searchParams.set("ma_xa", value);
+    } else {
+      url.searchParams.delete("ma_xa");
+    }
+    window.location.href = url.href;
+  });
+  //hiển thị cái lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("ma_xa");
+  if (valueCurrent) {
+    filterMaXa.value = valueCurrent;
+  }
+}
+//end filter - ma_huyen
+
+
+const filterLoaiBanDo = document.querySelector("[filter-loaibando]");
+if (filterLoaiBanDo) {
+  const url = new URL(window.location.href);
+  //lắng nghe thay đổi lựa chọn
+  filterLoaiBanDo.addEventListener("change", () => {
+    const value = filterLoaiBanDo.value;
+    if (value) {
+      url.searchParams.set("loaibando", value);
+    } else {
+      url.searchParams.delete("loaibando");
+    }
+    window.location.href = url.href;
+  });
+  //hiển thị cái lựa chọn mặc định
+  const valueCurrent = url.searchParams.get("loaibando");
+  if (valueCurrent) {
+    filterLoaiBanDo.value = valueCurrent;
+  }
+}

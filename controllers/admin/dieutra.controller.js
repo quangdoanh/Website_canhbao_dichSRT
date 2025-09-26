@@ -5,137 +5,235 @@ const DieuTraModel = require('../../models/dieutra.model');
 const moment = require("moment");
 
 module.exports.listDieuTra = async (req, res) => {
-    const { matinh } = req.params;
+  try {
+    // ===== Lấy filters từ query =====
+    const filters = {
+      keyword: req.query.keyword || "",
+      ma_tinh: req.query.ma_tinh || null,
+      ma_huyen: req.query.ma_huyen || null,
+      ma_xa: req.query.ma_xa || null,
+    };
 
-    try {
-        // 1. Lấy tất cả bản ghi dieu_tra
-        const keyword = req.query.keyword || "";
+    const limit = 4;
+    let page = parseInt(req.query.page) || 1;
+    if (page < 1) page = 1;
 
-        let dieutraList;
-        if (keyword) {
-            dieutraList = await DieuTraModel.search(keyword, matinh);
-        } else {
-            dieutraList = await DieuTraModel.getAllByMaTinh(matinh);
-        };
+    // ===== Tổng số bản ghi =====
+    const totalRecords = await DieuTraModel.countAll(filters);
+    const totalPages = Math.ceil(totalRecords / limit);
+    if (page > totalPages && totalPages > 0) page = totalPages;
 
-        // 2. Lấy danh sách tỉnh, huyện theo tỉnh
-        const listTinh = await TinhModel.getAll(); // {ma_tinh, ten_tinh}
-        const listHuyen = await HuyenModel.getByProvince(matinh); // {ma_huyen, ten_huyen}
+    const offset = (page - 1) * limit;
 
-        // 3. Lấy danh sách xã theo từng huyện
-        const listXaTheoHuyen = {};
-        for (const huyen of listHuyen) {
-            const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
-            listXaTheoHuyen[huyen.ma_huyen] = dsXa; // map: ma_huyen -> danh sách xã
-        }
+    // ===== Lấy danh sách phân trang =====
+    let dieutraList = await DieuTraModel.getAllWithPagination(limit, offset, filters);
+    dieutraList = dieutraList.map(item => ({
+      ...item,
+      dtra_dateFormat: item.dtra_date
+        ? moment(item.dtra_date).format("DD/MM/YYYY")
+        : ""
+    }));
 
-        // 4. Map tên tỉnh, huyện, xã và định dạng ngày
-        dieutraList = dieutraList.map(item => {
-            const tinh = listTinh.find(t => String(t.ma_tinh) === String(item.ma_tinh));
-            const huyen = listHuyen.find(h => String(h.ma_huyen) === String(item.ma_huyen));
-            const xaList = listXaTheoHuyen[item.ma_huyen] || [];
-            const xa = xaList.find(x => String(x.ma_xa) === String(item.ma_xa));
+    // ===== Danh sách Tỉnh =====
+    const ListTinh = await TinhModel.getAll();
 
-            return {
-                ...item,
-                ten_tinh: tinh ? tinh.ten_tinh : "",
-                ten_huyen: huyen ? huyen.ten_huyen : "",
-                ten_xa: xa ? xa.ten_xa : "",
-                createdAtFormat: item.dtra_date ? moment(item.dtra_date).format("DD/MM/YYYY") : ""
-            };
-        });
-        // 5. Render Pug
-        res.render("admin/pages/dieu-tra-list", {
-            pageTitle: "Danh sách điều tra",
-            matinh,
-            dieutraList
-        });
-
-    } catch (err) {
-        console.error("Lỗi khi lấy danh sách điều tra:", err);
-        req.flash("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
+    // ===== Danh sách Huyện (lọc theo tỉnh nếu có) =====
+    let ListHuyen;
+    if (filters.ma_tinh) {
+      ListHuyen = await HuyenModel.getByProvince(filters.ma_tinh);
+    } else {
+      ListHuyen = await HuyenModel.getAll();
     }
+
+    // ===== Danh sách Xã (lọc theo huyện nếu có) =====
+    let ListXa;
+    if (filters.ma_huyen) {
+      ListXa = await XaModel.getByDistrict(filters.ma_huyen);
+    } else {
+      ListXa = await XaModel.getAll();
+    }
+
+    // ===== Gom nhóm xã theo huyện =====
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+    ListXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+
+    // ===== Render ra view =====
+    res.render("admin/pages/dieu-tra-list", {
+      pageTitle: "Danh sách điều tra",
+      dieutraList,
+      ListTinh,
+      ListHuyen,
+      ListXaTheoHuyen,
+      pagination: { page, totalPages, totalRecords },
+      limit,
+      filters,
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách điều tra:", err);
+    res.status(500).json("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
+  }
 };
+
+
 
 // api cho app
 module.exports.appListDieuTra = async (req, res) => {
-    const { matinh } = req.params;
+  try {
+    // ===== Lấy filters từ query =====
+    const filters = {
+      keyword: req.query.keyword || "",
+      ma_tinh: req.query.ma_tinh || null,
+      ma_huyen: req.query.ma_huyen || null,
+      ma_xa: req.query.ma_xa || null,
+    };
 
-    try {
-        // 1. Lấy tất cả bản ghi dieu_tra
-        const keyword = req.query.keyword || "";
+    const limit = parseInt(req.query.limit) || 10; // cho app tuỳ chọn limit
+    let page = parseInt(req.query.page) || 1;
+    if (page < 1) page = 1;
 
-        let dieutraList;
-        if (keyword) {
-            dieutraList = await DieuTraModel.search(keyword);
-        } else {
-            dieutraList = await DieuTraModel.getAll();
-        };
+    // ===== Tổng số bản ghi =====
+    const totalRecords = await DieuTraModel.countAll(filters);
+    const totalPages = Math.ceil(totalRecords / limit);
+    if (page > totalPages && totalPages > 0) page = totalPages;
 
-        // 2. Lấy danh sách tỉnh, huyện theo tỉnh
-        const listTinh = await TinhModel.getAll(); // {ma_tinh, ten_tinh}
-        const listHuyen = await HuyenModel.getByProvince(matinh); // {ma_huyen, ten_huyen}
+    const offset = (page - 1) * limit;
 
-        // 3. Lấy danh sách xã theo từng huyện
-        const listXaTheoHuyen = {};
-        for (const huyen of listHuyen) {
-            const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
-            listXaTheoHuyen[huyen.ma_huyen] = dsXa; // map: ma_huyen -> danh sách xã
-        }
+    // ===== Lấy danh sách phân trang =====
+    let dieutraList = await DieuTraModel.getAllWithPagination(limit, offset, filters);
+    dieutraList = dieutraList.map(item => ({
+      ...item,
+      dtra_dateFormat: item.dtra_date
+        ? moment(item.dtra_date).format("DD/MM/YYYY")
+        : ""
+    }));
 
-        // 4. Map tên tỉnh, huyện, xã và định dạng ngày
-        dieutraList = dieutraList.map(item => {
-            const tinh = listTinh.find(t => String(t.ma_tinh) === String(item.ma_tinh));
-            const huyen = listHuyen.find(h => String(h.ma_huyen) === String(item.ma_huyen));
-            const xaList = listXaTheoHuyen[item.ma_huyen] || [];
-            const xa = xaList.find(x => String(x.ma_xa) === String(item.ma_xa));
+    // ===== Danh sách Tỉnh =====
+    const ListTinh = await TinhModel.getAll();
 
-            return {
-                ...item,
-                ten_tinh: tinh ? tinh.ten_tinh : "",
-                ten_huyen: huyen ? huyen.ten_huyen : "",
-                ten_xa: xa ? xa.ten_xa : "",
-                createdAtFormat: item.dtra_date ? moment(item.dtra_date).format("DD/MM/YYYY") : ""
-            };
-        });
-        res.json({
-            dieutraList: dieutraList
-        })
-    } catch (err) {
-        console.error("Lỗi khi lấy danh sách điều tra:", err);
-        req.flash("error", "Có lỗi xảy ra khi lấy danh sách điều tra!");
+    // ===== Danh sách Huyện (lọc theo tỉnh nếu có) =====
+    let ListHuyen;
+    if (filters.ma_tinh) {
+      ListHuyen = await HuyenModel.getByProvince(filters.ma_tinh);
+    } else {
+      ListHuyen = await HuyenModel.getAll();
     }
+
+    // ===== Danh sách Xã (lọc theo huyện nếu có) =====
+    let ListXa;
+    if (filters.ma_huyen) {
+      ListXa = await XaModel.getByDistrict(filters.ma_huyen);
+    } else {
+      ListXa = await XaModel.getAll();
+    }
+
+    // ===== Gom nhóm xã theo huyện =====
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+    ListXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+
+    // ===== Trả JSON cho client =====
+    res.json({
+      code: "success",
+      data: {
+        dieutraList,
+        ListTinh,
+        ListHuyen,
+        ListXaTheoHuyen,
+        pagination: { page, totalPages, totalRecords },
+        limit,
+        filters,
+      }
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy danh sách điều tra:", err);
+    res.status(500).json({
+      code: "error",
+      message: "Có lỗi xảy ra khi lấy danh sách điều tra!"
+    });
+  }
 };
+
 //end api cho app
 module.exports.createDieuTra = async (req, res) => {
-    const { matinh } = req.params;
-    let ListHuyen = await HuyenModel.getByProvince(matinh)
-    let ListXaTheoHuyen = [];
+  try {
+    // 1. Lấy danh sách tỉnh
+    const ListTinh = await TinhModel.getAll(); // [{ma_tinh, ten_tinh}, ...]
 
-    for (const huyen of ListHuyen) {
-        // Lấy xã theo mã huyện
-        const dsXa = await XaModel.getByDistrict(huyen.ma_huyen);
+    // 2. Lấy danh sách huyện (mỗi huyện cần có cả ma_tinh để lọc)
+    const ListHuyen = await HuyenModel.getAll(); 
+    // => [{ma_huyen, ten_huyen, ma_tinh}, ...]
 
-        //     console.log(`Huyện: ${huyen.ten_huyen} (${huyen.ma_huyen})`);
-        // console.log("Danh sách xã:", dsXa);
+    // 3. Lấy danh sách xã theo huyện
+    const ListXa = await XaModel.getAll(); 
+    // => [{ma_xa, ten_xa, ma_huyen}, ...]
 
-        ListXaTheoHuyen.push({
-            huyen: huyen.ma_huyen,
-            dsXa: dsXa
-        });
+    // Gom nhóm xã theo huyện
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+
+    ListXa.forEach(xa => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa
+      });
+    });
+
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen]
+      });
     }
 
+    // 4. Render ra view
     res.render("admin/pages/dieu-tra-create", {
-        pageTitle: "Tạo Dữ liệu ",
-        matinh: matinh,
-        ListHuyen: ListHuyen,
-        ListXaTheoHuyen: ListXaTheoHuyen
+      pageTitle: "Tạo Dữ liệu",
+      ListTinh,
+      ListHuyen,
+      ListXaTheoHuyen
     });
-}
+  } catch (err) {
+    console.error("Lỗi createDieuTra:", err);
+    res.status(500).send("Có lỗi xảy ra");
+  }
+};
+
 
 module.exports.createDieuTraPost = async (req, res) => {
     try {
-        const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb } = req.body;
+        const { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb,tk, khoanh, lo } = req.body;
         const dtra_date = new Date();
         // Lấy user_id từ session (hoặc null nếu không có)
         const user_id = req.account?.id || 0;
@@ -162,15 +260,18 @@ module.exports.createDieuTraPost = async (req, res) => {
         // Tạo bản ghi mới
         const newDieuTra = await DieuTraModel.create({
             ma_tinh: matinh,
-            ma_huyen: huyen,
-            ma_xa: xa,
+            ma_huyen: mahuyen,
+            ma_xa: maxa,
             so_sau_non,
             so_cay,
             dtra_date,
             user_id,
             dia_chi_cu_the: dia_chi_cu_the,
             loai_cay: loai_cay,
-            duong_kinh_tb: duong_kinh_tb_num
+            duong_kinh_tb: duong_kinh_tb_num,
+            tk:tk, 
+            khoanh:khoanh, 
+            lo:lo
 
         });
 
@@ -187,57 +288,71 @@ module.exports.createDieuTraPost = async (req, res) => {
 
 
 module.exports.editDieuTra = async (req, res) => {
-    try {
-        const { matinh, id } = req.params;
+  try {
+    const { id } = req.params;
 
-        // 1. Lấy bản ghi điều tra theo id
-        const dieutra = await DieuTraModel.getById(id);
-        if (!dieutra) {
-            req.flash("error", "Không tìm thấy bản ghi!");
-            return res.redirect(`/${pathAdmin}/sauromthong/dieutra/${matinh}/list`);
-        }
-
-        // 2. Lấy tên huyện và xã để hiển thị
-        const huyen = await HuyenModel.getById(dieutra.ma_huyen);
-        dieutra.ten_huyen = huyen ? huyen.ten_huyen : "";
-
-        const xa = await XaModel.getById(dieutra.ma_xa);
-        dieutra.ten_xa = xa ? xa.ten_xa : "";
-
-        console.log("dieutra.ma_xa:", dieutra.ma_xa);
-        console.log("Xa:", xa);
-
-        // 3. Lấy danh sách huyện và xã
-        const ListHuyen = await HuyenModel.getByProvince(matinh);
-        let ListXaTheoHuyen = [];
-        for (const h of ListHuyen) {
-            const dsXa = await XaModel.getByDistrict(h.ma_huyen);
-            ListXaTheoHuyen.push({
-                huyen: h.ma_huyen,
-                dsXa: dsXa // Không lọc
-            });
-        }
-
-        // 4. Render form edit
-        res.render("admin/pages/dieu-tra-edit", {
-            pageTitle: "Chỉnh sửa Dữ liệu điều tra",
-            matinh,
-            ListHuyen,
-            ListXaTheoHuyen, // đây là list đã lọc
-            dieutra
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+    // 1. Lấy bản ghi điều tra (có join tên tỉnh/huyện/xã)
+    const dieutra = await DieuTraModel.getByIdWithNames(id);
+    if (!dieutra) {
+      req.flash("error", "Không tìm thấy bản ghi!");
+      return res.redirect(`/${pathAdmin}/dieutra/list`);
     }
+
+    // 2. Lấy toàn bộ danh sách tỉnh
+    const ListTinh = await TinhModel.getAll(); // [{ma_tinh, ten_tinh}, ...]
+
+    // 3. Lấy toàn bộ danh sách huyện
+    const ListHuyen = await HuyenModel.getAll(); 
+    // [{ma_huyen, ten_huyen, ma_tinh}, ...]
+
+    // 4. Lấy toàn bộ danh sách xã
+    const ListXa = await XaModel.getAll(); 
+    // [{ma_xa, ten_xa, ma_huyen}, ...]
+
+    // 5. Gom nhóm xã theo huyện (giống create)
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+
+    ListXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+    console.log(dieutra);
+    // 6. Render ra form edit
+    res.render("admin/pages/dieu-tra-edit", {
+      pageTitle: "Chỉnh sửa Dữ liệu điều tra",
+      dieutra,
+      ListTinh,
+      ListHuyen,
+      ListXaTheoHuyen,
+    });
+  } catch (err) {
+    console.error("Lỗi khi load form edit điều tra:", err);
+    res
+      .status(500)
+      .json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+  }
 };
+
+
 
 
 module.exports.editDieuTraPatch = async (req, res) => {
 
     const { id } = req.params;
-    const { matinh, huyen, xa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb } = req.body;
+    const { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb, tk, khoanh, lo } = req.body;
     try {
 
 
@@ -255,15 +370,18 @@ module.exports.editDieuTraPatch = async (req, res) => {
         // 3. Update bản ghi (giữ nguyên user_id và dtra_date)
         const updatedDieuTra = await DieuTraModel.update(id, {
             ma_tinh: matinh || dieutra.ma_tinh,
-            ma_huyen: huyen || dieutra.ma_huyen,
-            ma_xa: xa || dieutra.ma_xa,
-            so_sau_non,
-            so_cay,
-            dtra_date: dieutra.dtra_date,   // giữ nguyên ngày tạo
-            user_id: dieutra.user_id,       // giữ nguyên user_id
+            ma_huyen: mahuyen || dieutra.ma_huyen,
+            ma_xa: maxa || dieutra.ma_xa,
+            so_sau_non:so_sau_non || dieutra.so_sau_non,
+            so_cay:so_cay || dieutra.so_cay,
+            dtra_date: dieutra.dtra_date,  
+            user_id: dieutra.user_id,       
             dia_chi_cu_the: dia_chi_cu_the || dieutra.dia_chi_cu_the,
             loai_cay: loai_cay,
-            duong_kinh_tb: duong_kinh_tb_num
+            duong_kinh_tb: duong_kinh_tb_num,
+            tk: tk || dieutra.tk,             
+            khoanh: khoanh || dieutra.khoanh,
+            lo: lo || dieutra.lo
         });
 
         req.flash("success", "Cập nhật thành công")

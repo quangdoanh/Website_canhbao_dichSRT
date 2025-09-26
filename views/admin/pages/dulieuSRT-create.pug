@@ -1,4 +1,5 @@
 extends ../layouts/default.pug
+include ../mixins/optionTinh.pug
 include ../mixins/optionHuyen.pug
 include ../mixins/optionXa.pug
 
@@ -9,14 +10,19 @@ block main
   .section-8
     form#dulieu-create-form
       .inner-group
-        label(class="inner-label" for="parent") Huyện
-        select(id="parent" name="parent" class="huyen") 
-          option(value="") -- Chọn Huyện --
-          +optionHuyen(ListHuyen) 
+        label(class="inner-label" for="tinh") Tỉnh
+        select(id="tinh" name="tinh" class="tinh" required)
+          option(value="") ---Chọn---
+          +optionTinh(ListTinh)
       .inner-group
-        label(class="inner-label" for="parent") Xã
-        select(id="parent" name="parent" class="xa")  
-          option(value="") -- Chọn Xã --
+        label(class="inner-label" for="huyen") Huyện
+        select(id="huyen" name="huyen" class="huyen")
+          option(value="") ---Chọn--- 
+          +optionHuyen(ListHuyen)
+      .inner-group
+        label(class="inner-label" for="xa" ) Xã
+        select(id="xa" name="xa" class="xa")
+          option(value="") ---Chọn--- 
           +optionXa(ListXaTheoHuyen)
       //- .inner-group
       //-   label(class="inner-label" for="name") Địa điểm điều tra
@@ -45,10 +51,10 @@ block main
       .inner-group
         label(class="inner-label" for="phancap") Phân cấp
           select(id="phancap" name="phancap")
-            option(value=1 ) 1
+            option(value=1 selected) 1
             option(value=2 ) 2
-            option(value=3 selected) 3
+            option(value=3 ) 3
       .inner-button.inner-two-col
         button.create-wrong Tạo mới
     .inner-back
-      a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/list`) Quay lại danh sách
+      a(href=`/${pathAdmin}/sauromthong/list`) Quay lại danh sách

@@ -1,5 +1,5 @@
 extends ../layouts/default.pug
-
+include ../mixins/optionTinh.pug
 
 
 block main
@@ -7,35 +7,40 @@ block main
 
   //- Section 4
   .section-4
-    //- .inner-wrap
-    //-   .inner-item.inner-label
-    //-     <i class="fa-solid fa-filter"></i> Bộ lọc
-    //-   .inner-item
-    //-     select(filter-status)
-    //-       option(value="") Trạng thái
-    //-       option(value="active") Hoạt động
-    //-       option(value="inactive") Tạm dừng
-    //-   .inner-item
-    //-     select(filter-name)
-    //-       option(value="") Người tạo
-    //-       each item in accountAdmin
-    //-         option(value=item.id) #{item.fullName || ""}
-    //-   .inner-item.inner-date
-    //-     input(type="date" filter-start-date)
-    //-     span -
-    //-     input(type="date" filter-end-date)
-    //-   .inner-item.inner-reset
-    //-     <i class="fa-solid fa-rotate-left" filter-reset></i> Xóa bộ lọc
+    .inner-wrap
+      .inner-item.inner-label
+        <i class="fa-solid fa-filter"></i> Bộ lọc
+      .inner-item
+        select(filter-Ma_tinh)
+          option(value="") Tỉnh
+          +optionTinh(listTinh)
+      .inner-item 
+        select(filter-loaibando)
+          option(value="") Loại bản đồ
+          each item in loaiMap
+            option(value=item.loaibando) #{item.loaibando}
+
+        //-   .inner-item
+        //-     select(filter-name)
+        //-       option(value="") Người tạo
+        //-       each item in accountAdmin
+        //-         option(value=item.id) #{item.fullName || ""}
+        //-   .inner-item.inner-date
+        //-     input(type="date" filter-start-date)
+        //-     span -
+        //-     input(type="date" filter-end-date)
+      .inner-item.inner-reset(filter-reset)
+        <i class="fa-solid fa-rotate-left" ></i> Xóa bộ lọc
   //- End Section 4
 
   //- Section 5
   .section-5
     .inner-wrap
-        .inner-search
-          i(class="fa-solid fa-magnifying-glass")
-          input(type="text" placeholder="Tìm kiếm" search)
+        //- .inner-search
+        //-   i(class="fa-solid fa-magnifying-glass")
+        //-   input(type="text" placeholder="Tìm kiếm" search)
         .inner-button-create
-          a(href=`/${pathAdmin}/map/${matinh}/create`) + Tạo mới
+          a(href=`/${pathAdmin}/map/create`) + Tạo mới
 
   //- End Section 5
 
@@ -66,9 +71,9 @@ block main
               td(class="inner-center") #{item.thongtin}
               td
                 .inner-buttons
-                  a(href=`/${pathAdmin}/map/${matinh}/edit/${item.id}` class="inner-edit")
+                  a(href=`/${pathAdmin}/map/edit/${item.id}` class="inner-edit")
                     i.fa-regular.fa-pen-to-square
-                  a(class="inner-delete" button-delete data-api=`/${pathAdmin}/map/${matinh}/delete/${item.id}`)
+                  a(class="inner-delete" button-delete data-api=`/${pathAdmin}/map/delete/${item.id}`)
                     i.fa-regular.fa-trash-can
         else
           tr
@@ -78,10 +83,12 @@ block main
   //- End Section 6
 
   //- Section 7
-  //- .section-7
-  //-   span(class="inner-label") Hiển thị #{pagination.skip + 1} - #{categoryList.length + pagination.skip} của #{pagination.totalCategory.length}
-  //-   select(class="inner-pagination" pagination)
-  //-     - for(let i = 1 ; i <= pagination.totalPage ; i++)
-  //-           option(value=i) Trang #{i}
-          
-    //- End Section 7
+  .section-7
+    - const start = (pagination.page - 1) * limit + 1;
+    - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+    span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+
+    select.inner-pagination(pagination name="page")
+      each val in [...Array(pagination.totalPages).keys()]
+        - const pageNum = val + 1;
+        option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}

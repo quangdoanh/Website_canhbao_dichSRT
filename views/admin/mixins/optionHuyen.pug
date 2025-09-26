@@ -1,3 +1,3 @@
 mixin optionHuyen(listHuyen)
   each huyen in listHuyen
-    option(value=huyen.ma_huyen)= huyen.ten_huyen
+    option(value=huyen.ma_huyen data-tinh=huyen.ma_tinh )= huyen.ten_huyen

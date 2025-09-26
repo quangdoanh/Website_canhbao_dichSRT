@@ -1,6 +1,5 @@
 const pool = require("../config/database");
 const bcrypt = require("bcryptjs");
-const { getAll } = require("./province.model");
 
 const UserModel = {
     async findByID(id) {
