@@ -1,0 +1,108 @@
+extends ../layouts/default.pug
+
+
+
+block main
+
+  //- Section 5
+  .section-5.next_slide
+    .inner-wrap-next
+      //.inner-change-status(change-multi)
+        //- .inner-item
+        //-   select
+        //-     option(value="") -- Hành động --
+        //-     option(value="delete") Xóa
+        //- .inner-item
+        //-   button(data-api=`/${pathAdmin}/category/change-multi`) Áp dụng
+      .inner-button-next_slide
+        i.fa-solid.fa-arrow-left
+        a(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/status/confirmed`) Danh sách xác nhận
+      .inner-button-next_slide
+        a(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/status/pending`)  Danh sách chưa xác nhận
+         i.fa-solid.fa-arrow-right
+  //- End Section 5
+
+  h1.box-title
+    if loaidich == "srt"
+      | Thống kê đợt dịch sâu róm thông
+    else if loaidich == "shk"
+      | Thống kê đợt dịch sâu hại lá keo
+    else
+      | Thống kê đợt dịch bệnh hại keo
+
+  //- Section 4
+  .section-4
+    .inner-wrap
+      .inner-item.inner-label
+        <i class="fa-solid fa-filter"></i> Bộ lọc
+      .inner-item
+        select(filter-status)
+          option(value="") Huyện
+      .inner-item
+        select(filter-status)
+          option(value="") Xã  
+      .inner-item.inner-reset
+        <i class="fa-solid fa-rotate-left" filter-reset></i> Xóa bộ lọc
+  //- End Section 4
+
+  //- Section 6
+  .section-6
+    .table-2
+      table
+        thead
+          tr
+            //- th(class="inner-center")
+            //-   input(type="checkbox" class="inner-check" check-all)
+            //- th Địa diểm điều tra
+            th Tỉnh
+            th(class="inner-center") Huyện
+            th(class="inner-center") Xã
+            th Tiểu khu
+            th Khoảnh
+            th(class="inner-center") Lô
+            th Diện tích
+            th(class="inner-center") Loại rừng 
+            th(class="inner-center") Chủ rừng
+            th(class="inner-center") Ngày PH
+            th Hành động
+        tbody
+        if listDulieu.length
+          each item in listDulieu
+            tr
+              //- td(class="inner-center")
+              //-   input(type="checkbox" class="inner-check" check-item=item.id)
+              //- td #{item.diadiem_dieutra}
+              td #{item.tinh}
+              td(class="inner-center") #{item.huyen}
+              td(class="inner-center") #{item.xa}
+              td(class="inner-center") #{item.tieukhu}
+              td(class="inner-center") #{item.khoanh}
+              td(class="inner-center") #{item.lo}
+              td(class="inner-center") #{item.defor_ha}
+              td(class="inner-center") #{item.loairung}
+              td(class="inner-center") #{item.churung}
+              td(class="inner-center") #{item.ngayPH}
+              td
+                .inner-buttons
+                    a.inner-edit(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/detail/${item.id}?list`)
+                      i.fa-solid.fa-eye
+                .inner-buttons
+                //-   a(href=`/${pathAdmin}/sauromthong/dulieusrt/${matinh}/edit/${item.id}` class="inner-edit")
+                //-     i.fa-regular.fa-pen-to-square
+                //-   a(class="inner-delete" button-delete data-api=`/${pathAdmin}/category/delete/${item.id}`)
+                //-     i.fa-regular.fa-trash-can
+        else
+          tr
+            td(colspan="13" class="inner-center") Không có dữ liệu
+
+            
+  //- End Section 6
+
+  //-Section 7
+  .section-7
+    span(class="inner-label") Hiển thị #{pagination.skip + 1} - #{listDulieu.length + pagination.skip} của #{pagination.TotalDuLieu.length}
+    select(class="inner-pagination" pagination)
+      - for(let i = 1 ; i <= pagination.totalPage ; i++)
+            option(value=i) Trang #{i}
+          
+    //-End Section 7

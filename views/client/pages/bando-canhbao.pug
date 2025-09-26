@@ -1,0 +1,82 @@
+extends ../layouts/default
+
+block content
+  .section-1
+    #map_canh_bao
+      .info-table
+        .info-header Thông tin cảnh báo mức độ theo vùng 
+
+        // Layer control
+        .layer-control
+          h3 Chọn dữ liệu bản đồ
+          select#layerSelect
+            option(value="Sauromthong_6tinh") Sâu róm thông 6 tỉnh
+            option(value="Benhhaikeo_8tinh") Bệnh hại lá keo 8 tỉnh
+            option(value="Sauhailakeo_5tinh") Sâu hại lá keo 5 tỉnh
+        .section-4
+          .inner-wrap
+            .inner-item.inner-label
+              <i class="fa-solid fa-filter"></i> Bộ lọc
+            //- .inner-item
+            //-   select(filter-tinh name="tinh")
+            //-     option(value="") Tỉnh
+            //-     each tinh in ListTinh
+            //-       option(value=tinh.ma_tinh) #{tinh.ten_tinh}
+            //- .inner-item
+            //-   select(filter-huyen name="huyen")
+            //-     option(value="") Huyện
+            //-     if ListHuyen.length
+            //-     each huyen in ListHuyen
+            //-       option(value=huyen.ma_huyen)= huyen.ten_huyen
+            //-     else
+            //-       option(value="") Chưa chọn tỉnh
+            .inner-item
+              select(filter-status name="status") 
+                option(value="1") Vùng ảnh hưởng nặng 
+                option(value="0") Vùng ảnh hưởng nhẹ
+            
+        // Bộ lọc (filter)
+        //- .filter
+        //-   label Cấp độ:
+        //-   select#capDoFilter
+        //-     option(value="all") Tất cả
+        //-     option(value="1") Cấp 1
+        //-     option(value="2") Cấp 2
+        //-     option(value="3") Cấp 3
+        //-   //- label Diện tích:
+        //-   //- input#dienTichFilter(type="number" placeholder="Nhập diện tích...")
+        //-   button#searchBtn
+        //-     i.fas.fa-search
+        // Bảng dữ liệu
+        table
+          thead
+            tr
+              th Xã - Tỉnh
+              th TK - K - L
+              th Diện tích
+              th Ngày PH
+          tbody
+            if dataList.length
+              each item in dataList
+                tr(
+                  data-xa=item.xa
+                  data-tinh=item.tinh
+                  data-tk=item.tk
+                  data-khoanh=item.khoanh
+                  data-lo=item.lo
+                  data-dtich=item.dtich
+                  data-ngayph=item.day
+                )
+                  td #{item.xa} - #{item.tinh}
+                  td #{item.tk} - #{item.khoanh} - #{item.lo}
+                  td #{item.dtich}
+                  td #{item.day}
+            else
+              tr
+                td(colspan="4" style="text-align:center") Không có dữ liệu
+
+              //- td #{item.phancap}
+block scripts
+  script(src="/assets/js/map_canhbao.js")
+
+

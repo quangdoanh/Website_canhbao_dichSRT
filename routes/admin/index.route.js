@@ -14,6 +14,7 @@ const degradRouters = require('./degrad.route');
 const profileRoutes = require('./profile.route');
 const UploadMapRoutes = require('./uploadmap.route')
 const DieuTraRoutes = require('./dieutra.route')
+const DichBenhRoutes = require('./dichbenh.route')
 // const userRoutes = require("./user.route");
 
 const authMiddleware = require("../../middlewares/admin/auth.middlewares");
@@ -23,6 +24,7 @@ router.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
+router.use('/dichbenh', authMiddleware.verifyToken, DichBenhRoutes)
 router.use('/benhhailakeo', authMiddleware.verifyToken, benhhaikeoRoutes);
 router.use('/sauromthong', authMiddleware.verifyToken, sauromthongRoutes);
 router.use('/sauhailakeo', authMiddleware.verifyToken, sauhailakeoRotues);

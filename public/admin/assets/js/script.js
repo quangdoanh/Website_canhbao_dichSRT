@@ -104,7 +104,7 @@ if (sider) {
   SÂU RÓM THÔNG
   ===============
   */
-  let submenuLinks = sider.querySelectorAll(".menusrt");
+  let submenuLinks = sider.querySelectorAll(".menu");
   console.log(submenuLinks)
   submenuLinks.forEach(link => {
     const href = link.href;
@@ -1069,8 +1069,8 @@ if (toggleStatusInputs) {
       const api = e.target.getAttribute("data-api");
       // nếu là toggle-status thì gửi số 1/0, còn toggle-public thì gửi true/false
       const isStatus = e.target.hasAttribute("toggle-status");
-      const payload = isStatus 
-        ? { status: e.target.checked ? 1 : 0 } 
+      const payload = isStatus
+        ? { status: e.target.checked ? 1 : 0 }
         : { isPublic: e.target.checked };
 
       try {
@@ -1141,18 +1141,22 @@ if (contactAnswerForm) {
 // End contact answer Form
 // button -contact-answer-form
 const answerInput = document.getElementById("answer");
-      const updateBtn = document.getElementById("updateBtn");
-      const originalValue = answerInput.value;
+const updateBtn = document.getElementById("updateBtn");
 
-      if (updateBtn) {
-        answerInput.addEventListener("input", () => {
-          if (answerInput.value.trim() !== originalValue.trim()) {
-            updateBtn.style.display = "inline-block";
-          } else {
-            updateBtn.style.display = "none";
-          }
-        });
-      }
+if (answerInput) {
+  const originalValue = answerInput.value;
+}
+
+
+if (updateBtn) {
+  answerInput.addEventListener("input", () => {
+    if (answerInput.value.trim() !== originalValue.trim()) {
+      updateBtn.style.display = "inline-block";
+    } else {
+      updateBtn.style.display = "none";
+    }
+  });
+}
 // button -contact-answer-form
 
 

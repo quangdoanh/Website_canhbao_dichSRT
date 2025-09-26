@@ -10,329 +10,85 @@ nav.sider
         i.fa-solid.fa-cloud
         |  Dữ liệu thời tiết
     li
-      div.item_menu
-        i.fa-solid.fa-tree
-        |  Quản lý mất rừng
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu2
-        li
-          div.item_city 
-            <i class="fa-solid fa-check"></i>
-             a.menu2(href=`/${pathAdmin}/degrad/list/confirmed`) Đã xác nhận
+      //- div.item_menu
+      //-   <i class="fa-solid fa-eye"></i>
+      //-   |  Giám sát
+      //-   i.fa-solid.fa-chevron-down.arrow
+      //- ul.submenu2
+      //-   li
+      //-     a.menu2(href=`/${pathAdmin}/user/log`) 
+      //-       i.fa-solid.fa-bug
+      //-       |  Sâu Róm Thông
+      //-   li
+      //-     a.menu2(href=`/${pathAdmin}/user/list`) 
+      //-       i.fa-solid.fa-bug
+      //-       |  Sâu Hại Lá Keo
+      //-   li
+      //-     a.menu2(href=`/${pathAdmin}/role/list`) 
+      //-       i.fa-solid.fa-bug
+      //-       |  Bệnh Hại Lá Keo
 
+      div.item_menu
+        i.fa-solid.fa-eye
+        |  Giám sát
+      ul.submenu
         li
           div.item_city 
-            <i class="fa-solid fa-xmark"></i>
-            a.menu2(href=`/${pathAdmin}/degrad/list/pending`) Chưa xác nhận
-    //- Dropdown: Sâu róm thông
-    li
-      div.item_menu
-        i.fa-solid.fa-mosquito
-        |  Sâu róm thông
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu
-        li
-          div.item_city Thanh Hóa
+            i.fa-solid.fa-bug
+            span(style="font-size:12px;") Sâu Róm Thông
             i.fa-solid.fa-chevron-down.arrow
           ul.submenu-child
             li 
-              a.menusrt(href=`/${pathAdmin}/sauromthong/dulieusrt/38/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
+              a.menu(href=`/${pathAdmin}/dichbenh/srt/defor/list`) 
+                i.fa-solid.fa-skull-crossbones
+                | Vùng ảnh hưởng nặng
             li 
-              a.menusrt(href=`/${pathAdmin}/map/38/list` )
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menusrt(href=`/${pathAdmin}/dieutra/38/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
+              a.menu(href=`/${pathAdmin}/dichbenh/srt/degrad/list`)
+                i.fa-solid.fa-circle-exclamation
+                | Vùng ảnh hưởng nhẹ
         li
-          div.item_city Nghệ An
+          div.item_city 
+            i.fa-solid.fa-bug
+            span(style="font-size:12px;") Sâu Hại Keo
             i.fa-solid.fa-chevron-down.arrow
           ul.submenu-child
             li 
-              a.menusrt(href=`/${pathAdmin}/sauromthong/dulieusrt/40/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
+              a.menu(href=`/${pathAdmin}/dichbenh/shk/defor/list` )
+                i.fa-solid.fa-skull-crossbones
+                | Vùng ảnh hưởng nặng
             li 
-              a.menusrt(href=`/${pathAdmin}/map/40/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menusrt(href=`/${pathAdmin}/dieutra/40/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
+              a.menu(href=`/${pathAdmin}/dichbenh/shk/degrad/list`) 
+                i.fa-solid.fa-circle-exclamation
+                | Vùng ảnh hưởng nhẹ
         li
-          div.item_city Hà Tĩnh
+          div.item_city 
+            i.fa-solid.fa-bug
+            span(style="font-size:12px;") Bệnh Hại Keo
             i.fa-solid.fa-chevron-down.arrow
           ul.submenu-child
             li 
-              a.menusrt(href=`/${pathAdmin}/sauromthong/dulieusrt/42/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
+              a.menu(href=`/${pathAdmin}/dichbenh/bhk/defor/list` )
+                i.fa-solid.fa-skull-crossbones 
+                | Vùng ảnh hưởng nặng
             li 
-              a.menusrt(href=`/${pathAdmin}/map/42/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menusrt(href=`/${pathAdmin}/dieutra/42/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Quảng Bình
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menusrt(href=`/${pathAdmin}/sauromthong/dulieusrt/44/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menusrt(href=`/${pathAdmin}/map/44/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menusrt(href=`/${pathAdmin}/dieutra/44/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Quảng Trị
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menusrt(href=`/${pathAdmin}/sauromthong/dulieusrt/47/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menusrt(href=`/${pathAdmin}/map/47/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menusrt(href=`/${pathAdmin}/dieutra/47/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Thừa Thiên Huế
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menusrt(href=`/${pathAdmin}/sauromthong/dulieusrt/46/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menusrt(href=`/${pathAdmin}/map/46/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menusrt(href=`/${pathAdmin}/dieutra/46/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-    //- Dropdown: Sâu hại keo        
-    li
-      div.item_menu
-        i.fa-solid.fa-mosquito
-        |  Sâu hại lá keo
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu
-        li
-          div.item_city Thanh Hóa
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menushlk(href=`/${pathAdmin}/sauhailakeo/dulieushlk/38/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menushlk(href=`/${pathAdmin}/map/38/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menushlk(href=`/${pathAdmin}/dieutra/38/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Nghệ An
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menushlk(href=`/${pathAdmin}/sauhailakeo/dulieushlk/40/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menushlk(href=`/${pathAdmin}/map/40/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menushlk(href=`/${pathAdmin}/dieutra/40/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Hà Tĩnh
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menushlk(href=`/${pathAdmin}/sauhailakeo/dulieushlk/42/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menushlk(href=`/${pathAdmin}/map/42/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menushlk(href=`/${pathAdmin}/dieutra/42/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Quảng Bình
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menushlk(href=`/${pathAdmin}/sauhailakeo/dulieushlk/44/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menushlk(href=`/${pathAdmin}/map/44/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menushlk(href=`/${pathAdmin}/dieutra/44/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Quảng Trị
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menushlk(href=`/${pathAdmin}/sauhailakeo/dulieushlk/47/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menushlk(href=`/${pathAdmin}/map/47/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menushlk(href=`/${pathAdmin}/dieutra/47/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-        li
-          div.item_city Thừa Thiên Huế
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menushlk(href=`/${pathAdmin}/sauhailakeo/dulieushlk/46/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menushlk(href=`/${pathAdmin}/map/46/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            li 
-              a.menushlk(href=`/${pathAdmin}/dieutra/46/list`)
-                i.fa-solid.fa-magnifying-glass
-                | Điều tra
-      //- Bệnh hại lá keo
-    li
-      div.item_menu
-        i.fa-solid.fa-mosquito
-        |  Bệnh hại lá keo
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu
-        li
-          div.item_city Thanh Hóa
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/benhhailakeo/dulieubhlk/38/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menu(href=`/${pathAdmin}/map/38/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            //- li 
-            //-   a.menu(href=`/${pathAdmin}/benhhailakeo/dieutrabhlk/38/list`)
-            //-     i.fa-solid.fa-magnifying-glass
-            //-     | Điều tra
-        li
-          div.item_city Nghệ An
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/benhhailakeo/dulieubhlk/40/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menu(href=`/${pathAdmin}/map/40/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            //- li 
-            //-   a.menu(href=`/${pathAdmin}/benhhailakeo/dieutrabhlk/40/list`)
-            //-     i.fa-solid.fa-magnifying-glass
-            //-     | Điều tra
-        li
-          div.item_city Hà Tĩnh
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/benhhailakeo/dulieubhlk/42/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menu(href=`/${pathAdmin}/map/42/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            //- li 
-            //-   a.menu(href=`/${pathAdmin}/benhhailakeo/dieutrabhlk/42/list`)
-            //-     i.fa-solid.fa-magnifying-glass
-            //-     | Điều tra
-        li
-          div.item_city Quảng Bình
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/benhhailakeo/dulieubhlk/44/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menu(href=`/${pathAdmin}/map/44/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            //- li 
-            //-   a.menu(href=`/${pathAdmin}/benhhailakeo/dieutrabhlk/44/list`)
-            //-     i.fa-solid.fa-magnifying-glass
-            //-     | Điều tra
-        li
-          div.item_city Quảng Trị
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/benhhailakeo/dulieubhlk/47/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menu(href=`/${pathAdmin}/map/47/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            //- li 
-            //-   a.menu(href=`/${pathAdmin}/benhhailakeo/dieutrabhlk/47/list`)
-            //-     i.fa-solid.fa-magnifying-glass
-            //-     | Điều tra
-        li
-          div.item_city Thừa Thiên Huế
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/benhhailakeo/dulieubhlk/46/list`) 
-                i.fa-solid.fa-database 
-                | Dữ liệu SRT
-            li 
-              a.menu(href=`/${pathAdmin}/map/46/list`)
-                i.fa-solid.fa-map-location-dot 
-                | Dữ liệu bản đồ
-            //- li 
-            //-   a.menu(href=`/${pathAdmin}/benhhailakeo/dieutrabhlk/46/list`)
-            //-     i.fa-solid.fa-magnifying-glass
-            //-     | Điều tra
+              a.menu(href=`/${pathAdmin}/dichbenh/bhk/degrad/list`) 
+                i.fa-solid.fa-circle-exclamation
+                | Vùng ảnh hưởng nhẹ
+    //- li
+    //-   div.item_menu
+    //-     i.fa-solid.fa-tree
+    //-     |  Quản lý mất rừng
+    //-     i.fa-solid.fa-chevron-down.arrow
+    //-   ul.submenu2
+    //-     li
+    //-       div.item_city 
+    //-         <i class="fa-solid fa-check"></i>
+    //-          a.menu2(href=`/${pathAdmin}/degrad/list/confirmed`) Đã xác nhận
+
+    //-     li
+    //-       div.item_city 
+    //-         <i class="fa-solid fa-xmark"></i>
+    //-         a.menu2(href=`/${pathAdmin}/degrad/list/pending`) Chưa xác nhận
        
       
     li

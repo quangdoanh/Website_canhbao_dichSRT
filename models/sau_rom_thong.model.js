@@ -28,6 +28,33 @@ const Sauromthong_6tinhModel = {
     const result = await pool.query(query, params);
     return result.rows;
   },
+  async findTop20_Defore_ByDienTich() {
+    const query = `
+          SELECT *
+          FROM public.srt_defor_forest_map
+          ORDER BY dtich DESC, acqui_date DESC
+          LIMIT 20
+      `;
+
+    const result = await pool.query(query);
+    return result.rows;
+  },
+
+  async findTop20_Degrad_ByDienTich() {
+    const query = `
+          SELECT *
+          FROM public.srt_degrad_forest_map
+          ORDER BY dtich DESC, acqui_date DESC
+          LIMIT 20
+      `;
+
+    const result = await pool.query(query);
+    return result.rows;
+  },
+
+  /* ==================
+      END MAP
+     ==================*/
 
   async findByMaTinh(matinh, skip = 0, limit = 15) {
     try {
@@ -86,7 +113,145 @@ const Sauromthong_6tinhModel = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+  async getAll_Defore(status) {
+    try {
+      // Khởi tạo mảng điều kiện
+      let conditions = ['defor_ha IS NOT NULL'];
+      const values = [];
+
+      // Nếu truyền status, thêm điều kiện
+      if (status === 0 || status === 1) {
+        values.push(status);
+        conditions.push(`status = $${values.length}`);
+      }
+
+      // Tạo câu query
+      const query = `
+      SELECT *
+      FROM public.srt_degrad
+      WHERE ${conditions.join(' AND ')};
+    `;
+
+      const result = await pool.query(query, values);
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getAll_Defore_Condition(skip = 0, limit = 15, status) {
+    try {
+      let conditions = ['defor_ha IS NOT NULL'];
+      const values = [];
+
+      // Nếu truyền status, thêm điều kiện
+      if (status === 0 || status === 1) {
+        values.push(status);
+        conditions.push(`status = $${values.length}`);
+      }
+
+      // Thêm limit và offset vào values
+      values.push(limit);
+      values.push(skip);
+
+      const query = `
+      SELECT *
+      FROM public.srt_degrad
+      WHERE ${conditions.join(' AND ')}
+      ORDER BY defor_ha DESC
+      LIMIT $${values.length - 1}
+      OFFSET $${values.length};
+    `;
+
+      const result = await pool.query(query, values);
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async updateStatus(id, status) {
+    const query = `
+        UPDATE public.srt_degrad
+        SET status = $1
+        WHERE id = $2
+        RETURNING *
+      `;
+    const result = await pool.query(query, [status, id]);
+    return result.rows[0] || null;
+  },
+  async updateStatusMultiByIds(ids, status) {
+    if (!Array.isArray(ids) || ids.length === 0) return false;
+
+    const query = `
+        UPDATE public.srt_degrad
+        SET status = $1
+        WHERE id = ANY($2::int[])
+      `;
+    await pool.query(query, [status, ids]);
+    return true;
+  },
+  async findById_Defor_Degrad(id) {
+    const query = `SELECT * FROM public.srt_degrad WHERE id = $1 LIMIT 1`;
+    const result = await pool.query(query, [id]);
+    return result.rows[0] || null;
+  },
+  //Degrad
+  async getAll_Degrad(status) {
+    try {
+      // Khởi tạo mảng điều kiện
+      let conditions = ['degrad_ha IS NOT NULL'];
+      const values = [];
+
+      // Nếu truyền status, thêm điều kiện
+      if (status === 0 || status === 1) {
+        values.push(status);
+        conditions.push(`status = $${values.length}`);
+      }
+
+      // Tạo câu query
+      const query = `
+      SELECT *
+      FROM public.srt_degrad
+      WHERE ${conditions.join(' AND ')};
+    `;
+
+      const result = await pool.query(query, values);
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getAll_Degrad_Condition(skip = 0, limit = 15, status) {
+    try {
+      let conditions = ['degrad_ha IS NOT NULL'];
+      const values = [];
+
+      // Nếu truyền status, thêm điều kiện
+      if (status === 0 || status === 1) {
+        values.push(status);
+        conditions.push(`status = $${values.length}`);
+      }
+
+      // Thêm limit và offset vào values
+      values.push(limit);
+      values.push(skip);
+
+      const query = `
+      SELECT *
+      FROM public.srt_degrad
+      WHERE ${conditions.join(' AND ')}
+      ORDER BY degrad_ha DESC
+      LIMIT $${values.length - 1}
+      OFFSET $${values.length};
+    `;
+
+      const result = await pool.query(query, values);
+      return result.rows;
+    } catch (error) {
+      throw error;
+    }
+  },
 
 }
 module.exports = Sauromthong_6tinhModel;

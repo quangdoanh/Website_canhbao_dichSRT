@@ -151,6 +151,7 @@ if (filterTinh) {
     filterTinh.value = valueCurrent
 }
 
+// Filter Huyen
 
 const filterHuyen = document.querySelector("[filter-huyen]")
 console.log("huyen", filterHuyen)
@@ -171,7 +172,29 @@ if (filterHuyen) {
   if (valueCurrent)
     filterHuyen.value = valueCurrent
 }
+
+// Filter Status
+const filterStatus = document.querySelector("[filter-status]")
+console.log("status", filterStatus)
+if (filterStatus) {
+  const url = new URL(window.location.href)
+  filterStatus.addEventListener("change", () => {
+    const value = filterStatus.value
+    if (value) {
+      url.searchParams.set("mucdo", value)
+    } else {
+      url.searchParams.delete("mucdo")
+    }
+    window.location.href = url.href
+  })
+  // hiển thị mặc định
+
+  const valueCurrent = url.searchParams.get("mucdo")
+  if (valueCurrent)
+    filterStatus.value = valueCurrent
+}
 // End
+
 
 
 // faq
@@ -218,3 +241,25 @@ if (pagination) {
   }
 }
 // end pagination
+
+
+// active header
+const header = document.querySelector(".header");
+if (header) {
+  const pathNameCurrent = window.location.pathname;
+  const splitPathNameCurrent = pathNameCurrent.split("/");
+
+
+
+  const menuList = header.querySelectorAll(".header-item");
+  menuList.forEach(item => {
+    const href = item.href;
+    const pathName = new URL(href).pathname;
+    const splitPathName = pathName.split("/");
+    if (splitPathNameCurrent[1] == splitPathName[1] && splitPathNameCurrent[2] == splitPathName[2]) {
+      item.classList.add("active");
+    }
+
+
+  })
+}

@@ -99,6 +99,7 @@ module.exports.home = async (req, res) => {
 
 
     ListTinh = await TinhModel.getAll();
+
     console.log("tỉnh ", ListTinh)
     if (req.query.tinh) {
         matinh = Number(req.query.tinh);

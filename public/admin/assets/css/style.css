@@ -413,7 +413,7 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 16px;
+  padding: 14px 6px;
   border-radius: 6px;
   margin-left: 24px;
   margin-right: 10px;
@@ -985,7 +985,8 @@ a {
 }
 
 .section-5 .inner-button-create button,
-.section-5 .inner-button-create a {
+.section-5 .inner-button-create a,
+.inner-button-next_slide {
   background-color: var(--color-primary);
   color: #fff;
   font-weight: 700;
@@ -1778,6 +1779,45 @@ select[disabled] {
   /* đổi con trỏ */
   opacity: 0.8;
   /* làm nhạt nhẹ */
+}
+
+
+.inner-button-next_slide a {
+  color: #000;
+  margin-left: 8px;
+}
+
+.inner-button-next_slide i {
+  color: #007F18;
+  margin-left: 8px;
+}
+
+.inner-button-next_slide {
+  background-color: white !important;
+  border: 2px solid #007F18;
+  margin-right: 10px;
+}
+
+.section-5.next_slide {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+
+}
+
+
+
+/* Khi hover */
+.inner-button-next_slide:hover {
+  background-color: #007F18 !important;
+  /* nền xanh */
+  color: #fff;
+  /* chữ trắng */
+}
+
+.inner-button-next_slide:hover i {
+  color: #fff;
+  /* icon trắng */
 }
 
 /* end */
