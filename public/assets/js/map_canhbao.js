@@ -87,9 +87,12 @@ const loadWFSByCondition = (layerName, conditions) => {
         map.removeLayer(currentWfsLayer);
         currentWfsLayer = null;
     }
+    console.log(conditions)
 
     const cqlFilter = `xa='${conditions.xa}' AND tk='${conditions.tk}' AND khoanh='${conditions.khoanh}' AND lo='${conditions.lo}'`;
     const url = `${wfsUrl}?service=WFS&version=1.1.0&request=GetFeature&typeName=iTwood_Workspace:${layerName}&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cqlFilter)}`;
+
+    console.log(url)
 
     fetch(url)
         .then(res => res.json())
