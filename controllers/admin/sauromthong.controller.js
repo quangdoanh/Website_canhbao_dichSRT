@@ -7,7 +7,7 @@ const moment = require("moment");
 const uploadMapModel = require("../../models/upload_map.model");
 module.exports.listDulieuSRT = async (req, res) => {
   try {
-    const limit = 20;
+    const limit = 15;
     let page = parseInt(req.query.page) || 1;
     if (page < 1) page = 1;
 
@@ -16,6 +16,7 @@ module.exports.listDulieuSRT = async (req, res) => {
       ma_tinh: parseInt(req.query.ma_tinh) || null,
       ma_huyen: parseInt(req.query.ma_huyen) || null,
       ma_xa: parseInt(req.query.ma_xa) || null,
+      muc_ah:parseInt(req.query.muc_ah) || null,
     };
 
     // ===== Tổng số bản ghi =====
@@ -27,9 +28,8 @@ module.exports.listDulieuSRT = async (req, res) => {
 
     // ===== Lấy dữ liệu phân trang =====
     const data = await SauRomThongModel.getAllWithPagination(limit, offset, filters);
-
     const listDulieuSRT = data.map((item) => ({
-      id: item.id,
+      id: item.pk,
       tinh: item.tinh,
       huyen: item.huyen,
       xa: item.xa,
@@ -40,6 +40,8 @@ module.exports.listDulieuSRT = async (req, res) => {
       loairung: item.sldlr,
       namtr: item.namtr,
       churung: item.churung,
+      muc_ah:item.muc_ah,
+      so_ngay_con_lai:item.so_ngay_con_lai
     }));
 
     // ===== Danh sách Tỉnh =====
@@ -93,6 +95,53 @@ module.exports.listDulieuSRT = async (req, res) => {
     });
   } catch (err) {
     console.error("List DulieuSRT error:", err);
+    res.status(500).send("Lỗi server");
+  }
+};
+module.exports.viewDulieuSRT = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const row = await SauRomThongModel.findByIdView(id);
+
+    if (!row) {
+      return res.status(404).send("Không tìm thấy bản ghi");
+    }
+
+    // ===== Map dữ liệu final =====
+    const dataSRT = {
+      id: row.id || null,
+      tinh: row.tinh || "Không xác định",
+      huyen: row.huyen || "Không xác định",
+      xa: row.xa || "Không xác định",
+      tk: row.tk || "Không xác định",
+      khoanh: row.khoanh || "Không xác định",
+      lo: row.lo || "Không xác định",
+      dtich: row.dtich || "Không xác định",
+      ldlr: row.ldlr || "Không xác định",
+      sldlr: row.sldlr || "Không xác định",
+      namtr: row.namtr || "Không xác định",
+      churung: row.churung || "Không xác định",
+      docao: row.docao || "Không xác định",
+      dodoc: row.dodoc || "Không xác định",
+      huongdoc: row.huongdoc || "Không xác định",
+      luongmua: row.luongmua || "Không xác định",
+      nhietdo: row.nhietdo || "Không xác định",
+      captuoi: row.captuoi || "Không xác định",
+      lichsu: row.lichsu || "Không xác định",
+      tong: row.tong || "Không xác định",
+      phancap: row.phancap || "Không xác định",
+      ghep: row.ghep || "Không xác định",
+    };
+
+    console.log("Chi tiết bản ghi:", dataSRT);
+
+    res.render("admin/pages/dulieuSRT-detail", {
+      pageTitle: "Chi tiết Dữ liệu SRT",
+      dataSRT,
+    });
+
+  } catch (error) {
+    console.error("viewDulieuSRT error:", error);
     res.status(500).send("Lỗi server");
   }
 };

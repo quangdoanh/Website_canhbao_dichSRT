@@ -1,0 +1,100 @@
+extends ../layouts/default.pug
+
+block main
+  h1.box-title Chi tiết bản ghi
+  .section-8
+    form#dulieu-view-form
+      //- Tỉnh
+      .inner-group
+        label(class="inner-label" for="ten_tinh") Tỉnh
+        input(type="text" id="ten_tinh" name="ten_tinh" value=(dataSRT.tinh ) readonly)
+
+      //- Huyện
+      .inner-group
+        label(class="inner-label" for="ten_huyen") Huyện
+        input(type="text" id="ten_huyen" name="ten_huyen" value=(dataSRT.huyen)  readonly)
+
+      //- Xã
+      .inner-group
+        label(class="inner-label" for="ten_xa") Xã
+        input(type="text" id="ten_xa" name="ten_xa" value=(dataSRT.xa)  readonly)
+
+      //- Nhiệt độ Min
+      .inner-group
+        label(class="inner-label" for="temp_min") Tiểu khu
+        input(type="text" id="temp_min" name="temp_min" value=(dataSRT.tk) readonly)
+
+      //- Nhiệt độ Max
+      .inner-group
+        label(class="inner-label" for="temp_max") Khoảnh
+        input(type="text" id="temp_max" name="temp_max" value=(dataSRT.khoanh)  readonly)
+
+      //- Nhiệt độ TB
+      .inner-group
+        label(class="inner-label" for="temp_mean") Lô
+        input(type="text" id="temp_mean" name="temp_mean" value=(dataSRT.lo) readonly)
+
+      //- Lượng mưa Min
+      .inner-group
+        label(class="inner-label" for="rain_min") Diện tích
+        input(type="text" id="rain_min" name="rain_min" value=(dataSRT.dtich) readonly)
+      .inner-group
+        label(class="inner-label" for="rain_max") ldlr
+        input(type="text" id="rain_max" name="rain_max" value=(dataSRT.ldlr) readonly)
+
+      //- Lượng mưa Max
+      .inner-group
+        label(class="inner-label" for="rain_max") sldlr
+        input(type="text" id="rain_max" name="rain_max" value=(dataSRT.sldlr) readonly)
+
+      //- Lượng mưa TB
+      .inner-group
+        label(class="inner-label" for="rain_mean") namtr
+        input(type="text" id="rain_mean" name="rain_mean" value=(dataSRT.namtr)  readonly)
+
+      //- Tốc độ gió Min
+      .inner-group
+        label(class="inner-label" for="wind_min") Chủ rừng
+        input(type="text" id="wind_min" name="wind_min" value=(dataSRT.churung) readonly)
+
+      //- Tốc độ gió Max
+      .inner-group
+        label(class="inner-label" for="wind_max") Độ cao
+        input(type="text" id="wind_max" name="wind_max" value=(dataSRT.docao) readonly)
+
+      //- Tốc độ gió TB
+      .inner-group
+        label(class="inner-label" for="wind_mean") Độ dốc
+        input(type="text" id="wind_mean" name="wind_mean" value=(dataSRT.dodoc)  readonly)
+
+      //- Cấp số
+      .inner-group
+        label(class="inner-label" for="cap_so_p") Hướng dốc
+        input(type="text" id="cap_so_p" name="cap_so_p" value=(dataSRT.huongdoc) readonly)
+
+      //- Ngày cập nhật
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Lượng mưa
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.luongmua) readonly)
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Nhiệt độ
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.nhietdo) readonly)
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Cấp tuổi
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.captuoi) readonly)
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Lịch sử
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.lichsu) readonly)
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Tổng
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.tong) readonly)
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Phân cấp
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.phancap) readonly)
+      .inner-group
+        label(class="inner-label" for="ngay_cap_nhat") Ghép
+        input(type="text" id="ngay_cap_nhat" name="ngay_cap_nhat" value=(dataSRT.ghep) readonly)
+      
+    //- Back button
+    .inner-back
+      a(href="/admin/sauromthong/list") Quay lại danh sách

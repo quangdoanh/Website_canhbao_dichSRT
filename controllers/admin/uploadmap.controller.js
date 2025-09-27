@@ -10,7 +10,7 @@ module.exports.listMap = async (req, res) => {
       ma_tinh: req.query.ma_tinh ? String(req.query.ma_tinh) : null, // ép string tại đây
     };
 
-    const limit = 20;
+    const limit = 15;
     let page = parseInt(req.query.page) || 1;
     if (page < 1) page = 1;
 
@@ -146,6 +146,7 @@ module.exports.deleteMap = async (req, res) => {
         const success = await uploadMapModel.deleteById(id);
 
         if (success) {
+            req.flash("success","Xóa thành công");
             res.json({
                 code: "success",
                 message: "Xóa thành công",

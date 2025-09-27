@@ -264,77 +264,103 @@ const Sauromthong_6tinhModel = {
     }
   },
   //
-  async countAll(filters = {}) {
-    const values = [];
-    const conditions = [];
-    let index = 1;
+async countAll(filters = {}) {
+  const values = [];
+  const conditions = [];
+  let index = 1;
 
-    if (filters.ma_tinh) {
-      conditions.push(`matinh = $${index}`);
-      values.push(filters.ma_tinh);
-      index++;
-    }
+  if (filters.ma_tinh) {
+    conditions.push(`matinh = $${index}`);
+    values.push(filters.ma_tinh);
+    index++;
+  }
 
-    if (filters.ma_huyen) {
-      conditions.push(`mahuyen = $${index}`);
-      values.push(filters.ma_huyen);
-      index++;
-    }
+  if (filters.ma_huyen) {
+    conditions.push(`mahuyen = $${index}`);
+    values.push(filters.ma_huyen);
+    index++;
+  }
 
-    if (filters.ma_xa) {
-      conditions.push(`maxa = $${index}`);
-      values.push(filters.ma_xa);
-      index++;
-    }
+  if (filters.ma_xa) {
+    conditions.push(`maxa = $${index}`);
+    values.push(filters.ma_xa);
+    index++;
+  }
 
-    const whereClause = conditions.length
-      ? `WHERE ${conditions.join(" AND ")}`
-      : "";
+  // Điều kiện fix cứng
+  conditions.push(`muc_ah >= 50`);
+  if (filters.muc_ah) {
+    conditions.push(`muc_ah = $${index}`);
+    values.push(filters.muc_ah);
+    index++;
+  }
 
-    const sql = `SELECT COUNT(*) AS total FROM public."Sauromthong_6tinh" ${whereClause}`;
-    const result = await pool.query(sql, values);
-    return parseInt(result.rows[0].total, 10);
-  },
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
 
-  async getAllWithPagination(limit, offset, filters = {}) {
-    const values = [];
-    const conditions = [];
-    let index = 1;
+  const sql = `SELECT COUNT(*) AS total FROM public.cb_srt_map ${whereClause}`;
+  const result = await pool.query(sql, values);
+  return parseInt(result.rows[0].total, 10);
+},
 
-    if (filters.ma_tinh) {
-      conditions.push(`matinh = $${index}`);
-      values.push(filters.ma_tinh);
-      index++;
-    }
+async getAllWithPagination(limit, offset, filters = {}) {
+  const values = [];
+  const conditions = [];
+  let index = 1;
 
-    if (filters.ma_huyen) {
-      conditions.push(`mahuyen = $${index}`);
-      values.push(filters.ma_huyen);
-      index++;
-    }
+  if (filters.ma_tinh) {
+    conditions.push(`matinh = $${index}`);
+    values.push(filters.ma_tinh);
+    index++;
+  }
 
-    if (filters.ma_xa) {
-      conditions.push(`maxa = $${index}`);
-      values.push(filters.ma_xa);
-      index++;
-    }
+  if (filters.ma_huyen) {
+    conditions.push(`mahuyen = $${index}`);
+    values.push(filters.ma_huyen);
+    index++;
+  }
 
-    const whereClause = conditions.length
-      ? `WHERE ${conditions.join(" AND ")}`
-      : "";
+  if (filters.ma_xa) {
+    conditions.push(`maxa = $${index}`);
+    values.push(filters.ma_xa);
+    index++;
+  }
+  
+  // Điều kiện fix cứng
+  conditions.push(`muc_ah >= 50`);
+  if (filters.muc_ah) {
+    conditions.push(`muc_ah = $${index}`);
+    values.push(filters.muc_ah);
+    index++;
+  }
 
-    const sql = `
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
+
+  const sql = `
     SELECT *
-    FROM public."Sauromthong_6tinh"
+    FROM public.cb_srt_map
     ${whereClause}
-    ORDER BY id DESC
+    ORDER BY muc_ah DESC, so_ngay_con_lai ASC
     LIMIT $${index} OFFSET $${index + 1}
   `;
 
-    values.push(limit, offset);
+  values.push(limit, offset);
 
-    const result = await pool.query(sql, values);
-    return result.rows;
+  const result = await pool.query(sql, values);
+  return result.rows;
+},
+  async findByIdView(id) {
+    const query = `
+      SELECT * 
+      FROM public."cb_srt_map"
+      WHERE pk = $1
+      LIMIT 1
+    `;
+    const result = await pool.query(query, [id]);
+    return result.rows[0]; // Trả về 1 object thay vì mảng
   },
 };
 module.exports = Sauromthong_6tinhModel;

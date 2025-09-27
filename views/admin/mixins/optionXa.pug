@@ -62,7 +62,7 @@ mixin optionXa(listXaTheoHuyen)
     filterXaByHuyen("");
     let dataDetail = !{JSON.stringify(dataDetail) || 'null'};
 
-    if (dataDetail && dataDetail.ma_xa) {
+    if (dataDetail && dataDetail.ma_xa ) {
       // Khi focus vào tỉnh → chỉ giữ lại tỉnh chứa xã đó
       tinhSelect.addEventListener("focus", () => {
         [...tinhSelect.options].forEach(opt => {
