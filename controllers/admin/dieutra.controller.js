@@ -14,7 +14,7 @@ module.exports.listDieuTra = async (req, res) => {
       ma_xa: req.query.ma_xa || null,
     };
 
-    const limit = 4;
+    const limit = 15;
     let page = parseInt(req.query.page) || 1;
     if (page < 1) page = 1;
 
@@ -71,7 +71,8 @@ module.exports.listDieuTra = async (req, res) => {
         dsXa: grouped[ma_huyen],
       });
     }
-
+    
+    console.log("điều tra: ", dieutraList)
     // ===== Render ra view =====
     res.render("admin/pages/dieu-tra-list", {
       pageTitle: "Danh sách điều tra",
@@ -102,7 +103,7 @@ module.exports.appListDieuTra = async (req, res) => {
       ma_xa: req.query.ma_xa || null,
     };
 
-    const limit = parseInt(req.query.limit) || 10; // cho app tuỳ chọn limit
+    const limit = 15;
     let page = parseInt(req.query.page) || 1;
     if (page < 1) page = 1;
 
@@ -181,7 +182,6 @@ module.exports.appListDieuTra = async (req, res) => {
     });
   }
 };
-
 //end api cho app
 module.exports.createDieuTra = async (req, res) => {
   try {
@@ -229,6 +229,57 @@ module.exports.createDieuTra = async (req, res) => {
     res.status(500).send("Có lỗi xảy ra");
   }
 };
+// api cho app
+module.exports.appCreateDieuTra = async (req, res) => {
+  try {
+    // 1. Lấy danh sách tỉnh
+    const ListTinh = await TinhModel.getAll();
+
+    // 2. Lấy danh sách huyện (mỗi huyện cần có cả ma_tinh để lọc)
+    const ListHuyen = await HuyenModel.getAll();
+
+    // 3. Lấy danh sách xã theo huyện
+    const ListXa = await XaModel.getAll();
+
+    // Gom nhóm xã theo huyện
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+
+    ListXa.forEach(xa => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa
+      });
+    });
+
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen]
+      });
+    }
+
+    // 4. Trả JSON cho client
+    res.json({
+      code: "success",
+      data: {
+        ListTinh,
+        ListHuyen,
+        ListXaTheoHuyen
+      }
+    });
+  } catch (err) {
+    console.error("Lỗi apiCreateDieuTra:", err);
+    res.status(500).json({
+      code: "error",
+      message: "Có lỗi xảy ra khi lấy dữ liệu tạo điều tra!"
+    });
+  }
+};
+// api cho app
 
 
 module.exports.createDieuTraPost = async (req, res) => {
@@ -250,11 +301,31 @@ module.exports.createDieuTraPost = async (req, res) => {
             });
             return;
         }
+        if (!Number.isInteger(so_sau_non) || so_sau_non <= 0) {
+            return res.status(400).json({
+              code: "error",
+              message: "Số sâu non phải là số nguyên > 0"
+            });
+          }
+
+          // ===== Validate so_cay =====
+        if (!Number.isInteger(so_cay) || so_cay <= 0) {
+          return res.status(400).json({
+            code: "error",
+            message: "Số cây phải là số nguyên > 0"
+          });
+        }
         if (duong_kinh_tb === undefined || isNaN(duong_kinh_tb_num) || duong_kinh_tb_num <= 0) {
             res.status(400).json({
                 code: "error",
                 message: "Đường kính TB phải nhập và > 0"
             });
+        }
+        if (duong_kinh_tb_num >= 1000) {
+          return res.status(400).json({
+            code: "error",
+            message: "Đường kính TB không được vượt quá 999.99"
+          });
         }
 
         // Tạo bản ghi mới
@@ -345,7 +416,70 @@ module.exports.editDieuTra = async (req, res) => {
       .json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
   }
 };
+// api cho app
+module.exports.appEditDieuTra = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    // 1. Lấy bản ghi điều tra (có join tên tỉnh/huyện/xã)
+    const dieutra = await DieuTraModel.getByIdWithNames(id);
+    if (!dieutra) {
+      return res.status(404).json({
+        code: "error",
+        message: "Không tìm thấy bản ghi!"
+      });
+    }
+
+    // 2. Lấy toàn bộ danh sách tỉnh
+    const ListTinh = await TinhModel.getAll();
+
+    // 3. Lấy toàn bộ danh sách huyện
+    const ListHuyen = await HuyenModel.getAll();
+
+    // 4. Lấy toàn bộ danh sách xã
+    const ListXa = await XaModel.getAll();
+
+    // 5. Gom nhóm xã theo huyện
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+
+    ListXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+
+    // 6. Trả JSON cho client
+    res.json({
+      code: "success",
+      data: {
+        dieutra,
+        ListTinh,
+        ListHuyen,
+        ListXaTheoHuyen
+      }
+    });
+  } catch (err) {
+    console.error("Lỗi apiEditDieuTra:", err);
+    res.status(500).json({
+      code: "error",
+      message: "Có lỗi xảy ra, vui lòng thử lại!"
+    });
+  }
+};
+
+// api cho app
 
 
 
@@ -386,7 +520,7 @@ module.exports.editDieuTraPatch = async (req, res) => {
 
         req.flash("success", "Cập nhật thành công")
         // 4. Trả về JSON
-        res.json({ code: "success", data: updatedDieuTra });
+        res.json({ code: "success",message:"Cập nhật thành công", data: updatedDieuTra });
 
     } catch (err) {
         console.error(err);
@@ -394,24 +528,45 @@ module.exports.editDieuTraPatch = async (req, res) => {
     }
 };
 
-module.exports.deleteDieuTraPatch = async (req, res) => {
+module.exports.deleteDieuTra = async (req, res) => {
 
     console.log("Chạy vào đây")
     try {
         const { id } = req.params;
 
-        const updatedDieuTra = await DieuTraModel.softDelete(id);
+    const deleted = await DieuTraModel.delete(id);
 
-        if (!updatedDieuTra) {
-            return res.status(404).json({ code: "error", message: "Bản ghi không tồn tại!" });
-        }
-        req.flash("success", "Xóa thành công")
-        res.json({
-            code: "success",
-        });
+    if (!deleted) {
+      return res.status(400).json({
+        code: "error",
+        message: "Chỉ được xóa bản ghi có trạng thái 'Đang xử lý'!"
+      });
+    }
+    req.flash("success", "Xóa thành công")
+    res.json({
+        code: "success",
+        message: "Xóa thành công"
+    });
 
     } catch (err) {
         console.error(err);
         res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
     }
+};
+module.exports.deleteMultiDieuTra = async (req, res) => {
+  try {
+    const ids = req.query.ids ? req.query.ids.split(",").map(Number) : [];
+    if (!ids.length) {
+      return res.json({ code: "error", message: "Không có ID nào được chọn!" });
+    }
+
+    const deleted = await DieuTraModel.deleteMany(ids);
+    req.flash("success",`Đã xóa ${deleted} bản ghi`)
+    res.json({
+      code: "success",
+      message: `Đã xóa ${deleted} bản ghi`
+    });
+  } catch (err) {
+    res.json({ code: "error", message: "Có lỗi xảy ra" });
+  }
 };

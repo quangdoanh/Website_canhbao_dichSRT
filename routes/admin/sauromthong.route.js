@@ -9,7 +9,7 @@ const upload = multer({ storage: cloudinaryRarHelper.storageRar });
 
 // =========== DU LIEU ======== //
 router.get('/list', SRTController.listDulieuSRT);
-router.get('/create', SRTController.createDulieuSRT);
+router.get('/detail/:id',SRTController.viewDulieuSRT)
 router.get('/edit/:id', SRTController.editDulieuSRT);
 router.patch('/edit/:id', SRTController.editPatchDulieuSRT);
 // =========== ĐIỀU TRA ======== //

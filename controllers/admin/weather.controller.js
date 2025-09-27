@@ -15,7 +15,7 @@ module.exports.list = async (req, res) => {
       ma_xa: req.query.ma_xa || null,
     };
 
-    const limit = 20; // số bản ghi mỗi trang
+    const limit = 15; // số bản ghi mỗi trang
     let page = parseInt(req.query.page) || 1;
     if (page < 1) page = 1;
 

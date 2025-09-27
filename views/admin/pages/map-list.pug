@@ -54,6 +54,7 @@ block main
             //-   input(type="checkbox" class="inner-check" check-all)
             //- th Địa diểm điều tra
             th(class="inner-center") Tải file
+            th(class="inner-center") Tỉnh
             th(class="inner-center") Loại bản đồ
             th(class="inner-center") Thông tin
             th Hành động
@@ -67,6 +68,7 @@ block main
               td(class="inner-center") 
                 a(href=item.file, download, style="text-decoration:none; color:black;" )
                   i(class="fa-solid fa-map-location-dot fa-2x ") 
+              td(class="inner-center") #{item.ten_tinh}
               td(class="inner-center") #{item.loaibando}
               td(class="inner-center") #{item.thongtin}
               td

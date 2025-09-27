@@ -208,12 +208,38 @@ const DieuTra = {
   // Xóa bản ghi
   async delete(id) {
     try {
-      await pool.query("DELETE FROM dieu_tra WHERE id = $1", [id]);
+      const check = await pool.query(
+        `SELECT id FROM dieu_tra WHERE id = $1 AND status = 1`,
+        [id]
+      );
+
+      if (check.rows.length === 0) {
+        return false; // Không tìm thấy hoặc status != 1
+      }
+
+      await pool.query(`DELETE FROM dieu_tra WHERE id = $1`, [id]);
       return true;
     } catch (error) {
       throw error;
     }
   },
+    async deleteMany(ids = []) {
+    try {
+      if (!ids.length) return 0;
+
+      const placeholders = ids.map((_, i) => `$${i + 1}`).join(", ");
+      const query = `
+        DELETE FROM dieu_tra 
+        WHERE id IN (${placeholders}) 
+        AND status = 1
+      `;
+      const result = await pool.query(query, ids);
+      return result.rowCount;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   async search(keyword, ma_tinh = null) {
     try {
       let sql = `

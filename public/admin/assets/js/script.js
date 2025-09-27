@@ -573,6 +573,43 @@ if (changeMulti) {
   });
 }
 // End Change multi
+
+// Delete multi
+const deleteMulti = document.querySelector("[delete-multi]");
+if (deleteMulti) {
+  const dataApi = deleteMulti.getAttribute("data-api");
+  const select = deleteMulti.querySelector("select");
+  const button = deleteMulti.querySelector("button");
+
+  button.addEventListener("click", () => {
+    const option = select.value;
+    const listInputChecked = document.querySelectorAll("[check-item]:checked");
+
+    if (option === "delete" && listInputChecked.length > 0) {
+      const ids = [];
+      listInputChecked.forEach((item) => {
+        ids.push(item.getAttribute("check-item"));
+      });
+
+      fetch(`${dataApi}?ids=${ids.join(",")}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.code === "error") {
+            alert(data.message);
+          }
+          if (data.code === "success") {
+            window.location.reload();
+          }
+        });
+    } else {
+      alert("Vui lòng chọn bản ghi và hành động!");
+    }
+  });
+}
+
+// End Delete multi
 // filter status
 const filterStatus = document.querySelector("[filter-status]");
 if (filterStatus) {
@@ -1854,5 +1891,28 @@ if (filterLoaiBanDo) {
   const valueCurrent = url.searchParams.get("loaibando");
   if (valueCurrent) {
     filterLoaiBanDo.value = valueCurrent;
+  }
+}
+
+
+const filterMucAh = document.querySelector("[filter-muc_ah]");
+if (filterMucAh) {
+  const url = new URL(window.location.href);
+
+  // Lắng nghe thay đổi lựa chọn
+  filterMucAh.addEventListener("change", () => {
+    const value = filterMucAh.value;
+    if (value) {
+      url.searchParams.set("muc_ah", value);
+    } else {
+      url.searchParams.delete("muc_ah");
+    }
+    window.location.href = url.href;
+  });
+
+  // Hiển thị lựa chọn mặc định khi reload
+  const valueCurrent = url.searchParams.get("muc_ah");
+  if (valueCurrent) {
+    filterMucAh.value = valueCurrent;
   }
 }

@@ -32,13 +32,12 @@ block main
   //- Section 5: Hành động & tìm kiếm
   .section-5
     .inner-wrap
-      .inner-change-status(change-multi data-api=`/${pathAdmin}/dieutra/change-multi`)
+      .inner-change-status(delete-multi data-api=`/${pathAdmin}/dieutra/deleteMulti`)
         .inner-item
           select
             option(value="") -- Hành động --
-            option(value="") Hoạt động
-            option(value="inactive") Dừng hoạt động
             option(value="delete") Xóa
+            
         .inner-item
           button Áp dụng
       //- .inner-search
@@ -53,6 +52,8 @@ block main
       table
         thead
           tr
+            th.inner-center
+              input(type="checkbox" class="inner-check" check-all)
             th.inner-center Địa chỉ
             th.inner-center Tỉnh
             th.inner-center Huyện
@@ -65,11 +66,14 @@ block main
             th Khoảnh 
             th Lô
             th Ngày điều tra
+            th Trạng thái
             th Hành động
         tbody
         if dieutraList.length 
           each item in dieutraList
             tr
+              td.inner-center
+                input(type="checkbox" class="inner-check" check-item = item.id)
               td.inner-center= item.dia_chi_cu_the || "Không xác định"
               td.inner-center= item.ten_tinh || "Không xác định"
               td.inner-center= item.ten_huyen || "Không xác định"
@@ -82,11 +86,16 @@ block main
               td=item.khoanh || ""
               td=item.lo || ""
               td= item.dtra_dateFormat || ""
+              td   
+                if item.status == 1
+                  .badge.badge-red  Đang xử lý
+                else 
+                  .badge.badge-green Đã xử lý
               td
                 .inner-buttons
                   a.inner-edit(href=`/${pathAdmin}/dieutra/edit/${item.id}`)
                     i(class="fa-regular fa-pen-to-square")
-                  button.inner-delete(button-delete-patch data-api=`/${pathAdmin}/dieutra/delete/${item.id}`)
+                  button.inner-delete(button-delete data-api=`/${pathAdmin}/dieutra/delete/${item.id}`)
                     i(class="fa-regular fa-trash-can")
         else
           tr
