@@ -6,7 +6,7 @@ const DieuTra = {
 // Đếm tổng số bản ghi (có filter)
   async countAll(filters = {}) {
     const values = [];
-    const conditions = ["dt.status = 1"]; // chỉ lấy status = 1
+    const conditions = []; // chỉ lấy status = 1
     let index = 1;
 
     if (filters.keyword) {
@@ -55,7 +55,7 @@ const DieuTra = {
   // Lấy dữ liệu phân trang (có filter)
   async getAllWithPagination(limit, offset, filters = {}) {
     const values = [];
-    const conditions = ["dt.status = 1"];
+    const conditions = [];
     let index = 1;
 
     if (filters.keyword) {
@@ -118,7 +118,7 @@ const DieuTra = {
         LEFT JOIN tinh  t ON dt.ma_tinh = t.ma_tinh
         LEFT JOIN huyen h ON dt.ma_huyen = h.ma_huyen
         LEFT JOIN xa    x ON dt.ma_xa    = x.ma_xa
-        WHERE dt.id = $1 AND dt.status = 1
+        WHERE dt.id = $1 
         LIMIT 1
       `;
       const result = await pool.query(sql, [id]);

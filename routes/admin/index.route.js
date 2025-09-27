@@ -14,6 +14,7 @@ const profileRoutes = require('./profile.route');
 const UploadMapRoutes = require('./uploadmap.route')
 const DieuTraRoutes = require('./dieutra.route')
 const DichBenhRoutes = require('./dichbenh.route')
+const LocationRoutes = require('./location.route')
 // const userRoutes = require("./user.route");
 
 const authMiddleware = require("../../middlewares/admin/auth.middlewares");
@@ -38,6 +39,7 @@ router.use('/about', authMiddleware.verifyToken, aboutRoutes);
 router.use('/contact', authMiddleware.verifyToken, contactRoutes);
 router.use('/weather-data', authMiddleware.verifyToken, weatherRouters);
 router.use('/profile', authMiddleware.verifyToken, profileRoutes);
+router.use('/location', LocationRoutes);
 
 
 

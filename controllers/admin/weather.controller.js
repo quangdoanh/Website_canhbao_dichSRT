@@ -91,6 +91,100 @@ module.exports.list = async (req, res) => {
   }
 };
 
+// Listapp
+module.exports.appList = async (req, res) => {
+  try {
+    // ===== Lấy filters từ query =====
+    const filters = {
+      startDate: req.query.startDate || null,
+      endDate: req.query.endDate || null,
+      ma_tinh: req.query.ma_tinh || null,
+      ma_huyen: req.query.ma_huyen || null,
+      ma_xa: req.query.ma_xa || null,
+    };
+
+    const limit = 15; // số bản ghi mỗi trang
+    let page = parseInt(req.query.page) || 1;
+    if (page < 1) page = 1;
+
+    // ===== Tổng số bản ghi có filter =====
+    const totalRecords = await WeatherModel.countAll(filters);
+    const totalPages = Math.ceil(totalRecords / limit);
+    if (page > totalPages && totalPages > 0) page = totalPages;
+
+    const offset = (page - 1) * limit;
+
+    // ===== Lấy danh sách phân trang theo filter =====
+    const dataList = await WeatherModel.getAllWithPagination(limit, offset, filters);
+
+    // Format ngày ngay_cap_nhat
+    for (const item of dataList) {
+      item.ngay_cap_nhat = item.ngay_cap_nhat
+        ? moment(item.ngay_cap_nhat).format("DD/MM/YYYY")
+        : null;
+    }
+
+    // ===== Danh sách tỉnh =====
+    const ListTinh = await TinhModel.getAll();
+
+    // ===== Danh sách huyện (lọc theo tỉnh nếu có) =====
+    let ListHuyen;
+    if (filters.ma_tinh) {
+      ListHuyen = await HuyenModel.getByProvince(filters.ma_tinh);
+    } else {
+      ListHuyen = await HuyenModel.getAll();
+    }
+
+    // ===== Danh sách xã (lọc theo huyện nếu có) =====
+    let ListXa;
+    if (filters.ma_huyen) {
+      ListXa = await XaModel.getByDistrict(filters.ma_huyen);
+    } else {
+      ListXa = await XaModel.getAll();
+    }
+
+    // Gom nhóm xã theo huyện
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+    ListXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+
+    // ===== Trả JSON cho mobile =====
+    res.json({
+      code:"success",
+      message: "Lấy dữ liệu thành công",
+      data: {
+        dataList,
+        // ListTinh,
+        // ListHuyen,
+        // ListXaTheoHuyen,
+        pagination: { page, totalPages, totalRecords, limit },
+        filters,
+      },
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy dữ liệu thời tiết:", err);
+    res.status(500).json({
+      code:"error",
+      message: "Lỗi server",
+    });
+  }
+};
+
+// Listapp
 
 //xem chi tiết 1 bản ghi
 module.exports.viewDetail =async (req,res) => {
@@ -102,6 +196,40 @@ module.exports.viewDetail =async (req,res) => {
         dataDetail:dataDetail
     })
 }
+// appViewDetail
+module.exports.appViewDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dataDetail = await WeatherModel.getByIdWithNames(parseInt(id));
+
+    if (!dataDetail) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy dữ liệu thời tiết",
+      });
+    }
+
+    // Format ngày
+    dataDetail.ngay_cap_nhatFomat = dataDetail.ngay_cap_nhat
+      ? moment(dataDetail.ngay_cap_nhat).format("DD/MM/YYYY")
+      : null;
+
+    // Trả JSON
+    res.json({
+      code:"success",
+      message: "Lấy chi tiết dữ liệu thành công",
+      data: dataDetail,
+    });
+  } catch (err) {
+    console.error("Lỗi khi lấy chi tiết dữ liệu thời tiết:", err);
+    res.status(500).json({
+      code:"error",
+      message: "Lỗi server",
+    });
+  }
+};
+
+// appViewDetail
 
 //hiển thị thông tin ra form sửa
 module.exports.edit = async (req, res) => {
@@ -175,6 +303,83 @@ module.exports.edit = async (req, res) => {
       .json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
   }
 };
+// appEdit
+module.exports.appEdit = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Lấy bản ghi weather (có join tên tỉnh/huyện/xã)
+    const dataDetail = await WeatherModel.getByIdWithNames(id);
+    if (!dataDetail) {
+      return res.status(404).json({
+        code: "error",
+        message: "Không tìm thấy bản ghi!",
+      });
+    }
+
+    // 2. Lấy toàn bộ danh sách tỉnh
+    const listTinh = await TinhModel.getAll();
+
+    // 3. Lấy toàn bộ danh sách huyện
+    const listHuyen = await HuyenModel.getAll();
+
+    // 4. Lấy toàn bộ danh sách xã
+    const listXa = await XaModel.getAll();
+
+    // 5. Gom nhóm xã theo huyện
+    const listXaTheoHuyen = [];
+    const grouped = {};
+
+    listXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+
+    for (const ma_huyen in grouped) {
+      listXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+
+    // 6. Bổ sung thông tin tỉnh/huyện từ xã
+    if (dataDetail.ma_xa) {
+      const xa = listXa.find((x) => x.ma_xa === dataDetail.ma_xa);
+      if (xa) {
+        dataDetail.huyen_from_xa = xa.ma_huyen;
+        const huyen = listHuyen.find((h) => h.ma_huyen === xa.ma_huyen);
+        if (huyen) {
+          dataDetail.tinh_from_xa = huyen.ma_tinh;
+        }
+      }
+    }
+
+    // ===== Trả JSON cho mobile =====
+    res.json({
+      code: "success",
+      message: "Lấy dữ liệu edit thành công",
+      data: {
+        dataDetail,
+        // listTinh,
+        // listHuyen,
+        // listXaTheoHuyen,
+      },
+    });
+  } catch (err) {
+    console.error("Lỗi khi load form edit weather-data:", err);
+    res.status(500).json({
+      code: "error",
+      message: "Có lỗi xảy ra, vui lòng thử lại!",
+    });
+  }
+};
+
+// appEdit
 
 module.exports.editPatch = async (req, res) => {
   try {
@@ -212,8 +417,8 @@ module.exports.editPatch = async (req, res) => {
         }
       }
       // --- Field số nguyên ---
-      else if (["cap_so_p"].includes(key)) {
-        let num = parseInt(value, 10);
+      else if (["cap_so_p", "ma_tinh", "ma_huyen", "ma_xa"].includes(key)) {
+        let num = parseInt(value);
         if (!isNaN(num) && num >= 0) {
           filteredUpdates[key] = num;
         }
@@ -248,6 +453,51 @@ module.exports.editPatch = async (req, res) => {
     if (Object.keys(filteredUpdates).length === 0) {
       return res.json({ code: "error", message: "Không có dữ liệu để cập nhật!" });
     }
+    // --- Validate ma_tinh ---
+  if (filteredUpdates.ma_tinh) {
+    const tinh = await TinhModel.getById(filteredUpdates.ma_tinh);
+    if (!tinh) {
+      return res.json({ code: "error", message: "Mã tỉnh không hợp lệ!" });
+    }
+    filteredUpdates.ten_tinh = tinh.ten_tinh;
+  }
+
+  // --- Validate ma_huyen ---
+  if (filteredUpdates.ma_huyen) {
+    const huyen = await HuyenModel.getById(filteredUpdates.ma_huyen);
+    if (!huyen) {
+      return res.json({ code: "error", message: "Mã huyện không hợp lệ!" });
+    }
+    // Check huyện có thuộc tỉnh đã chọn không
+    if (filteredUpdates.ma_tinh && huyen.ma_tinh !== filteredUpdates.ma_tinh) {
+      return res.json({ code: "error", message: "Huyện không thuộc Tỉnh đã chọn!" });
+    }
+    filteredUpdates.ten_huyen = huyen.ten_huyen;
+  }
+
+  // --- Validate ma_xa ---
+  if (filteredUpdates.ma_xa) {
+    const xa = await XaModel.getById(filteredUpdates.ma_xa);
+    if (!xa) {
+      return res.json({ code: "error", message: "Mã xã không hợp lệ!" });
+    }
+
+    // Check xã có thuộc huyện đã chọn không
+    if (filteredUpdates.ma_huyen && xa.ma_huyen !== filteredUpdates.ma_huyen) {
+      return res.json({ code: "error", message: "Xã không thuộc Huyện đã chọn!" });
+    }
+
+    // Nếu có cả xã và tỉnh (nhưng không gửi huyện) → check chéo xã ↔ tỉnh
+    if (filteredUpdates.ma_tinh && !filteredUpdates.ma_huyen) {
+      const huyenOfXa = await HuyenModel.getById(xa.ma_huyen);
+      if (huyenOfXa.ma_tinh !== filteredUpdates.ma_tinh) {
+        return res.json({ code: "error", message: "Xã không thuộc Tỉnh đã chọn!" });
+      }
+    }
+
+    // Nếu có đủ cả 3 → check xã ↔ huyện, huyện ↔ tỉnh đã check ở trên, nên yên tâm
+    filteredUpdates.ten_xa = xa.ten_xa;
+  }
 
     // --- Cập nhật DB ---
     const updatedData = await WeatherModel.update(id, filteredUpdates);
@@ -255,11 +505,11 @@ module.exports.editPatch = async (req, res) => {
     console.log("Dữ liệu mới cập nhật: ", await WeatherModel.getByIdWithNames(id));
 
     if (!updatedData) {
-      return res.json({ code: "error", message: "Không tìm thấy bản ghi!" });
+      return res.json({ code: "error", message: "Không tìm thấy bản ghi!", });
     }
 
     req.flash("success", "Cập nhật thành công");
-    res.json({ code: "success", message: "Cập nhật thành công!" });
+    res.json({ code: "success", message: "Cập nhật thành công!" ,updatedData});
 
   } catch (err) {
     console.error("Lỗi editPatch weather:", err);

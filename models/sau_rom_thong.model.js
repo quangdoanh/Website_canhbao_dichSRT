@@ -264,94 +264,96 @@ const Sauromthong_6tinhModel = {
     }
   },
   //
-async countAll(filters = {}) {
-  const values = [];
-  const conditions = [];
-  let index = 1;
+  async countAll(filters = {}) {
+    const values = [];
+    const conditions = [];
+    let index = 1;
 
-  if (filters.ma_tinh) {
-    conditions.push(`matinh = $${index}`);
-    values.push(filters.ma_tinh);
-    index++;
-  }
+    if (filters.ma_tinh) {
+      conditions.push(`matinh = $${index}`);
+      values.push(filters.ma_tinh);
+      index++;
+    }
 
-  if (filters.ma_huyen) {
-    conditions.push(`mahuyen = $${index}`);
-    values.push(filters.ma_huyen);
-    index++;
-  }
+    if (filters.ma_huyen) {
+      conditions.push(`mahuyen = $${index}`);
+      values.push(filters.ma_huyen);
+      index++;
+    }
 
-  if (filters.ma_xa) {
-    conditions.push(`maxa = $${index}`);
-    values.push(filters.ma_xa);
-    index++;
-  }
+    if (filters.ma_xa) {
+      conditions.push(`maxa = $${index}`);
+      values.push(filters.ma_xa);
+      index++;
+    }
 
-  // Điều kiện fix cứng
-  conditions.push(`muc_ah >= 50`);
-  if (filters.muc_ah) {
-    conditions.push(`muc_ah = $${index}`);
-    values.push(filters.muc_ah);
-    index++;
-  }
+    // Điều kiện fix cứng
+    if (filters.muc_ah != null) {
+      conditions.push(`muc_ah = $${index}`);
+      values.push(filters.muc_ah);
+      index++;
+    } else {
+      conditions.push(`muc_ah >= 50`);
+    }
 
-  const whereClause = conditions.length
-    ? `WHERE ${conditions.join(" AND ")}`
-    : "";
+    const whereClause = conditions.length
+      ? `WHERE ${conditions.join(" AND ")}`
+      : "";
 
-  const sql = `SELECT COUNT(*) AS total FROM public.cb_srt_map ${whereClause}`;
-  const result = await pool.query(sql, values);
-  return parseInt(result.rows[0].total, 10);
-},
+    const sql = `SELECT COUNT(*) AS total FROM public.cb_srt_map ${whereClause}`;
+    const result = await pool.query(sql, values);
+    return parseInt(result.rows[0].total, 10);
+  },
 
-async getAllWithPagination(limit, offset, filters = {}) {
-  const values = [];
-  const conditions = [];
-  let index = 1;
+  async getAllWithPagination(limit, offset, filters = {}) {
+    const values = [];
+    const conditions = [];
+    let index = 1;
 
-  if (filters.ma_tinh) {
-    conditions.push(`matinh = $${index}`);
-    values.push(filters.ma_tinh);
-    index++;
-  }
+    if (filters.ma_tinh) {
+      conditions.push(`matinh = $${index}`);
+      values.push(filters.ma_tinh);
+      index++;
+    }
 
-  if (filters.ma_huyen) {
-    conditions.push(`mahuyen = $${index}`);
-    values.push(filters.ma_huyen);
-    index++;
-  }
+    if (filters.ma_huyen) {
+      conditions.push(`mahuyen = $${index}`);
+      values.push(filters.ma_huyen);
+      index++;
+    }
 
-  if (filters.ma_xa) {
-    conditions.push(`maxa = $${index}`);
-    values.push(filters.ma_xa);
-    index++;
-  }
-  
-  // Điều kiện fix cứng
-  conditions.push(`muc_ah >= 50`);
-  if (filters.muc_ah) {
-    conditions.push(`muc_ah = $${index}`);
-    values.push(filters.muc_ah);
-    index++;
-  }
+    if (filters.ma_xa) {
+      conditions.push(`maxa = $${index}`);
+      values.push(filters.ma_xa);
+      index++;
+    }
+    
+    // Điều kiện fix cứng
+    if (filters.muc_ah != null) {
+      conditions.push(`muc_ah = $${index}`);
+      values.push(filters.muc_ah);
+      index++;
+    } else {
+      conditions.push(`muc_ah >= 50`);
+    }
 
-  const whereClause = conditions.length
-    ? `WHERE ${conditions.join(" AND ")}`
-    : "";
+    const whereClause = conditions.length
+      ? `WHERE ${conditions.join(" AND ")}`
+      : "";
 
-  const sql = `
-    SELECT *
-    FROM public.cb_srt_map
-    ${whereClause}
-    ORDER BY muc_ah DESC, so_ngay_con_lai ASC
-    LIMIT $${index} OFFSET $${index + 1}
-  `;
+    const sql = `
+      SELECT *
+      FROM public.cb_srt_map
+      ${whereClause}
+      ORDER BY muc_ah DESC, so_ngay_con_lai ASC
+      LIMIT $${index} OFFSET $${index + 1}
+    `;
 
-  values.push(limit, offset);
+    values.push(limit, offset);
 
-  const result = await pool.query(sql, values);
-  return result.rows;
-},
+    const result = await pool.query(sql, values);
+    return result.rows;
+  },
   async findByIdView(id) {
     const query = `
       SELECT * 

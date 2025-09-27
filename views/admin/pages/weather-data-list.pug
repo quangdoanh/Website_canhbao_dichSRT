@@ -11,21 +11,21 @@ block main
     .inner-wrap
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
-        .inner-group
-          label(class="inner-label" for="tinh") Tỉnh
-          select(id="tinh" name="tinh" class="tinh" filter-Ma_tinh)
-            option(value="")
-            +optionTinh(ListTinh)
-        .inner-group
-          label(class="inner-label" for="huyen") Huyện
-          select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen)
-            option(value="")
-            +optionHuyen(ListHuyen)
-        .inner-group
-          label(class="inner-label" for="xa" ) Xã
-          select(id="xa" name="xa" class="xa" filter-Ma_xa)
-            option(value="")
-            +optionXa(ListXaTheoHuyen)
+      .inner-item
+        //- label(class="inner-label" for="tinh") Tỉnh
+        select(id="tinh" name="tinh" class="tinh" filter-Ma_tinh) 
+          option(value="") Tỉnh
+          +optionTinh(ListTinh)
+      .inner-item
+        //- label(class="inner-label" for="huyen") Huyện
+        select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen) 
+          option(value="") Huyện
+          +optionHuyen(ListHuyen)
+      .inner-item
+        //- label(class="inner-label" for="xa" ) Xã
+        select(id="xa" name="xa" class="xa" filter-Ma_xa)
+          option(value="") Xã
+          +optionXa(ListXaTheoHuyen)
       .inner-item.inner-date
         input(type="date" filter-start-date value="2025-09-01")
         span - 

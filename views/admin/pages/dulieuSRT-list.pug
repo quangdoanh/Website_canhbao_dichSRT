@@ -12,26 +12,26 @@ block main
     .inner-wrap
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
-        .inner-group
-          select(id="tinh" name="tinh" class="tinh" required filter-Ma_tinh)
-            option(value="") Tỉnh
-            +optionTinh(ListTinh)
-        .inner-group
-          select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen)
-            option(value="") Huyện
-            +optionHuyen(ListHuyen)
-        .inner-group
-          select(id="xa" name="xa" class="xa" filter-Ma_xa)
-            option(value="") Xã
-            +optionXa(ListXaTheoHuyen)  
-        .inner-item
-          select(filter-muc_ah) 
-            option(value="") Mức ảnh hưởng
-            option(value="0") 0
-            option(value="25") 25
-            option(value="50") 50
-            option(value="75") 75
-            option(value="100") 100
+      .inner-item
+        select(id="tinh" name="tinh" class="tinh" required filter-Ma_tinh)
+          option(value="") Tỉnh
+          +optionTinh(ListTinh)
+      .inner-item
+        select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen)
+          option(value="") Huyện
+          +optionHuyen(ListHuyen)
+      .inner-item
+        select(id="xa" name="xa" class="xa" filter-Ma_xa)
+          option(value="") Xã
+          +optionXa(ListXaTheoHuyen)  
+      .inner-item
+        select(filter-muc_ah) 
+          option(value="") Mức ảnh hưởng
+          option(value="0") 0
+          option(value="25") 25
+          option(value="50") 50
+          option(value="75") 75
+          option(value="100") 100
       .inner-item.inner-reset
         <i class="fa-solid fa-rotate-left" filter-reset></i> Xóa bộ lọc
   //- End Section 4
