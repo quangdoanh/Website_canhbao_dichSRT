@@ -959,7 +959,8 @@ header {
 
 /* Map */
 #map,
-#map_canh_bao {
+#map_canh_bao,
+#map_giam_sat {
   height: 93vh;
   width: 100%;
   border-radius: 8px;

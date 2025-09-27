@@ -4,9 +4,9 @@ block main
   .section-5.next_slide
     .inner-wrap-next
       //- Nút Quay lại luôn hiển thị
-      .inner-button-next_slide
-        i.fa-solid.fa-arrow-left
-        a(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/list`) Quay lại
+      //- .inner-button-next_slide
+      //-   i.fa-solid.fa-arrow-left
+      //-   a(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/list`) Quay lại
 
       //- Nút xác nhận / chưa xác nhận theo statusPage
       if statusPage === 0
@@ -105,7 +105,7 @@ block main
                             if(item.status == 1)
                               .inner-buttons
                                 a.inner-map(
-                                      href=`/bandocanhbao?bando=Sauromthong_6tinh&xa=${item.xa}&tk=${item.tieukhu}&khoanh=${item.khoanh}&lo=${item.lo}`
+                                      href=`/bandogiamsat?bando=${bando}&xa=${item.xa}&tk=${item.tieukhu}&khoanh=${item.khoanh}&lo=${item.lo}`
                                       target="_blank"
                                       style ="color: inherit;"
                                     )

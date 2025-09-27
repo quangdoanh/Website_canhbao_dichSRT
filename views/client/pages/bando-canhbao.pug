@@ -7,10 +7,10 @@ block content
         .info-header Thông tin cảnh báo mức độ theo vùng 
 
         // Layer control
-        .layer-control
+        .layer-control(style="display:none")
           h3 Chọn dữ liệu bản đồ
           select#layerSelect
-            option(value="Sauromthong_6tinh") Sâu róm thông 6 tỉnh
+            option(value="cb_srt_map" selected) Sâu róm thông 6 tỉnh
             option(value="Benhhaikeo_8tinh") Bệnh hại lá keo 8 tỉnh
             option(value="Sauhailakeo_5tinh") Sâu hại lá keo 5 tỉnh
         .section-4
@@ -31,9 +31,11 @@ block content
             //-     else
             //-       option(value="") Chưa chọn tỉnh
             .inner-item
-              select(filter-status name="status") 
-                option(value="1") Vùng ảnh hưởng nặng 
-                option(value="0") Vùng ảnh hưởng nhẹ
+              select(filter-status name="status")(style="font-size:13px")
+                option(value="") Mức ảnh hưởng (%) 
+                option(value="50") 50% 
+                option(value="75") 75%
+                option(value="100") 100%
             
         // Bộ lọc (filter)
         //- .filter
@@ -54,7 +56,7 @@ block content
               th Xã - Tỉnh
               th TK - K - L
               th Diện tích
-              th Ngày PH
+              th S/Ng còn
           tbody
             if dataList.length
               each item in dataList
@@ -65,12 +67,13 @@ block content
                   data-khoanh=item.khoanh
                   data-lo=item.lo
                   data-dtich=item.dtich
-                  data-ngayph=item.day
+                  data-muc_ah = item.muc_ah
+                  data-ngayph=item.so_ngay_con_lai
                 )
                   td #{item.xa} - #{item.tinh}
                   td #{item.tk} - #{item.khoanh} - #{item.lo}
                   td #{item.dtich}
-                  td #{item.day}
+                  td #{item.so_ngay_con_lai}
             else
               tr
                 td(colspan="4" style="text-align:center") Không có dữ liệu

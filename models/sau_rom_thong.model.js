@@ -51,6 +51,17 @@ const Sauromthong_6tinhModel = {
     const result = await pool.query(query);
     return result.rows;
   },
+  async findTop20_Canh_Bao(muc_ah = 100) {
+    const query = `
+        SELECT *
+        FROM public.cb_srt_map
+        WHERE muc_ah = $1
+        ORDER BY so_ngay_con_lai
+        LIMIT 20
+    `;
+    const result = await pool.query(query, [muc_ah]);
+    return result.rows;
+  },
 
   /* ==================
       END MAP

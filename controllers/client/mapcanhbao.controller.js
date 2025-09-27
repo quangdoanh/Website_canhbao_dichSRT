@@ -13,38 +13,8 @@ module.exports.mapCanhBao = async (req, res) => {
 
     let mucdo = req.query.mucdo;
 
-    let dataMap = req.query.bando
 
-
-    if (dataMap == "Sauhailakeo_5tinh") {
-
-        if (mucdo == "0") {
-
-            dataList = await Sauhailakeo_5tinhModel.findTop20_Degrad_ByDienTich()
-        } else {
-            dataList = await Sauhailakeo_5tinhModel.findTop20_Defore_ByDienTich();
-        }
-
-
-    } else if (dataMap == "Sauromthong_6tinh") {
-
-        if (mucdo == "0") {
-
-            dataList = await Sauromthong_6tinhModel.findTop20_Degrad_ByDienTich()
-        } else {
-            dataList = await Sauromthong_6tinhModel.findTop20_Defore_ByDienTich();
-        }
-
-    } else {
-        if (mucdo == "0") {
-
-            dataList = await Benhhai_lakeoModel.findTop20_Degrad_ByDienTich()
-        } else {
-            dataList = await Benhhai_lakeoModel.findTop20_Defore_ByDienTich();
-        }
-    }
-
-
+    dataList = await Sauromthong_6tinhModel.findTop20_Canh_Bao(mucdo);
 
     console.log("Dữ liệu:", dataList)
 

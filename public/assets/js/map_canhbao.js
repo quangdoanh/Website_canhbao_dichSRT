@@ -1,10 +1,11 @@
 /* =============================
    BẢN ĐỒ CẢNH BÁO
 ==============================*/
+
 const wmsUrl = 'http://115.146.126.49:8081/geoserver/iTwood_Workspace/wms';
 const wfsUrl = 'http://115.146.126.49:8081/geoserver/iTwood_Workspace/wfs';
 
-const map = L.map('map_canh_bao').setView([18.3, 105.9], 8);
+const map = L.map('map_canh_bao').setView([18.3, 105.9], 7);
 
 // ===== Zoom control =====
 map.removeControl(map.zoomControl);
@@ -13,170 +14,124 @@ L.control.zoom({ position: 'bottomright' }).addTo(map);
 // ===== Nền mặc định OSM =====
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-// ===== LayerGroups quản lý overlay =====
-const layerGroups = {
-    wms: L.layerGroup().addTo(map),
-    wfs_defor: L.layerGroup().addTo(map),
-    wfs_degrad: L.layerGroup().addTo(map)
-};
-
+// ===== Biến quản lý layer =====
 let wmsLayer = null;
-let wfslayerFind
+let currentWfsLayer = null;
 
 /* ===============
-   Hàm load WMS 
+   Hàm load WMS
 =================*/
-function loadWMS(layerName) {
-    if (wmsLayer) layerGroups.wms.removeLayer(wmsLayer);
+const loadWMS = (layerName) => {
+    if (wmsLayer) {
+        map.removeLayer(wmsLayer);
+        wmsLayer = null;
+    }
 
     wmsLayer = L.tileLayer.wms(wmsUrl, {
         layers: `iTwood_Workspace:${layerName}`,
         format: 'image/png',
         transparent: true
-    }).addTo(layerGroups.wms);
+    }).addTo(map);
 
     wmsLayer.bringToFront();
-}
+};
 
 /* ===============
-   Hàm load WFS
+   Hàm load WFS (toàn bộ cb_srt_map)
 =================*/
-function loadWFS(typeMap) {
-    layerGroups.wfs_defor.clearLayers();
-    layerGroups.wfs_degrad.clearLayers();
+// const loadWFS = (layerName) => {
+//     if (currentWfsLayer) {
+//         map.removeLayer(currentWfsLayer);
+//         currentWfsLayer = null;
+//     }
 
-    let layersToLoad = [];
-    if (typeMap === "Sauromthong_6tinh") {
-        layersToLoad = ["srt_defor_forest_map", "srt_degrad_forest_map"];
-    } else if (typeMap === "Benhhaikeo_8tinh") {
-        layersToLoad = ["bhk_defor_forest_map", "bhk_degrad_forest_map"];
-    } else {
-        layersToLoad = ["shk_defor_forest_map", "shk_degrad_forest_map"];
-    }
+//     const url = `${wfsUrl}?service=WFS&version=1.1.0&request=GetFeature&typeName=iTwood_Workspace:${layerName}&outputFormat=application/json`;
 
-    layersToLoad.forEach(layerName => {
-        const url = `${wfsUrl}?service=WFS&version=1.1.0&request=GetFeature&typeName=iTwood_Workspace:${layerName}&outputFormat=application/json`;
+//     fetch(url)
+//         .then(res => res.json())
+//         .then(data => {
+//             if (!data.features?.length) {
+//                 console.warn("Không có dữ liệu WFS");
+//                 return;
+//             }
 
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                if (!data.features?.length) return;
+//             const style = {
+//                 color: "red",
+//                 weight: 3,
+//                 fillOpacity: 0.3,
+//                 interactive: true
+//             };
 
-                const style = {
-                    color: layerName.includes("defor") ? "red" : "yellow",
-                    weight: 3,
-                    fillOpacity: 0.3,
-                    interactive: true
-                };
+//             currentWfsLayer = L.geoJSON(data.features, {
+//                 style,
+//                 onEachFeature: (feature, layer) => {
+//                     let props = feature.properties;
+//                     let popupContent = "<b>Thông tin đối tượng:</b><br/>";
+//                     for (let key in props) {
+//                         popupContent += `${key}: ${props[key]}<br/>`;
+//                     }
+//                     layer.bindPopup(popupContent);
+//                 }
+//             }).addTo(map);
 
-                const geoLayer = L.geoJSON(data.features, { style });
-                if (layerName.includes("defor")) geoLayer.addTo(layerGroups.wfs_defor);
-                else geoLayer.addTo(layerGroups.wfs_degrad);
-            })
-            .catch(err => console.error("Lỗi tải WFS:", err));
-    });
-}
-
-// ===== tạo nhóm  để chọn riêng cho conditon
-const layerGroups2 = {
-    wms: L.layerGroup().addTo(map),
-    wfs_defor: L.layerGroup().addTo(map),
-    wfs_degrad: L.layerGroup().addTo(map)
-};
+//             map.fitBounds(currentWfsLayer.getBounds());
+//         })
+//         .catch(err => console.error("Lỗi tải WFS:", err));
+// };
 
 /* ===============
    Hàm load WFS theo điều kiện
 =================*/
-function loadWFSByCondition(layerName, conditions) {
-
-
-
-    // Xóa các lớp cũ
-    if (layerGroups2.wfs_defor) {
-        layerGroups2.wfs_defor.clearLayers();
-    }
-    if (layerGroups2.wfs_degrad) {
-        layerGroups2.wfs_degrad.clearLayers();
+const loadWFSByCondition = (layerName, conditions) => {
+    if (currentWfsLayer) {
+        map.removeLayer(currentWfsLayer);
+        currentWfsLayer = null;
     }
 
-    console.log("Load Layer Name:", layerName)
-    // Xác định danh sách layer WFS theo loại bản đồ
-    let layersToLoad = [];
-    if (layerName === "Sauromthong_6tinh") {
-        layersToLoad = ["srt_defor_forest_map", "srt_degrad_forest_map"];
-    } else if (layerName === "Benhhaikeo_8tinh") {
-        layersToLoad = ["bhk_defor_forest_map", "bhk_degrad_forest_map"];
-    } else if (layerName === "Benhhaikeo_8tinh") {
-        layersToLoad = ["shk_defor_forest_map", "shk_degrad_forest_map"];
-    } else {
-        return
-    }
-
-    // Tạo CQL filter
     const cqlFilter = `xa='${conditions.xa}' AND tk='${conditions.tk}' AND khoanh='${conditions.khoanh}' AND lo='${conditions.lo}'`;
+    const url = `${wfsUrl}?service=WFS&version=1.1.0&request=GetFeature&typeName=iTwood_Workspace:${layerName}&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cqlFilter)}`;
 
-    // Lặp qua từng layer để load
-    layersToLoad.forEach(typeName => {
-        const url = `${wfsUrl}?service=WFS&version=1.1.0&request=GetFeature&typeName=iTwood_Workspace:${typeName}&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cqlFilter)}`;
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.features?.length) {
+                console.warn("Không tìm thấy feature:", conditions);
+                return;
+            }
 
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
+            currentWfsLayer = L.geoJSON(data.features, {
+                style: { color: "blue", weight: 5, fillOpacity: 0.3, interactive: true }
+            }).addTo(map);
 
-                console.log("wfs:", data)
+            map.fitBounds(currentWfsLayer.getBounds());
 
-                if (!data.features?.length) {
-                    console.warn("Không tìm thấy feature:", conditions, typeName);
-                    return;
-                }
+            let featureLayer;
+            currentWfsLayer.eachLayer(l => (featureLayer = l));
+            if (featureLayer?.feature?.properties) {
+                const props = featureLayer.feature.properties;
+                const center = featureLayer.getBounds().getCenter();
 
-                const geoJsonLayer = L.geoJSON(data.features, {
-                    style: {
-                        color: "blue",
-                        weight: 5,
-                        fillOpacity: 0.3,
-                        interactive: true
-                    }
-                });
-
-                // Thêm vào group tương ứng
-                if (typeName.includes("defor")) {
-                    geoJsonLayer.addTo(layerGroups2.wfs_defor);
-                } else {
-                    geoJsonLayer.addTo(layerGroups2.wfs_degrad);
-                }
-
-                // Fit map đến vùng tìm được
-                map.fitBounds(geoJsonLayer.getBounds());
-
-                // Hiển thị popup cho feature đầu tiên
-                let featureLayer;
-                geoJsonLayer.eachLayer(l => (featureLayer = l));
-                if (featureLayer?.feature?.properties) {
-                    const props = featureLayer.feature.properties;
-                    const center = featureLayer.getBounds().getCenter();
-
-                    const content = `
-                        <div class="info-popup">
-                          <table style="font-family: 'Times New Roman', Times, serif;">
-                            <tr><th>Xã</th><td>${props.xa || ''}</td></tr>
-                            <tr><th>Tiểu Khu</th><td>${props.tk || ''}</td></tr>
-                            <tr><th>Khoanh</th><td>${props.khoanh || ''}</td></tr>
-                            <tr><th>Lô</th><td>${props.lo || ''}</td></tr>
-                            <tr><th>Diện tích</th><td>${props.dtich || ''}</td></tr>
-                            <tr><th>Loại rừng</th><td>${props.ldlr || ''}</td></tr>
-                            <tr><th>Chủ rừng</th><td>${props.churung || ''}</td></tr>
-                          </table>
-                        </div>
-                    `;
-                    L.popup().setLatLng(center).setContent(content).openOn(map);
-                    map.setView(center, 15);
-                }
-            })
-            .catch(err => console.error("Lỗi tải WFS:", err));
-    });
-}
-
+                const content = `
+                    <div class="info-popup">
+                      <table style="font-family: 'Times New Roman', Times, serif;">
+                        <tr><th>Xã</th><td>${props.xa || ''}</td></tr>
+                        <tr><th>Tiểu Khu</th><td>${props.tk || ''}</td></tr>
+                        <tr><th>Khoanh</th><td>${props.khoanh || ''}</td></tr>
+                        <tr><th>Lô</th><td>${props.lo || ''}</td></tr>
+                        <tr><th>Diện tích</th><td>${props.dtich || ''}</td></tr>
+                        <tr><th>Loại rừng</th><td>${props.ldlr || ''}</td></tr>
+                        <tr><th>Chủ rừng</th><td>${props.churung || ''}</td></tr>
+                        <tr><th>Ảnh hưởng dự kiến(%)</th><td>${props.muc_ah || ''}</td></tr>
+                        <tr><th>Số ngày phát dịch còn</th><td>${props.so_ngay_con_lai || ''}</td></tr>
+                      </table>
+                    </div>
+                `;
+                L.popup().setLatLng(center).setContent(content).openOn(map);
+                map.setView(center, 15);
+            }
+        })
+        .catch(err => console.error("Lỗi tải WFS:", err));
+};
 
 /* =============================
    COMBOBOX LOAD MAP
@@ -186,8 +141,6 @@ comboBoxMap.addEventListener("change", e => {
     const selected = e.target.value;
     if (selected) {
         loadWMS(selected);
-        loadWFS(selected);
-
         const url = new URL(window.location.href);
         url.searchParams.set("bando", selected);
         window.location.href = url;
@@ -209,7 +162,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     comboBoxMap.value = bando;
     loadWMS(bando);
-    loadWFS(bando);
 });
 
 /* =============================
@@ -226,7 +178,6 @@ document.querySelectorAll('.info-table tbody tr').forEach(row => {
             khoanh: row.dataset.khoanh,
             lo: row.dataset.lo
         };
-        console.log("condition:", conditions)
         loadWFSByCondition(comboBoxMap.value, conditions);
     });
 });
@@ -237,12 +188,6 @@ document.querySelectorAll('.info-table tbody tr').forEach(row => {
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const { bando, xa, tk, khoanh, lo } = Object.fromEntries(params.entries());
-    console.log(bando)
-
-    // if (bando) {
-    //     comboBoxMap.value = bando;
-    // }
-    // console.log(comboBoxMap.value)
 
     if (xa && tk && khoanh && lo) {
         loadWFSByCondition(bando, { xa, tk, khoanh, lo });
@@ -251,65 +196,72 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-/* =============================
-   CONTROL NỀN + CHECKBOX
-==============================*/
+
+/* ========================== 
+    Control nền chọn nền bản đồ
+   ============================*/
 const basemapControl = L.Control.extend({
     options: { position: 'bottomright' },
+
     onAdd: (map) => {
         const container = L.DomUtil.create('div', 'basemapControl');
 
         // Nút chính
         const mainBtn = L.DomUtil.create('div', 'basemap-main', container);
-        const overlay = L.DomUtil.create('div', 'basemap-overlay', mainBtn);
-        L.DomUtil.create('i', 'fas fa-layer-group', overlay);
-        const overlayText = L.DomUtil.create('span', '', overlay);
-        overlayText.innerText = 'Lớp bản đồ';
 
-        // Menu
+        // Overlay icon + text
+        const overlay = L.DomUtil.create('div', 'basemap-overlay', mainBtn);
+        const overlayIcon = L.DomUtil.create('i', 'fas fa-layer-group', overlay);
+        const overlayText = L.DomUtil.create('span', '', overlay);
+        overlayText.innerText = 'Lớp bản đồ'; // mặc định
+
+        // Menu ẩn chứa các lựa chọn
         const menu = L.DomUtil.create('div', 'basemap-menu', container);
 
-        // Các basemap
+        // Các basemap bạn định nghĩa
         const basemaps = {
-            GoogleStreets: L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1', 'mt2', 'mt3'] }),
-            GoogleHybrid: L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1', 'mt2', 'mt3'] }),
-            GoogleSatellite: L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1', 'mt2', 'mt3'] }),
-            GoogleTerrain: L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1', 'mt2', 'mt3'] }),
-            OpenMapStreets: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+            GoogleStreets: L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            }),
+            GoogleHybrid: L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            }),
+            GoogleSatellite: L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            }),
+            GoogleTerrain: L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            }),
+            OpenMapStreets: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
         };
 
+        // Thêm mặc định
         basemaps.GoogleStreets.addTo(map);
 
-        Object.keys(basemaps).forEach(key => {
+        // Tạo danh sách menu trực tiếp từ basemaps
+        Object.keys(basemaps).forEach((key) => {
             const item = L.DomUtil.create('div', 'basemap-item', menu);
-            item.innerText = key;
+            item.innerText = key; // hiển thị đúng tên key gốc
+
             item.addEventListener('click', () => {
+                // Xóa layer cũ
                 Object.values(basemaps).forEach(l => map.removeLayer(l));
+                // Thêm layer mới
                 basemaps[key].addTo(map);
+
+                // Chỉ cập nhật text, không đè mất CSS/icon
                 overlayText.innerText = key;
+
+                // Ẩn menu
                 menu.style.display = 'none';
             });
         });
 
-        // Separator
-        L.DomUtil.create('hr', '', menu);
-
-        // Checkbox overlay
-        const overlayGroup = L.DomUtil.create('div', 'overlay-checkboxes', menu);
-        overlayGroup.innerHTML = `
-            <label><input type="checkbox" name="overlayLayer" value="wms" checked> WMS Layer</label><br>
-            <label><input type="checkbox" name="overlayLayer" value="wfs_defor" checked> WFS (defor)</label><br>
-            <label><input type="checkbox" name="overlayLayer" value="wfs_degrad" checked> WFS (degrad)</label><br>
-        `;
-
-        overlayGroup.querySelectorAll("input[name='overlayLayer']").forEach(cb => {
-            cb.addEventListener("change", e => {
-                const value = e.target.value;
-                if (e.target.checked) map.addLayer(layerGroups[value]);
-                else map.removeLayer(layerGroups[value]);
-            });
-        });
-
+        // Toggle menu khi click
         mainBtn.addEventListener('click', () => {
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         });
@@ -318,7 +270,10 @@ const basemapControl = L.Control.extend({
         return container;
     }
 });
-map.addControl(new basemapControl());
+
+const mapControl = new basemapControl();
+map.addControl(mapControl);
+
 
 /* =============================
    CHÚ THÍCH BẢN ĐỒ
@@ -331,8 +286,8 @@ const legendControl = L.Control.extend({
         title.innerText = 'Chú thích';
 
         const items = [
-            { color: 'yellow', label: 'Vàng - Nhẹ' },
-            { color: 'red', label: 'Đỏ - Mạnh' }
+            { color: 'red', label: 'Diện tích ảnh hưởng' },
+            { color: 'blue', label: 'Vùng tìm kiếm' }
         ];
 
         items.forEach(({ color, label }) => {
@@ -346,6 +301,4 @@ const legendControl = L.Control.extend({
         return container;
     }
 });
-map.addControl(new legendControl());
-
-
+// map.addControl(new legendControl());

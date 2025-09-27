@@ -233,7 +233,8 @@ module.exports.listStatusConfirmed = async (req, res) => {
             listDulieu: listDulieu,
             statusPage,
             loaidich: "srt",
-            effect: effect
+            effect: effect,
+            bando: "Sauromthong_6tinh"
         });
 
     } catch (err) {
@@ -550,7 +551,8 @@ module.exports.listStatusConfirmedSHK = async (req, res) => {
             listDulieu: listDulieu,
             statusPage,
             loaidich: "shk",
-            effect: effect
+            effect: effect,
+            bando: "Sauhailakeo_5tinh"
         });
 
     } catch (err) {
@@ -637,8 +639,6 @@ module.exports.DetailSHK = async (req, res) => {
         url,
         effect: effect,
         loaidich: "shk",
-
-
 
     })
 }
@@ -871,7 +871,8 @@ module.exports.listStatusConfirmedBHK = async (req, res) => {
             listDulieu: listDulieu,
             statusPage,
             loaidich: "bhk",
-            effect: effect
+            effect: effect,
+            bando: "Benhhaikeo_8tinh"
         });
 
     } catch (err) {
