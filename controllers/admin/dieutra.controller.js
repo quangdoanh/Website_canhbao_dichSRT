@@ -8,10 +8,13 @@ module.exports.listDieuTra = async (req, res) => {
   try {
     // ===== Lấy filters từ query =====
     const filters = {
+      startDate: req.query.startDate || null,
+      endDate: req.query.endDate || null,
       keyword: req.query.keyword || "",
       ma_tinh: req.query.ma_tinh || null,
       ma_huyen: req.query.ma_huyen || null,
       ma_xa: req.query.ma_xa || null,
+      
     };
 
     const limit = 15;

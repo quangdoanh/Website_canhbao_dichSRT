@@ -37,6 +37,16 @@ const DieuTra = {
       values.push(filters.ma_xa);
       index++;
     }
+        if (filters.startDate) {
+      conditions.push(`dt.dtra_date >= $${index}`);
+      values.push(filters.startDate);
+      index++;
+    }
+    if (filters.endDate) {
+      conditions.push(`dt.dtra_date <= $${index}`);
+      values.push(filters.endDate);
+      index++;
+    }
 
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
     const sql = `
@@ -84,6 +94,16 @@ const DieuTra = {
     if (filters.ma_xa) {
       conditions.push(`dt.ma_xa = $${index}`);
       values.push(filters.ma_xa);
+      index++;
+    }
+    if (filters.startDate) {
+      conditions.push(`dt.dtra_date >= $${index}`);
+      values.push(filters.startDate);
+      index++;
+    }
+    if (filters.endDate) {
+      conditions.push(`dt.dtra_date <= $${index}`);
+      values.push(filters.endDate);
       index++;
     }
 

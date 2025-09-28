@@ -347,7 +347,7 @@ module.exports.editPatchMap = async (req, res) => {
       if (!tinh) {
         return res.status(400).json({ code: "error", message: "Mã tỉnh không hợp lệ!" });
       }
-      updatedFields.matinh = parseInt(updates.matinh);
+      updatedFields.ma_tinh = parseInt(updates.matinh);
     }
 
     // Nếu không có trường nào để update

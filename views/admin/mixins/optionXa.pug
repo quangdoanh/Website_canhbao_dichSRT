@@ -1,86 +1,92 @@
-mixin optionXa(listXaTheoHuyen)
-  //- Render tất cả xã, kèm data-huyen để lọc
+//- mixin optionXa(listXaTheoHuyen)
+//-   //- Render tất cả xã, kèm data-huyen để lọc
+//-   each item in listXaTheoHuyen
+//-     each xa in item.dsXa
+//-       option(value=xa.ma_xa data-huyen=item.huyen )= xa.ten_xa
+mixin optionXa(listXaTheoHuyen, selectedXa)
   each item in listXaTheoHuyen
     each xa in item.dsXa
-      option(value=xa.ma_xa data-huyen=item.huyen )= xa.ten_xa
-
+      if selectedXa && selectedXa == xa.ma_xa
+        option(value=xa.ma_xa data-huyen=item.huyen selected)= xa.ten_xa
+      else
+        option(value=xa.ma_xa data-huyen=item.huyen)= xa.ten_xa 
     
   //- Script lọc xã theo huyện
   script.
     const tinhSelect = document.querySelector("select.tinh");
-    const xaSelect = document.querySelector("select.xa");
     const huyenSelect = document.querySelector("select.huyen");
+    const xaSelect = document.querySelector("select.xa");
 
-    console.log(huyenSelect)
-    console.log(xaSelect)
-    function filterHuyenByTinh(ma_tinh) {
+    function filterHuyenByTinh(ma_tinh, isInit = false) {
       const options = huyenSelect.querySelectorAll("option[data-tinh]");
+      let valid = false;
       options.forEach(opt => {
         if (!ma_tinh || opt.getAttribute("data-tinh") === ma_tinh) {
-          opt.style.display = "";
+          opt.hidden = false;
+          if (opt.value === huyenSelect.value) valid = true;
         } else {
-          opt.style.display = "none";
+          opt.hidden = true;
+          opt.selected = false;
         }
-      });// reset về -- Chọn Huyện --
-      const selectedOption = huyenSelect.querySelector("option[selected]");
-      if (selectedOption) {
-        huyenSelect.value = selectedOption.value;
-      } else {
-        huyenSelect.value = "";
+      });
+      if (!valid) huyenSelect.selectedIndex = 0;
+      if (!isInit) {
+        xaSelect.selectedIndex = 0;
+        filterXaByHuyen("");
       }
-      // đồng thời clear xã
-      filterXaByHuyen("");
     }
-    function filterXaByHuyen(ma_huyen) {
+
+    function filterXaByHuyen(ma_huyen, isInit = false) {
       const options = xaSelect.querySelectorAll("option[data-huyen]");
-      console.log("Huyện:",ma_huyen)
-      console.log("lựa chọn",options)
+      let valid = false;
       options.forEach(opt => {
         if (!ma_huyen || opt.getAttribute("data-huyen") === ma_huyen) {
-          opt.style.display = "";
+          opt.hidden = false;
+          if (opt.value === xaSelect.value) valid = true;
         } else {
-          opt.style.display = "none";
+          opt.hidden = true;
+          opt.selected = false;
         }
       });
-      // reset về -- Chọn Xã --
-      const selectedOption = xaSelect.querySelector("option[selected]");
-      if (selectedOption) {
-        xaSelect.value = selectedOption.value;
-      } else {
-        xaSelect.value = ""; // nếu không có option selected
-      }
+      if (!valid) xaSelect.selectedIndex = 0;
     }
 
-    huyenSelect.addEventListener("change", (e) => {
-      filterXaByHuyen(e.target.value);
+    tinhSelect.addEventListener("change", e => {
+      filterHuyenByTinh(e.target.value, false);
     });
-    tinhSelect.addEventListener("change", (e) => {
-      filterHuyenByTinh(e.target.value);
+
+    huyenSelect.addEventListener("change", e => {
+      filterXaByHuyen(e.target.value, false);
     });
-  
-    // Khởi tạo: ẩn hết xã trước
-    filterXaByHuyen("");
-    let dataDetail = !{JSON.stringify(dataDetail) || 'null'};
 
-    if (dataDetail && dataDetail.ma_xa ) {
-      // Khi focus vào tỉnh → chỉ giữ lại tỉnh chứa xã đó
-      tinhSelect.addEventListener("focus", () => {
-        [...tinhSelect.options].forEach(opt => {
-          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.tinh_from_xa));
-        });
-      });
+    // init giữ selected
+    if (tinhSelect.value) filterHuyenByTinh(tinhSelect.value, true);
+    if (huyenSelect.value) filterXaByHuyen(huyenSelect.value, true);
 
-      // Khi focus vào huyện → chỉ giữ lại huyện chứa xã đó
-      huyenSelect.addEventListener("focus", () => {
-        [...huyenSelect.options].forEach(opt => {
-          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.huyen_from_xa));
-        });
-      });
 
-      // Khi focus vào xã → chỉ giữ lại xã đã chọn
-      xaSelect.addEventListener("focus", () => {
-        [...xaSelect.options].forEach(opt => {
-          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.ma_xa));
-        });
-      });
-    }
+
+
+    //- let dataDetail = !{JSON.stringify(dataDetail) || 'null'};
+
+    //- if (dataDetail && dataDetail.ma_xa ) {
+    //-   // Khi focus vào tỉnh → chỉ giữ lại tỉnh chứa xã đó
+    //-   tinhSelect.addEventListener("focus", () => {
+    //-     [...tinhSelect.options].forEach(opt => {
+    //-       opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.tinh_from_xa));
+    //-     });
+    //-   });
+
+    //-   // Khi focus vào huyện → chỉ giữ lại huyện chứa xã đó
+    //-   huyenSelect.addEventListener("focus", () => {
+    //-     [...huyenSelect.options].forEach(opt => {
+    //-       opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.huyen_from_xa));
+    //-     });
+    //-   });
+
+    //-   // Khi focus vào xã → chỉ giữ lại xã đã chọn
+    //-   xaSelect.addEventListener("focus", () => {
+    //-     [...xaSelect.options].forEach(opt => {
+    //-       opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.ma_xa));
+    //-     });
+    //-   });
+    //- }

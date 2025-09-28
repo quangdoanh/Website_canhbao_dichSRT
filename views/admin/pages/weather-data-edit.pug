@@ -17,28 +17,23 @@ block main
       .inner-group
         label.inner-label(for="tinh") Tỉnh
         select(id="tinh" name="ma_tinh" class="tinh" required)
-          option(value="") -- Chọn Tỉnh --
-          if dataDetail.ma_tinh
-            option(value=dataDetail.ma_tinh selected)= dataDetail.ten_tinh
+          option(value="" disabled hidden selected) -- Chọn Tỉnh --
           +optionTinh(listTinh, dataDetail.ma_tinh)
 
       //- Huyện
       .inner-group
         label.inner-label(for="huyen") Huyện
         select(id="huyen" name="ma_huyen" class="huyen" required)
-          option(value="") -- Chọn Huyện --
-          if dataDetail.ma_huyen
-            option(value=dataDetail.ma_huyen selected)= dataDetail.ten_huyen
+          option(value="" disabled hidden selected) -- Chọn Huyện --  
           +optionHuyen(listHuyen, dataDetail.ma_huyen)
 
       //- Xã
       .inner-group
         label.inner-label(for="xa") Xã
         select(id="xa" name="ma_xa" class="xa" required)
-          option(value="") -- Chọn Xã --
-          if dataDetail.ma_xa
-            option(value=dataDetail.ma_xa selected)= dataDetail.ten_xa
+          option(value="" disabled hidden selected) -- Chọn Xã --
           +optionXa(listXaTheoHuyen, dataDetail.ma_xa)
+
       //- Nhiệt độ Min
       .inner-group
         label.inner-label(for="temp_min") Nhiệt độ Min (°C)

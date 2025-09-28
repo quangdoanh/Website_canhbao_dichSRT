@@ -1,3 +1,9 @@
-mixin optionTinh(listTinh)
+//- mixin optionTinh(listTinh)
+//-   each tinh in listTinh
+//-     option(value=tinh.ma_tinh )= tinh.ten_tinh
+mixin optionTinh(listTinh, selectedTinh)
   each tinh in listTinh
-    option(value=tinh.ma_tinh )= tinh.ten_tinh
+    if selectedTinh && selectedTinh == tinh.ma_tinh
+      option(value=tinh.ma_tinh selected)= tinh.ten_tinh
+    else
+      option(value=tinh.ma_tinh)= tinh.ten_tinh

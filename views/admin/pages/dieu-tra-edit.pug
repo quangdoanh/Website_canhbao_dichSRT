@@ -17,21 +17,21 @@ block main
       .inner-group
         label.inner-label(for="tinh") Tỉnh
         select(id="tinh" name="tinh" class="tinh" required)
-          option(value=dieutra.ma_tinh selected) #{dieutra.ten_tinh}
+          option(value="" disabled hidden selected) -- Chọn Tỉnh --
           +optionTinh(ListTinh, dieutra.ma_tinh)
 
       //- Huyện
       .inner-group
         label.inner-label(for="huyen") Huyện
         select(id="huyen" name="huyen" class="huyen" required)
-          option(value=dieutra.ma_huyen selected) #{dieutra.ten_huyen}
+          option(value="" disabled hidden selected) -- Chọn Huyện --  
           +optionHuyen(ListHuyen, dieutra.ma_huyen)
 
       //- Xã
       .inner-group
         label.inner-label(for="xa") Xã
         select(id="xa" name="xa" class="xa" required)
-          option(value=dieutra.ma_xa selected) #{dieutra.ten_xa}
+          option(value="" disabled hidden selected) -- Chọn Xã --
           +optionXa(ListXaTheoHuyen, dieutra.ma_xa)
 
       //- Số sâu non
