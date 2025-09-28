@@ -1,4 +1,5 @@
 const ContactModel = require("../../models/contact.model");
+const Log = require("../../helpers/loguser.helper")
 const moment = require("moment");
 function getTopicLabel(topic) {
   switch (topic) {
@@ -72,7 +73,7 @@ module.exports.contactAnswerPatch = async (req, res) => {
     const { answer } = req.body;
 
     if (!answer) {
-       res.json({
+      res.json({
         code: "error",
         message: "Vui lòng nhập phản hồi!",
       });
@@ -86,11 +87,15 @@ module.exports.contactAnswerPatch = async (req, res) => {
     });
 
     if (!updated) {
-       res.json({
+      res.json({
         code: "error",
         message: "Không tìm thấy liên hệ cần cập nhật!",
       });
       return;
+    }
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Phản hồi câu hỏi")
     }
 
     req.flash("success", "Phản hồi đã được lưu!");
@@ -119,6 +124,11 @@ module.exports.togglePublic = async (req, res) => {
       });
     }
 
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Ẩn/Hiện bài giới thiệu")
+    }
+
     return res.json({
       code: "success",
       message: `Liên hệ đã được ${isPublic ? "hiển thị" : "ẩn"}!`,
@@ -145,7 +155,12 @@ module.exports.changeMulti = async (req, res) => {
     const isPublicBool = (option === "true" || option === true);
 
     const updated = await ContactModel.updatePublicMulti(ids, isPublicBool);
-    req.flash("success",`Đã cập nhật ${updated.length} bản ghi thành công!` )
+
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Ẩn/Hiện bài giới thiệu")
+    }
+    req.flash("success", `Đã cập nhật ${updated.length} bản ghi thành công!`)
     return res.json({
       code: "success",
       message: `Đã cập nhật ${updated.length} bản ghi thành công!`,

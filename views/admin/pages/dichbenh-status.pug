@@ -60,14 +60,24 @@ block main
   if statusPage == 0
     .section-5
       .inner-wrap
-        .inner-change-status(change-multi data-api=`/${pathAdmin}/dichbenh/srt/defor/change-multi`)
+        .inner-change-status(change-multi data-api=`/${pathAdmin}/dichbenh/${loaidich}//change-multi`)
           .inner-item
             select
               option(value="") -- Hành động --
               option(value="1") xác nhận
           .inner-item
             button Áp dụng
-
+        .inner-button-create
+          button#exportExcel(type="button")
+            i.fa-solid.fa-file-excel(style="margin-right:10px; color:white; font-size:20px")
+            | Xuất Excel
+  else
+    .section-5
+      .inner-wrap
+        .inner-button-create
+          button#exportExcel(type="button")
+            i.fa-solid.fa-file-excel(style="margin-right:10px; color:white; font-size:20px")
+            | Xuất Excel
   //- Section 6: Bảng danh sách
   .section-6
     .table-2

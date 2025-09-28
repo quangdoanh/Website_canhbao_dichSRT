@@ -124,8 +124,8 @@ const loadWFSByCondition = (layerName, conditions) => {
                         <tr><th>Diện tích</th><td>${props.dtich || ''}</td></tr>
                         <tr><th>Loại rừng</th><td>${props.ldlr || ''}</td></tr>
                         <tr><th>Chủ rừng</th><td>${props.churung || ''}</td></tr>
-                        <tr><th>Ảnh hưởng dự kiến(%)</th><td>${props.muc_ah || ''}</td></tr>
-                        <tr><th>Số ngày phát dịch còn</th><td>${props.so_ngay_con_lai || ''}</td></tr>
+                        <tr><th>Ảnh hưởng dự kiến</th><td>${props.muc_ah == 100 ? 'Rất nặng' : props.muc_ah == 75 ? 'Nặng' : props.muc_ah == 50 ? 'Trung bình' : ''}</td></tr>
+                        <tr><td colspan="2"><b>Thời điểm phát dịch còn ${props.so_ngay_con_lai ? props.so_ngay_con_lai + ' ngày' : ''}</b></td></tr>
                       </table>
                     </div>
                 `;

@@ -3,6 +3,7 @@ const moment = require("moment");
 const HuyenModel = require('../../models/huyen.model');
 const XaModel = require('../../models/xa.model')
 const TinhModel = require("../../models/tinh.model");
+const Log = require("../../helpers/loguser.helper")
 module.exports.listMap = async (req, res) => {
   try {
     const filters = {
@@ -83,35 +84,35 @@ module.exports.appListMap = async (req, res) => {
 
 // appList
 module.exports.createMap = async (req, res) => {
-    try {
-        const listTinh = await TinhModel.getAll();
-        const loaiMap = await uploadMapModel.getLoaiMap();
-        // console.log(listTinh);
-        res.render("admin/pages/map-create", {
-            pageTitle: "Tạo bản đồ",
-            listTinh,
-            loaiMap
-        });
-    } catch (err) {
-        console.error("Create form error:", err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra khi load form!" });
-    }
+  try {
+    const listTinh = await TinhModel.getAll();
+    const loaiMap = await uploadMapModel.getLoaiMap();
+    // console.log(listTinh);
+    res.render("admin/pages/map-create", {
+      pageTitle: "Tạo bản đồ",
+      listTinh,
+      loaiMap
+    });
+  } catch (err) {
+    console.error("Create form error:", err);
+    res.status(500).json({ code: "error", message: "Có lỗi xảy ra khi load form!" });
+  }
 };
 module.exports.appCreateMap = async (req, res) => {
-    try {
-        const listTinh = await TinhModel.getAll();
-        const loaiMap = await uploadMapModel.getLoaiMap();
-        // console.log(listTinh);
-        res.json({
-            code:"success",
-            listTinh,
-            loaiMap
-        })
-           
-    } catch (err) {
-        console.error("Create form error:", err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra khi load form!" });
-    }
+  try {
+    const listTinh = await TinhModel.getAll();
+    const loaiMap = await uploadMapModel.getLoaiMap();
+    // console.log(listTinh);
+    res.json({
+      code: "success",
+      listTinh,
+      loaiMap
+    })
+
+  } catch (err) {
+    console.error("Create form error:", err);
+    res.status(500).json({ code: "error", message: "Có lỗi xảy ra khi load form!" });
+  }
 };
 module.exports.createPostMap = async (req, res) => {
   try {
@@ -167,6 +168,12 @@ module.exports.createPostMap = async (req, res) => {
     };
     console.log(data);
     const newMap = await uploadMapModel.create(data);
+
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Tạo dữ liệu bản đồ")
+    }
+
     req.flash("success", "Thêm mới dữ liệu thành công");
 
     res.json({
@@ -185,35 +192,35 @@ module.exports.createPostMap = async (req, res) => {
 
 
 module.exports.editMap = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const dataMap = await uploadMapModel.findById(id);
-        const listTinh = await TinhModel.getAll();
-        const loaiMap = await uploadMapModel.getLoaiMap();
-        console.log(dataMap);
-        const tinh = await TinhModel.getById(parseInt(dataMap.ma_tinh)) 
-        dataMap.ten_tinh = tinh.ten_tinh;
-        res.render("admin/pages/map-edit", {
-            pageTitle: "Sửa bản đồ",
-            dataMap,
-            listTinh,
-            loaiMap
-        });
-       
-    } catch (err) {
-        console.error("Edit form error:", err);
-        return res.status(500).json({
-            code: "error",
-            message: "Lỗi server: " + err.message,
-        });
-    }
+  try {
+    const { id } = req.params;
+    const dataMap = await uploadMapModel.findById(id);
+    const listTinh = await TinhModel.getAll();
+    const loaiMap = await uploadMapModel.getLoaiMap();
+    console.log(dataMap);
+    const tinh = await TinhModel.getById(parseInt(dataMap.ma_tinh))
+    dataMap.ten_tinh = tinh.ten_tinh;
+    res.render("admin/pages/map-edit", {
+      pageTitle: "Sửa bản đồ",
+      dataMap,
+      listTinh,
+      loaiMap
+    });
+
+  } catch (err) {
+    console.error("Edit form error:", err);
+    return res.status(500).json({
+      code: "error",
+      message: "Lỗi server: " + err.message,
+    });
+  }
 };
 // appEditMap
 module.exports.appEditMap = async (req, res) => {
   try {
     const { id } = req.params;
     const dataMap = await uploadMapModel.findById(id);
-    
+
     if (!dataMap) {
       return res.status(404).json({
         code: "error",
@@ -362,6 +369,11 @@ module.exports.editPatchMap = async (req, res) => {
       return res.status(404).json({ code: "error", message: "Không tìm thấy bản ghi để cập nhật" });
     }
 
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Cập nhật dữ liệu bản đồ")
+    }
+
     req.flash("success", "Cập nhật dữ liệu thành công");
     return res.json({
       code: "success",
@@ -381,29 +393,33 @@ module.exports.editPatchMap = async (req, res) => {
 module.exports.deleteMap = async (req, res) => {
 
 
-    try {
+  try {
 
-        const { id } = req.params;
-        const success = await uploadMapModel.deleteById(id);
+    const { id } = req.params;
+    const success = await uploadMapModel.deleteById(id);
 
-        if (success) {
-            req.flash("success","Xóa thành công");
-            res.json({
-                code: "success",
-                message: "Xóa thành công",
-            })
-        } else {
-            res.json({
-                code: "error",
-                message: "Xóa thất bại",
-            })
-        }
-
-    } catch (err) {
-        console.error("Update error:", err);
-        return res.status(500).json({
-            code: "error",
-            message: "Lỗi server: " + err.message,
-        });
+    if (success) {
+      req.flash("success", "Xóa thành công");
+      const user = req.account?.email;
+      if (user) {
+        Log.logUser(user, req.originalUrl, req.method, "Xóa bản đồ")
+      }
+      res.json({
+        code: "success",
+        message: "Xóa thành công",
+      })
+    } else {
+      res.json({
+        code: "error",
+        message: "Xóa thất bại",
+      })
     }
+
+  } catch (err) {
+    console.error("Update error:", err);
+    return res.status(500).json({
+      code: "error",
+      message: "Lỗi server: " + err.message,
+    });
+  }
 }

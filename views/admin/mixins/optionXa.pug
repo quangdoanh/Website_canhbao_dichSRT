@@ -60,27 +60,27 @@ mixin optionXa(listXaTheoHuyen)
   
     // Khởi tạo: ẩn hết xã trước
     filterXaByHuyen("");
-    let dataDetail = !{JSON.stringify(dataDetail) || 'null'};
+    //- let dataDetail = !{JSON.stringify(dataDetail) || 'null'};
 
-    if (dataDetail && dataDetail.ma_xa ) {
-      // Khi focus vào tỉnh → chỉ giữ lại tỉnh chứa xã đó
-      tinhSelect.addEventListener("focus", () => {
-        [...tinhSelect.options].forEach(opt => {
-          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.tinh_from_xa));
-        });
-      });
+    //- if (dataDetail && dataDetail.ma_xa ) {
+    //-   // Khi focus vào tỉnh → chỉ giữ lại tỉnh chứa xã đó
+    //-   tinhSelect.addEventListener("focus", () => {
+    //-     [...tinhSelect.options].forEach(opt => {
+    //-       opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.tinh_from_xa));
+    //-     });
+    //-   });
 
-      // Khi focus vào huyện → chỉ giữ lại huyện chứa xã đó
-      huyenSelect.addEventListener("focus", () => {
-        [...huyenSelect.options].forEach(opt => {
-          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.huyen_from_xa));
-        });
-      });
+    //-   // Khi focus vào huyện → chỉ giữ lại huyện chứa xã đó
+    //-   huyenSelect.addEventListener("focus", () => {
+    //-     [...huyenSelect.options].forEach(opt => {
+    //-       opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.huyen_from_xa));
+    //-     });
+    //-   });
 
-      // Khi focus vào xã → chỉ giữ lại xã đã chọn
-      xaSelect.addEventListener("focus", () => {
-        [...xaSelect.options].forEach(opt => {
-          opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.ma_xa));
-        });
-      });
-    }
+    //-   // Khi focus vào xã → chỉ giữ lại xã đã chọn
+    //-   xaSelect.addEventListener("focus", () => {
+    //-     [...xaSelect.options].forEach(opt => {
+    //-       opt.hidden = !(opt.value === "" || opt.value === String(dataDetail.ma_xa));
+    //-     });
+    //-   });
+    //- }

@@ -725,7 +725,7 @@ module.exports.changeStatusSHK = async (req, res) => {
         }
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát shk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");
@@ -760,7 +760,7 @@ module.exports.changeMultilStatusSHK = async (req, res) => {
 
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát shk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");
@@ -1104,7 +1104,7 @@ module.exports.changeStatusBHK = async (req, res) => {
         }
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát bhk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");
@@ -1139,7 +1139,7 @@ module.exports.changeMultilStatusBHK = async (req, res) => {
 
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát bhk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");

@@ -3,6 +3,7 @@ const HuyenModel = require('../../models/huyen.model');
 const XaModel = require('../../models/xa.model')
 const TinhModel = require("../../models/tinh.model");
 const WeatherModel = require("../../models/weather.model");
+const Log = require("../../helpers/loguser.helper")
 //lấy ra danh sách theo page gửi lên
 module.exports.list = async (req, res) => {
   try {
@@ -164,7 +165,7 @@ module.exports.appList = async (req, res) => {
 
     // ===== Trả JSON cho mobile =====
     res.json({
-      code:"success",
+      code: "success",
       message: "Lấy dữ liệu thành công",
       data: {
         dataList,
@@ -178,7 +179,7 @@ module.exports.appList = async (req, res) => {
   } catch (err) {
     console.error("Lỗi khi lấy dữ liệu thời tiết:", err);
     res.status(500).json({
-      code:"error",
+      code: "error",
       message: "Lỗi server",
     });
   }
@@ -187,14 +188,14 @@ module.exports.appList = async (req, res) => {
 // Listapp
 
 //xem chi tiết 1 bản ghi
-module.exports.viewDetail =async (req,res) => {
-    const {id} = req.params;
-    const dataDetail = await WeatherModel.getByIdWithNames(parseInt(id));
-    dataDetail.ngay_cap_nhatFomat =  moment(dataDetail.ngay_cap_nhat).format("DD/MM/YYYY")
-    res.render("admin/pages/weather-data-detail",{
-        pageTitle:"Chi tiết dữ liệu thời tiết",
-        dataDetail:dataDetail
-    })
+module.exports.viewDetail = async (req, res) => {
+  const { id } = req.params;
+  const dataDetail = await WeatherModel.getByIdWithNames(parseInt(id));
+  dataDetail.ngay_cap_nhatFomat = moment(dataDetail.ngay_cap_nhat).format("DD/MM/YYYY")
+  res.render("admin/pages/weather-data-detail", {
+    pageTitle: "Chi tiết dữ liệu thời tiết",
+    dataDetail: dataDetail
+  })
 }
 // appViewDetail
 module.exports.appViewDetail = async (req, res) => {
@@ -216,14 +217,14 @@ module.exports.appViewDetail = async (req, res) => {
 
     // Trả JSON
     res.json({
-      code:"success",
+      code: "success",
       message: "Lấy chi tiết dữ liệu thành công",
       data: dataDetail,
     });
   } catch (err) {
     console.error("Lỗi khi lấy chi tiết dữ liệu thời tiết:", err);
     res.status(500).json({
-      code:"error",
+      code: "error",
       message: "Lỗi server",
     });
   }
@@ -244,15 +245,15 @@ module.exports.edit = async (req, res) => {
     }
 
     // 2. Lấy toàn bộ danh sách tỉnh
-    const listTinh = await TinhModel.getAll(); 
+    const listTinh = await TinhModel.getAll();
     // [{ma_tinh, ten_tinh}, ...]
 
     // 3. Lấy toàn bộ danh sách huyện
-    const listHuyen = await HuyenModel.getAll(); 
+    const listHuyen = await HuyenModel.getAll();
     // [{ma_huyen, ten_huyen, ma_tinh}, ...]
 
     // 4. Lấy toàn bộ danh sách xã
-    const listXa = await XaModel.getAll(); 
+    const listXa = await XaModel.getAll();
     // [{ma_xa, ten_xa, ma_huyen}, ...]
 
     // 5. Gom nhóm xã theo huyện
@@ -290,7 +291,7 @@ module.exports.edit = async (req, res) => {
     // 6. Render ra form edit
     res.render("admin/pages/weather-data-edit", {
       pageTitle: "Cập nhật bản ghi thời tiết",
-      dataDetail:dataDetail,
+      dataDetail: dataDetail,
       listTinh,
       listHuyen,
       listXaTheoHuyen,
@@ -454,52 +455,56 @@ module.exports.editPatch = async (req, res) => {
       return res.json({ code: "error", message: "Không có dữ liệu để cập nhật!" });
     }
     // --- Validate ma_tinh ---
-  if (filteredUpdates.ma_tinh) {
-    const tinh = await TinhModel.getById(filteredUpdates.ma_tinh);
-    if (!tinh) {
-      return res.json({ code: "error", message: "Mã tỉnh không hợp lệ!" });
-    }
-    filteredUpdates.ten_tinh = tinh.ten_tinh;
-  }
-
-  // --- Validate ma_huyen ---
-  if (filteredUpdates.ma_huyen) {
-    const huyen = await HuyenModel.getById(filteredUpdates.ma_huyen);
-    if (!huyen) {
-      return res.json({ code: "error", message: "Mã huyện không hợp lệ!" });
-    }
-    // Check huyện có thuộc tỉnh đã chọn không
-    if (filteredUpdates.ma_tinh && huyen.ma_tinh !== filteredUpdates.ma_tinh) {
-      return res.json({ code: "error", message: "Huyện không thuộc Tỉnh đã chọn!" });
-    }
-    filteredUpdates.ten_huyen = huyen.ten_huyen;
-  }
-
-  // --- Validate ma_xa ---
-  if (filteredUpdates.ma_xa) {
-    const xa = await XaModel.getById(filteredUpdates.ma_xa);
-    if (!xa) {
-      return res.json({ code: "error", message: "Mã xã không hợp lệ!" });
-    }
-
-    // Check xã có thuộc huyện đã chọn không
-    if (filteredUpdates.ma_huyen && xa.ma_huyen !== filteredUpdates.ma_huyen) {
-      return res.json({ code: "error", message: "Xã không thuộc Huyện đã chọn!" });
-    }
-
-    // Nếu có cả xã và tỉnh (nhưng không gửi huyện) → check chéo xã ↔ tỉnh
-    if (filteredUpdates.ma_tinh && !filteredUpdates.ma_huyen) {
-      const huyenOfXa = await HuyenModel.getById(xa.ma_huyen);
-      if (huyenOfXa.ma_tinh !== filteredUpdates.ma_tinh) {
-        return res.json({ code: "error", message: "Xã không thuộc Tỉnh đã chọn!" });
+    if (filteredUpdates.ma_tinh) {
+      const tinh = await TinhModel.getById(filteredUpdates.ma_tinh);
+      if (!tinh) {
+        return res.json({ code: "error", message: "Mã tỉnh không hợp lệ!" });
       }
+      filteredUpdates.ten_tinh = tinh.ten_tinh;
     }
 
-    // Nếu có đủ cả 3 → check xã ↔ huyện, huyện ↔ tỉnh đã check ở trên, nên yên tâm
-    filteredUpdates.ten_xa = xa.ten_xa;
-  }
+    // --- Validate ma_huyen ---
+    if (filteredUpdates.ma_huyen) {
+      const huyen = await HuyenModel.getById(filteredUpdates.ma_huyen);
+      if (!huyen) {
+        return res.json({ code: "error", message: "Mã huyện không hợp lệ!" });
+      }
+      // Check huyện có thuộc tỉnh đã chọn không
+      if (filteredUpdates.ma_tinh && huyen.ma_tinh !== filteredUpdates.ma_tinh) {
+        return res.json({ code: "error", message: "Huyện không thuộc Tỉnh đã chọn!" });
+      }
+      filteredUpdates.ten_huyen = huyen.ten_huyen;
+    }
+
+    // --- Validate ma_xa ---
+    if (filteredUpdates.ma_xa) {
+      const xa = await XaModel.getById(filteredUpdates.ma_xa);
+      if (!xa) {
+        return res.json({ code: "error", message: "Mã xã không hợp lệ!" });
+      }
+
+      // Check xã có thuộc huyện đã chọn không
+      if (filteredUpdates.ma_huyen && xa.ma_huyen !== filteredUpdates.ma_huyen) {
+        return res.json({ code: "error", message: "Xã không thuộc Huyện đã chọn!" });
+      }
+
+      // Nếu có cả xã và tỉnh (nhưng không gửi huyện) → check chéo xã ↔ tỉnh
+      if (filteredUpdates.ma_tinh && !filteredUpdates.ma_huyen) {
+        const huyenOfXa = await HuyenModel.getById(xa.ma_huyen);
+        if (huyenOfXa.ma_tinh !== filteredUpdates.ma_tinh) {
+          return res.json({ code: "error", message: "Xã không thuộc Tỉnh đã chọn!" });
+        }
+      }
+
+      // Nếu có đủ cả 3 → check xã ↔ huyện, huyện ↔ tỉnh đã check ở trên, nên yên tâm
+      filteredUpdates.ten_xa = xa.ten_xa;
+    }
 
     // --- Cập nhật DB ---
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Cập nhật dữ liệu thời tiết")
+    }
     const updatedData = await WeatherModel.update(id, filteredUpdates);
 
     console.log("Dữ liệu mới cập nhật: ", await WeatherModel.getByIdWithNames(id));
@@ -509,7 +514,7 @@ module.exports.editPatch = async (req, res) => {
     }
 
     req.flash("success", "Cập nhật thành công");
-    res.json({ code: "success", message: "Cập nhật thành công!" ,updatedData});
+    res.json({ code: "success", message: "Cập nhật thành công!", updatedData });
 
   } catch (err) {
     console.error("Lỗi editPatch weather:", err);
