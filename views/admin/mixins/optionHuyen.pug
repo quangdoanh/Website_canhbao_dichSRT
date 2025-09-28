@@ -1,3 +1,9 @@
-mixin optionHuyen(listHuyen)
+//- mixin optionHuyen(listHuyen)
+//-   each huyen in listHuyen
+//-     option(value=huyen.ma_huyen data-tinh=huyen.ma_tinh )= huyen.ten_huyen
+mixin optionHuyen(listHuyen, selectedHuyen)
   each huyen in listHuyen
-    option(value=huyen.ma_huyen data-tinh=huyen.ma_tinh )= huyen.ten_huyen
+    if selectedHuyen && selectedHuyen == huyen.ma_huyen
+      option(value=huyen.ma_huyen data-tinh=huyen.ma_tinh selected)= huyen.ten_huyen
+    else
+      option(value=huyen.ma_huyen data-tinh=huyen.ma_tinh)= huyen.ten_huyen
