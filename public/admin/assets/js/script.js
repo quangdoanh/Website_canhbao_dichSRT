@@ -1938,28 +1938,32 @@ const exportTableToExcel = () => {
   const ws = XLSX.utils.table_to_sheet(table);
 
   const range = XLSX.utils.decode_range(ws['!ref']);
+  const headerRow = range.s.r;
 
-  // Kiểm tra 2 cột cuối header
-  const lastCol = range.e.c;
-  const secondLastCol = range.e.c - 1;
-  const headerRow = range.s.r; // dòng header
-
-  const lastCellValue = ws[XLSX.utils.encode_cell({ r: headerRow, c: lastCol })]?.v || '';
-  const secondLastCellValue = ws[XLSX.utils.encode_cell({ r: headerRow, c: secondLastCol })]?.v || '';
-
-  if (secondLastCellValue.includes("Xác nhận") || lastCellValue.includes("Hành động")) {
-    // Xóa 2 cột cuối
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      ws[XLSX.utils.encode_cell({ r: R, c: lastCol })] = undefined;
-      ws[XLSX.utils.encode_cell({ r: R, c: secondLastCol })] = undefined;
+  // Tìm các cột cần loại bỏ
+  const colsToRemove = [];
+  for (let c = range.s.c; c <= range.e.c; c++) {
+    const cellRef = XLSX.utils.encode_cell({ r: headerRow, c });
+    const cellValue = ws[cellRef]?.v || "";
+    if (cellValue.includes("Xác nhận") || cellValue.includes("Hành động")) {
+      colsToRemove.push(c);
     }
-    range.e.c -= 2;
-    ws['!ref'] = XLSX.utils.encode_range(range);
   }
+
+  // Xóa các cột tìm được từ phải sang trái
+  colsToRemove.sort((a, b) => b - a).forEach(col => {
+    for (let r = range.s.r; r <= range.e.r; r++) {
+      ws[XLSX.utils.encode_cell({ r, c: col })] = undefined;
+    }
+    // cập nhật range.e.c
+    range.e.c--;
+  });
+
+  ws['!ref'] = XLSX.utils.encode_range(range);
 
   // Ép kiểu dữ liệu cho các cột: text cho TK, Lô, Diện tích
   for (let R = range.s.r + 1; R <= range.e.r; ++R) { // bỏ header
-    ['E', 'F', 'G', 'H'].forEach(col => { // D = TK, G = Lô, H = Diện tích
+    ['D', 'E', 'F', 'G', 'H'].forEach(col => { // D = TK, G = Lô, H = Diện tích
       const cellRef = `${col}${R + 1}`;
       if (ws[cellRef]) ws[cellRef].t = 's'; // ép kiểu text
     });
@@ -1984,6 +1988,7 @@ const exportTableToExcel = () => {
     }
   });
 };
+
 
 
 document.addEventListener("DOMContentLoaded", () => {

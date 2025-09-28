@@ -93,55 +93,66 @@ block main
             th TK
             th Khoảnh
             th Lô
-            th Diện tích 
+            th Diện tích ảnh hưởng
             th Loại rừng
             th Ngày PH
+            // Các cột mới, ẩn
+            th(style="display:none") Diện tích thực (dtich)
+            th(style="display:none") Diện tích ha (area_ha)
+            th(style="display:none") Diện tích chưa rõ nguyên nhân ha (nochang_ha)
+            th(style="display:none") Cải tạo ha (improve_ha)
+            th(style="display:none") Vệ tinh (sensor)
             if statusPage == 0
               th Xác nhận
             th.inner-center Hành động
         tbody
-            if listDulieu && listDulieu.length
-                each item, index in listDulieu
-                    tr
-                        if statusPage == 0
-                          td.inner-center
-                              input(type="checkbox" class="inner-check" check-item=`${item.id}`)
-                        td.inner-center= item.tinh
-                        td.inner-center= item.huyen
-                        td.inner-center= item.xa
-                        td= item.tieukhu
-                        td= item.khoanh
-                        td= item.lo
-                        td= item.defor_ha
-                        td= item.loairung
-                        td= item.ngayPH
-                        if statusPage == 0
-                          td
-                              label.switch
-                                  input(
-                                  type="checkbox"
-                                  checked=(item.status === 1 ? true : false)
-                                  toggle-status
-                                  data-api=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/change-status/${item.id}`
-                                  )
-                                  span.slider.round
-                        td.inner-center
-                            .inner-buttons
-                                a.inner-edit(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/detail/${item.id}?status`)
-                                  i.fa-solid.fa-eye
-                            if(item.status == 1)
-                              .inner-buttons
-                                a.inner-map(
-                                      href=`/bandogiamsat?bando=${bando}&xa=${item.xa}&tk=${item.tieukhu}&khoanh=${item.khoanh}&lo=${item.lo}`
-                                      target="_blank"
-                                      style ="color: inherit;"
-                                    )
-                                      i.fa-solid.fa-map-location-dot
+          if listDulieu && listDulieu.length
+            each item, index in listDulieu
+              tr
+                if statusPage == 0
+                  td.inner-center
+                    input(type="checkbox" class="inner-check" check-item=`${item.id}`)
+                td.inner-center= item.tinh
+                td.inner-center= item.huyen
+                td.inner-center= item.xa
+                td= item.tieukhu
+                td= item.khoanh
+                td= item.lo
+                td= item.impact_ha
+                td= item.loairung
+                td= item.ngayPH
+                // Các cột mới, ẩn
+                td(style="display:none")= item.dtich
+                td(style="display:none")= item.area_ha
+                td(style="display:none")= item.nochang_ha
+                td(style="display:none")= item.improve_ha
+                td(style="display:none")= item.sensor
+                if statusPage == 0
+                  td
+                    label.switch
+                      input(
+                        type="checkbox"
+                        checked=(item.status === 1 ? true : false)
+                        toggle-status
+                        data-api=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/change-status/${item.id}`
+                      )
+                      span.slider.round
+                td.inner-center
+                  .inner-buttons
+                    a.inner-edit(href=`/${pathAdmin}/dichbenh/${loaidich}/${effect}/detail/${item.id}?status`)
+                      i.fa-solid.fa-eye
+                  if(item.status == 1)
+                    .inner-buttons
+                      a.inner-map(
+                        href=`/bandogiamsat?bando=${bando}&xa=${item.xa}&tk=${item.tieukhu}&khoanh=${item.khoanh}&lo=${item.lo}`
+                        target="_blank"
+                        style ="color: inherit;"
+                      )
+                        i.fa-solid.fa-map-location-dot
+          else
+            tr
+              td(colspan="16" style="text-align:center; padding:10px;") Không có dữ liệu
 
-
-            else
-                tr
-                  td(colspan="11" style="text-align:center; padding:10px;") Không có dữ liệu
 
   //-Section 7
   .section-7

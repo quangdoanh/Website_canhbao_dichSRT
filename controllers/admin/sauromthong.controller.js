@@ -30,6 +30,7 @@ module.exports.listDulieuSRT = async (req, res) => {
 
     // ===== Lấy dữ liệu phân trang =====
     const data = await SauRomThongModel.getAllWithPagination(limit, offset, filters);
+    console.log("Doanh", data)
     const listDulieuSRT = data.map((item) => ({
       id: item.pk,
       tinh: item.tinh,
@@ -43,8 +44,30 @@ module.exports.listDulieuSRT = async (req, res) => {
       namtr: item.namtr,
       churung: item.churung,
       muc_ah: item.muc_ah,
-      so_ngay_con_lai: item.so_ngay_con_lai
+      so_ngay_con_lai: item.so_ngay_con_lai,
+      // Các trường bổ sung
+      tt: item.tt,
+      maldlr: item.maldlr,
+      machur: item.machur,
+      malr3: item.malr3,
+      docao: item.docao,
+      dodoc: item.dodoc,
+      huongdoc: item.huongdoc,
+      luongmua: item.luongmua,
+      nhietdo: item.nhietdo,
+      loaicay: item.loaicay,
+      captuoi: item.captuoi,
+      lichsu: item.lichsu,
+      tong: item.tong,
+      phancap: item.phancap,
+      ghep: item.ghep,
+      layer: item.layer,
+      duong_kinh: item.duong_kinh,
+      chi_so_k: item.chi_so_k,
+      cap_duong_kinh: item.cap_duong_kinh,
+      f_value: item.f_value
     }));
+
 
     // ===== Danh sách Tỉnh =====
     const ListTinh = await TinhModel.getAll();
