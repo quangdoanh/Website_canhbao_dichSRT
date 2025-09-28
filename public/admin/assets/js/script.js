@@ -1815,8 +1815,11 @@ if (filterMaTinh) {
     const value = filterMaTinh.value;
     if (value) {
       url.searchParams.set("ma_tinh", value);
+      url.searchParams.delete("ma_huyen")
+      url.searchParams.delete("ma_xa")
     } else {
       url.searchParams.delete("ma_tinh");
+      url.searchParams.delete("ma_huyen")
     }
     window.location.href = url.href;
   });
@@ -1837,8 +1840,10 @@ if (filterMaHuyen) {
     const value = filterMaHuyen.value;
     if (value) {
       url.searchParams.set("ma_huyen", value);
+      url.searchParams.delete("ma_xa")
     } else {
       url.searchParams.delete("ma_huyen");
+      url.searchParams.delete("ma_xa")
     }
     window.location.href = url.href;
   });

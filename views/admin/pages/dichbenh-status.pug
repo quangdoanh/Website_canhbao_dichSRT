@@ -27,11 +27,28 @@ block main
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
       .inner-item
-        select(filter-status)
-          option(value="") Huyện
+        select(filter-tinh name="tinh" filter-Ma_tinh)
+          option(value="") Tỉnh
+          each tinh in ListTinh
+            option(value=tinh.ma_tinh) #{tinh.ten_tinh}
       .inner-item
-        select(filter-status)
+        select(filter-huyen name="huyen" filter-Ma_huyen) 
+          option(value="") Huyện
+          if ListHuyen_Condition.length
+           each huyen in ListHuyen_Condition
+            option(value=huyen.ma_huyen)= huyen.ten_huyen
+          else
+           each huyen in ListHuyen
+            option(value=huyen.ma_huyen)= huyen.ten_huyen
+      .inner-item
+        select(filter-huyen name="xa" filter-Ma_xa)
           option(value="") Xã
+          if ListXa_Condition.length
+           each xa in ListXa_Condition
+            option(value=xa.ma_xa)= xa.ten_xa
+          else
+           each xa in ListXa
+            option(value=xa.ma_xa)= xa.ten_xa
       .inner-item.inner-date
         input(type="date" filter-start-date value="2025-09-01")
         span - 

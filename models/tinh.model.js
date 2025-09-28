@@ -5,7 +5,7 @@ const TinhModel = {
   // Lấy tất cả tỉnh 
   async getAll() {
     try {
-      const query = "SELECT * FROM tinh ORDER BY ma_tinh ASC";
+      const query = "SELECT * FROM public.tinh ORDER BY ma_tinh ASC";
       const result = await pool.query(query);
       return result.rows;
     } catch (error) {

@@ -13,11 +13,11 @@ block main
           option(value="") Trạng thái
           option(value="active") Hoạt động
           option(value="inactive") Tạm dừng
-      .inner-item.inner-date
-        input(type="date" filter-start-date)
-        span - 
+      //- .inner-item.inner-date
+      //-   input(type="date" filter-start-date)
+      //-   span - 
 
-        input(type="date" filter-end-date)
+      //-   input(type="date" filter-end-date)
       .inner-item
         select(filter-role)
           option(value="") Nhóm quyền
@@ -44,8 +44,8 @@ block main
       .inner-search
         i(class="fa-solid fa-magnifying-glass")
         input(type="text" placeholder="Tìm kiếm" search)
-        .inner-button-create
-          a(href=`/${pathAdmin}/user/create`) + Tạo mới
+      .inner-button-create
+        a(href=`/${pathAdmin}/user/create`) + Tạo mới
 
   //- Section 6: Bảng danh sách
   .section-6

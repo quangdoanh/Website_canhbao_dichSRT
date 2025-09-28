@@ -494,6 +494,26 @@ if (map) {
         .catch(err => console.error("Lỗi xóa:", err));
     });
   }
+
+  /* ==============
+    PRINT
+   ===============
+  */
+
+  const addEasyPrint = (map) => {
+    L.easyPrint({
+      title: 'In bản đồ',
+      position: 'topright',   // góc trên bên phải
+      sizeModes: ['Current', 'A4Portrait', 'A4Landscape'],
+      filename: 'ban_do',
+      exportOnly: false,
+      hideControlContainer: false
+    }).addTo(map);
+  };
+
+  addEasyPrint(map);
+
+
 }
 
 
