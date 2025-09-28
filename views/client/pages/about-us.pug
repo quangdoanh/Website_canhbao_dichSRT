@@ -2,19 +2,21 @@ extends ../layouts/default
 
 block content
   .about-page
-    .container
-      .inner-wrap
-        if aboutList.length
-          each item in aboutList
-            .about-item
-              .header-image
-                if item.avatar
-                  img(src=item.avatar alt=item.title)
-                else
-                  img(src="/assets/images/banner.png" alt="Giới thiệu")
-
-              h1.page-title= item.title
-              p.post-date= item.createdAtFormat
-              .intro-text !{item.content}
+    // ảnh nằm ngoài container
+    if aboutList && aboutList.length
+      - const item = aboutList[0];
+      .header-image
+        if item.avatar
+          img(src=item.avatar alt=item.title)
         else
-          p Không có dữ liệu giới thiệu.
+          img(src="/assets/images/banner.png" alt="Giới thiệu")
+
+      // nội dung trong container
+      .container
+        .inner-wrap
+          .about-item
+            h1.page-title= item.title
+            p.post-date= item.createdAtFormat
+            .intro-text !{item.content}
+    else
+      p Không có dữ liệu giới thiệu.

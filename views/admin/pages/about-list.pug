@@ -53,20 +53,20 @@ block main
                           )
                           span.slider.round
                   td
-                      .inner-buttons
-                          a.inner-edit(href=`/${pathAdmin}/about/edit/${item.id}`)
-                              i(class="fa-regular fa-pen-to-square")
+                    .inner-buttons
+                      a.inner-edit(href=`/${pathAdmin}/about/edit/${item.id}`)
+                          i(class="fa-regular fa-pen-to-square")
               else
                 tr
                   td(colspan="9" class="inner-center") Không có dữ liệu
     //- Section 7
     //- Section 7: Pagination
-    .section-7
-      - const start = (pagination.page - 1) * limit + 1;
-      - const end = Math.min(pagination.page * limit, pagination.totalRecords);
-      span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
+  .section-7
+    - const start = (pagination.page - 1) * limit + 1;
+    - const end = Math.min(pagination.page * limit, pagination.totalRecords);
+    span.inner-label Hiển thị #{start} - #{end} của #{pagination.totalRecords}
 
-      select.inner-pagination(pagination name="page")
-        each val in [...Array(pagination.totalPages).keys()]
-          - const pageNum = val + 1;
-          option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}
+    select.inner-pagination(pagination name="page")
+      each val in [...Array(pagination.totalPages).keys()]
+        - const pageNum = val + 1;
+        option(value=pageNum selected=(pageNum === pagination.page)) Trang #{pageNum}

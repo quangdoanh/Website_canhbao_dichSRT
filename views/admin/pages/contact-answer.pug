@@ -24,6 +24,6 @@ block main
           label(class="inner-label" for="answer") Phản hồi
           input(type="text" id="answer" name="answer" value=(contactDetail.answer || ""))
         .inner-button.inner-two-col
-          button#updateBtn(type="submit" style=contactDetail.status == 1 ? "display:none;" : "") Phản hồi
+          button#updateBtn(type="submit" ) Phản hồi
       .inner-back
         a(href=`/${pathAdmin}/contact/list`) Quay lại danh sách

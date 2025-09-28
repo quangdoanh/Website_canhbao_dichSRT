@@ -780,7 +780,11 @@ header {
   color: #fff;
   transform: translateY(-3px);
 }
-
+.topic-box:hover i{
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #fff;
+}
 /* Faq-page */
 /* FAQ Page */
 .faq-page {
