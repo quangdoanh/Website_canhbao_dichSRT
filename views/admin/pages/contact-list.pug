@@ -4,22 +4,22 @@ block main
   h1.box-title Danh sách liên hệ
 
   //- Section 4: Bộ lọc
-  .section-4
-    .inner-wrap
-      .inner-item.inner-label
-        <i class="fa-solid fa-filter"></i> Bộ lọc
-      .inner-item
-        select(filter-status)
-          option(value="") Trạng thái
-          option(value="0") Chưa xử lý
-          option(value="1") Đã trả lời
-          option(value="2") Đang xử lý
-      .inner-item.inner-date
-        input(type="date" filter-start-date)
-        span - 
-        input(type="date" filter-end-date)
-      .inner-item.inner-reset(filter-reset)
-        <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
+  //- .section-4
+  //-   .inner-wrap
+  //-     .inner-item.inner-label
+  //-       <i class="fa-solid fa-filter"></i> Bộ lọc
+  //-     .inner-item
+  //-       select(filter-status)
+  //-         option(value="") Trạng thái
+  //-         option(value="0") Chưa xử lý
+  //-         option(value="1") Đã trả lời
+  //-         option(value="2") Đang xử lý
+  //-     .inner-item.inner-date
+  //-       input(type="date" filter-start-date)
+  //-       span - 
+  //-       input(type="date" filter-end-date)
+  //-     .inner-item.inner-reset(filter-reset)
+  //-       <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
 
   //- Section 5: Hành động & tìm kiếm
   .section-5
@@ -89,12 +89,8 @@ block main
                 td= contact.createdAtFormat
                 td
                   .inner-buttons
-                    if (contact.status == 1)
                       a.inner-edit(href=`/${pathAdmin}/contact/answer/${contact.id}`)
                         i.fa-regular.fa-eye
-                    if(contact.status == 0)
-                      a.inner-edit(href=`/${pathAdmin}/contact/answer/${contact.id}`)
-                        i.fa-regular.fa-pen-to-square
           else
             tr
               td(colspan="9" class="inner-center") Không có dữ liệu
