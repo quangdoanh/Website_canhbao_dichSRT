@@ -7,9 +7,12 @@ const upload = multer({ storage: cloudinaryRarHelper.storageRar });
 
 // ============== MAP ========== //
 router.get('/list', UploadMapController.listMap);
+router.get('/api/list', UploadMapController.appListMap);
 router.get('/create', UploadMapController.createMap);
+router.get('/api/create', UploadMapController.appCreateMap);
 router.post('/create', upload.single("file"), UploadMapController.createPostMap);
 router.get('/edit/:id', UploadMapController.editMap);
+router.get('/api/edit/:id', UploadMapController.appEditMap);
 router.patch('/edit/:id', upload.single("file"), UploadMapController.editPatchMap);
 router.delete('/delete/:id', UploadMapController.deleteMap);
 

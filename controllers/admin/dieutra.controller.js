@@ -166,9 +166,9 @@ module.exports.appListDieuTra = async (req, res) => {
       code: "success",
       data: {
         dieutraList,
-        ListTinh,
-        ListHuyen,
-        ListXaTheoHuyen,
+        // ListTinh,
+        // ListHuyen,
+        // ListXaTheoHuyen,
         pagination: { page, totalPages, totalRecords },
         limit,
         filters,
@@ -284,8 +284,12 @@ module.exports.appCreateDieuTra = async (req, res) => {
 
 module.exports.createDieuTraPost = async (req, res) => {
     try {
-        const { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb,tk, khoanh, lo } = req.body;
+        let { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb,tk, khoanh, lo } = req.body;
         const dtra_date = new Date();
+          matinh = matinh ? parseInt(matinh) : null;
+          mahuyen = mahuyen ? parseInt(mahuyen) : null;
+          maxa = maxa ? parseInt(maxa) : null;
+        console.log(req.body)
         // Lấy user_id từ session (hoặc null nếu không có)
         const user_id = req.account?.id || 0;
 
@@ -326,6 +330,21 @@ module.exports.createDieuTraPost = async (req, res) => {
             code: "error",
             message: "Đường kính TB không được vượt quá 999.99"
           });
+        }
+                // ===== Kiểm tra tồn tại trong DB =====
+        const tinh = await TinhModel.getById(matinh);
+        if (!tinh) {
+          return res.status(400).json({ code: "error", message: "Mã tỉnh không tồn tại" });
+        }
+
+        const huyen = await HuyenModel.getById(mahuyen);
+        if (!huyen || huyen.ma_tinh !== matinh) {
+          return res.status(400).json({ code: "error", message: "Mã huyện không tồn tại hoặc không thuộc tỉnh đã chọn" });
+        }
+
+        const xa = await XaModel.getById(maxa);
+        if (!xa || xa.ma_huyen !== mahuyen) {
+          return res.status(400).json({ code: "error", message: "Mã xã không tồn tại hoặc không thuộc huyện đã chọn" });
         }
 
         // Tạo bản ghi mới
@@ -465,9 +484,9 @@ module.exports.appEditDieuTra = async (req, res) => {
       code: "success",
       data: {
         dieutra,
-        ListTinh,
-        ListHuyen,
-        ListXaTheoHuyen
+        // ListTinh,
+        // ListHuyen,
+        // ListXaTheoHuyen
       }
     });
   } catch (err) {
@@ -500,7 +519,8 @@ module.exports.editDieuTraPatch = async (req, res) => {
         const so_sau_non = parseInt(sosau) || 0;
         const so_cay = parseInt(socay) || 0;
         const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
-
+        
+        
         // 3. Update bản ghi (giữ nguyên user_id và dtra_date)
         const updatedDieuTra = await DieuTraModel.update(id, {
             ma_tinh: matinh || dieutra.ma_tinh,

@@ -116,25 +116,41 @@ const uploadMap = {
       throw error;
     }
   },
-  async updateById(id, { thongtin, loaibando, file, mota, matinh }) {
-    try {
-      const query = `
-            UPDATE public.uploadmap
-            SET thongtin = $2,
-                loaibando = $3,
-                file = $4,
-                mota = $5,
-                ma_tinh = $6
-            WHERE id = $1
-            RETURNING *;
-        `;
-      const values = [id, thongtin, loaibando, file, mota, matinh];
-      const result = await pool.query(query, values);
-      return result.rows[0]; // trả về record vừa update
-    } catch (error) {
-      throw error;
-    }
-  },
+  // async updateById(id, { thongtin, loaibando, file, mota, matinh }) {
+  //   try {
+  //     const query = `
+  //           UPDATE public.uploadmap
+  //           SET thongtin = $2,
+  //               loaibando = $3,
+  //               file = $4,
+  //               mota = $5,
+  //               ma_tinh = $6
+  //           WHERE id = $1
+  //           RETURNING *;
+  //       `;
+  //     const values = [id, thongtin, loaibando, file, mota, matinh];
+  //     const result = await pool.query(query, values);
+  //     return result.rows[0]; // trả về record vừa update
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
+  async updateById(id, fields) {
+  const keys = Object.keys(fields);
+  if (keys.length === 0) return null; // không có gì để update
+
+  const setClauses = keys.map((key, i) => `${key} = $${i + 1}`);
+  const values = keys.map(k => fields[k]);
+
+  const sql = `
+    UPDATE public.uploadmap
+    SET ${setClauses.join(", ")}
+    WHERE id = $${keys.length + 1}
+    RETURNING *`;
+
+  const result = await pool.query(sql, [...values, id]);
+  return result.rows[0];
+},
   async deleteById(id) {
     try {
       const query = `

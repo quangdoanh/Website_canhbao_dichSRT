@@ -16,8 +16,9 @@ module.exports.listDulieuSRT = async (req, res) => {
       ma_tinh: parseInt(req.query.ma_tinh) || null,
       ma_huyen: parseInt(req.query.ma_huyen) || null,
       ma_xa: parseInt(req.query.ma_xa) || null,
-      muc_ah:parseInt(req.query.muc_ah) || null,
+      muc_ah:req.query.muc_ah !== undefined && req.query.muc_ah !== "" ? parseInt(req.query.muc_ah): null,
     };
+    // console.log("Bộ lọc",filters);
 
     // ===== Tổng số bản ghi =====
     const totalRecords = await SauRomThongModel.countAll(filters);
@@ -98,6 +99,106 @@ module.exports.listDulieuSRT = async (req, res) => {
     res.status(500).send("Lỗi server");
   }
 };
+//appListDuLieuSRT
+module.exports.appListDulieuSRT = async (req, res) => {
+  try {
+    const limit = 15;
+    let page = parseInt(req.query.page) || 1;
+    if (page < 1) page = 1;
+
+    // ===== Lấy filters từ query =====
+    const filters = {
+      ma_tinh: parseInt(req.query.ma_tinh) || null,
+      ma_huyen: parseInt(req.query.ma_huyen) || null,
+      ma_xa: parseInt(req.query.ma_xa) || null,
+      muc_ah: parseInt(req.query.muc_ah) || null,
+    };
+
+    // ===== Tổng số bản ghi =====
+    const totalRecords = await SauRomThongModel.countAll(filters);
+    const totalPage = Math.ceil(totalRecords / limit);
+    if (page > totalPage && totalPage > 0) page = totalPage;
+
+    const offset = (page - 1) * limit;
+
+    // ===== Lấy dữ liệu phân trang =====
+    const data = await SauRomThongModel.getAllWithPagination(limit, offset, filters);
+    const listDulieuSRT = data.map((item) => ({
+      id: item.pk,
+      tinh: item.tinh,
+      huyen: item.huyen,
+      xa: item.xa,
+      tieukhu: item.tk,
+      khoanh: item.khoanh,
+      lo: item.lo,
+      dientich: item.dtich,
+      loairung: item.sldlr,
+      namtr: item.namtr,
+      churung: item.churung,
+      muc_ah: item.muc_ah,
+      so_ngay_con_lai: item.so_ngay_con_lai
+    }));
+
+    // ===== Danh sách Tỉnh =====
+    const ListTinh = await TinhModel.getAll();
+
+    // ===== Danh sách Huyện =====
+    let ListHuyen;
+    if (filters.ma_tinh) {
+      ListHuyen = await HuyenModel.getByProvince(filters.ma_tinh);
+    } else {
+      ListHuyen = await HuyenModel.getAll();
+    }
+
+    // ===== Danh sách Xã =====
+    let ListXa;
+    if (filters.ma_huyen) {
+      ListXa = await XaModel.getByDistrict(filters.ma_huyen);
+    } else {
+      ListXa = await XaModel.getAll();
+    }
+
+    // ===== Gom nhóm xã theo huyện =====
+    const ListXaTheoHuyen = [];
+    const grouped = {};
+    ListXa.forEach((xa) => {
+      if (!grouped[xa.ma_huyen]) {
+        grouped[xa.ma_huyen] = [];
+      }
+      grouped[xa.ma_huyen].push({
+        ma_xa: xa.ma_xa,
+        ten_xa: xa.ten_xa,
+      });
+    });
+    for (const ma_huyen in grouped) {
+      ListXaTheoHuyen.push({
+        huyen: ma_huyen,
+        dsXa: grouped[ma_huyen],
+      });
+    }
+
+    // ===== Trả JSON thay vì render =====
+    res.json({
+      code: "success",
+      message: "Lấy dữ liệu thành công",
+      data: {
+        listDulieuSRT,
+        pagination: { page, totalPage, totalRecords, limit },
+        filters,
+        // ListTinh,
+        // ListHuyen,
+        // ListXaTheoHuyen,
+      },
+    });
+  } catch (err) {
+    console.error("List DulieuSRT error:", err);
+    res.status(500).json({
+      code: "error",
+      message: "Lỗi server: " + err.message,
+    });
+  }
+};
+//appListDuLieuSRT
 module.exports.viewDulieuSRT = async (req, res) => {
   try {
     const { id } = req.params;
@@ -109,7 +210,7 @@ module.exports.viewDulieuSRT = async (req, res) => {
 
     // ===== Map dữ liệu final =====
     const dataSRT = {
-      id: row.id || null,
+      id: row.pk || null,
       tinh: row.tinh || "Không xác định",
       huyen: row.huyen || "Không xác định",
       xa: row.xa || "Không xác định",
@@ -146,6 +247,63 @@ module.exports.viewDulieuSRT = async (req, res) => {
   }
 };
 
+// appViewDuLieuSRT
+module.exports.appViewDulieuSRT = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const row = await SauRomThongModel.findByIdView(id);
+
+    if (!row) {
+      return res.status(404).json({
+        code: "error",
+        message: "Không tìm thấy bản ghi",
+      });
+    }
+
+    // ===== Map dữ liệu final =====
+    const dataSRT = {
+      id: row.pk || null,
+      tinh: row.tinh || "Không xác định",
+      huyen: row.huyen || "Không xác định",
+      xa: row.xa || "Không xác định",
+      tk: row.tk || "Không xác định",
+      khoanh: row.khoanh || "Không xác định",
+      lo: row.lo || "Không xác định",
+      dtich: row.dtich || "Không xác định",
+      ldlr: row.ldlr || "Không xác định",
+      sldlr: row.sldlr || "Không xác định",
+      namtr: row.namtr || "Không xác định",
+      churung: row.churung || "Không xác định",
+      docao: row.docao || "Không xác định",
+      dodoc: row.dodoc || "Không xác định",
+      huongdoc: row.huongdoc || "Không xác định",
+      luongmua: row.luongmua || "Không xác định",
+      nhietdo: row.nhietdo || "Không xác định",
+      captuoi: row.captuoi || "Không xác định",
+      lichsu: row.lichsu || "Không xác định",
+      tong: row.tong || "Không xác định",
+      phancap: row.phancap || "Không xác định",
+      ghep: row.ghep || "Không xác định",
+    };
+
+    console.log("Chi tiết bản ghi:", dataSRT);
+
+    res.json({
+      code: "success",
+      message: "Lấy chi tiết bản ghi thành công",
+      data: dataSRT,
+    });
+
+  } catch (error) {
+    console.error("viewDulieuSRT error:", error);
+    res.status(500).json({
+      code: "error",
+      message: "Lỗi server: " + error.message,
+    });
+  }
+};
+
+// appViewDuLieuSRT
 module.exports.editDulieuSRT = async (req, res) => {
   try {
     const { id } = req.params;

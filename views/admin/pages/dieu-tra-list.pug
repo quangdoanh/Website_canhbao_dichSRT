@@ -10,18 +10,18 @@ block main
     .inner-wrap
       .inner-item.inner-label
         <i class="fa-solid fa-filter"></i> Bộ lọc
-        .inner-group
-          select(id="tinh" name="tinh" class="tinh" required filter-Ma_tinh)
-            option(value="") Tỉnh
-            +optionTinh(ListTinh)
-        .inner-group
-          select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen)
-            option(value="") Huyện
-            +optionHuyen(ListHuyen)
-        .inner-group
-          select(id="xa" name="xa" class="xa" filter-Ma_xa)
-            option(value="") Xã
-            +optionXa(ListXaTheoHuyen)  
+      .inner-item
+        select(id="tinh" name="tinh" class="tinh" required filter-Ma_tinh)
+          option(value="") Tỉnh
+          +optionTinh(ListTinh)
+      .inner-item
+        select(id="huyen" name="huyen" class="huyen" filter-Ma_huyen)
+          option(value="") Huyện
+          +optionHuyen(ListHuyen)
+      .inner-item
+        select(id="xa" name="xa" class="xa" filter-Ma_xa)
+          option(value="") Xã
+          +optionXa(ListXaTheoHuyen)  
       .inner-item.inner-date
         input(type="date" filter-start-date value="2025-09-01")
         span - 
@@ -95,8 +95,9 @@ block main
                 .inner-buttons
                   a.inner-edit(href=`/${pathAdmin}/dieutra/edit/${item.id}`)
                     i(class="fa-regular fa-pen-to-square")
-                  button.inner-delete(button-delete data-api=`/${pathAdmin}/dieutra/delete/${item.id}`)
-                    i(class="fa-regular fa-trash-can")
+                  if(item.status == 1)
+                    button.inner-delete(button-delete data-api=`/${pathAdmin}/dieutra/delete/${item.id}`)
+                      i(class="fa-regular fa-trash-can")
         else
           tr
             td(colspan=9 style="text-align:center") Không có dữ liệu
