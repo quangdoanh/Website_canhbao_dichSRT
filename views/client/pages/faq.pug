@@ -15,7 +15,7 @@ block content
                 .text-wrap
                   span Q#{(pagination.page - 1) * limit + index + 1}: #{item.message}
                   br
-                  small Người gửi: #{item.email} – Ngày gửi: #{new Date(item.created_at).toLocaleDateString("vi-VN")}
+                  small  Ngày gửi: #{new Date(item.created_at).toLocaleDateString("vi-VN")}
                 i.icon-toggle.fa-solid.fa-chevron-down
               .answer
                 if item.answer

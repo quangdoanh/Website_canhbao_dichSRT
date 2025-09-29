@@ -1,3 +1,4 @@
+
 // Menu Mobile
 const buttonMenuMobile = document.querySelector(".header .inner-button-menu");
 if (buttonMenuMobile) {
@@ -1815,8 +1816,11 @@ if (filterMaTinh) {
     const value = filterMaTinh.value;
     if (value) {
       url.searchParams.set("ma_tinh", value);
+      url.searchParams.delete("ma_huyen")
+      url.searchParams.delete("ma_xa")
     } else {
       url.searchParams.delete("ma_tinh");
+      url.searchParams.delete("ma_huyen")
     }
     window.location.href = url.href;
   });
@@ -1837,8 +1841,10 @@ if (filterMaHuyen) {
     const value = filterMaHuyen.value;
     if (value) {
       url.searchParams.set("ma_huyen", value);
+      url.searchParams.delete("ma_xa")
     } else {
       url.searchParams.delete("ma_huyen");
+      url.searchParams.delete("ma_xa")
     }
     window.location.href = url.href;
   });
@@ -1916,3 +1922,82 @@ if (filterMucAh) {
     filterMucAh.value = valueCurrent;
   }
 }
+/* 
+=============
+Xuất excel 
+============
+*/
+const exportTableToExcel = () => {
+  const table = document.querySelector(".section-6 table");
+  if (!table) {
+    alert("Không tìm thấy bảng để xuất Excel");
+    return;
+  }
+
+  // Lấy dữ liệu từ bảng
+  const ws = XLSX.utils.table_to_sheet(table);
+
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  const headerRow = range.s.r;
+
+  // Tìm các cột cần loại bỏ
+  const colsToRemove = [];
+  for (let c = range.s.c; c <= range.e.c; c++) {
+    const cellRef = XLSX.utils.encode_cell({ r: headerRow, c });
+    const cellValue = ws[cellRef]?.v || "";
+    if (cellValue.includes("Xác nhận") || cellValue.includes("Hành động")) {
+      colsToRemove.push(c);
+    }
+  }
+
+  // Xóa các cột tìm được từ phải sang trái
+  colsToRemove.sort((a, b) => b - a).forEach(col => {
+    for (let r = range.s.r; r <= range.e.r; r++) {
+      ws[XLSX.utils.encode_cell({ r, c: col })] = undefined;
+    }
+    // cập nhật range.e.c
+    range.e.c--;
+  });
+
+  ws['!ref'] = XLSX.utils.encode_range(range);
+
+  // Ép kiểu dữ liệu cho các cột: text cho TK, Lô, Diện tích
+  for (let R = range.s.r + 1; R <= range.e.r; ++R) { // bỏ header
+    ['D', 'E', 'F', 'G', 'H'].forEach(col => { // D = TK, G = Lô, H = Diện tích
+      const cellRef = `${col}${R + 1}`;
+      if (ws[cellRef]) ws[cellRef].t = 's'; // ép kiểu text
+    });
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "DanhSach");
+
+  Swal.fire({
+    title: 'Nhập tên file Excel',
+    input: 'text',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (!value) return 'Bạn phải nhập tên file!';
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const fileName = result.value.endsWith(".xlsx") ? result.value : result.value + ".xlsx";
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([wbout], { type: "application/octet-stream" });
+      saveAs(blob, fileName);
+    }
+  });
+};
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnExport = document.querySelector("#exportExcel");
+  if (btnExport) btnExport.addEventListener("click", exportTableToExcel);
+});
+
+
+
+
+
+

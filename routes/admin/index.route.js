@@ -1,14 +1,11 @@
 const router = require('express').Router();
 const accountRoutes = require('./account.route');
 const dashboardRoutes = require('./dashboard.route');
-const adminRoutes = require('./admin.route');
 const sauromthongRoutes = require('./sauromthong.route')
-const sauhailakeoRotues = require('./sauhailakeo.route')
 const userRoutes = require("./user.route");
 const roleRoutes = require('./role.route');
 const aboutRoutes = require('./about.route');
 const contactRoutes = require('./contact.route');
-const benhhaikeoRoutes = require('./benhhailakeo.route')
 const weatherRouters = require('./weather.route');
 const profileRoutes = require('./profile.route');
 const UploadMapRoutes = require('./uploadmap.route')
@@ -25,9 +22,7 @@ router.use((req, res, next) => {
   next();
 });
 router.use('/dichbenh', authMiddleware.verifyToken, DichBenhRoutes)
-router.use('/benhhailakeo', authMiddleware.verifyToken, benhhaikeoRoutes);
 router.use('/sauromthong', authMiddleware.verifyToken, sauromthongRoutes);
-router.use('/sauhailakeo', authMiddleware.verifyToken, sauhailakeoRotues);
 router.use('/map', authMiddleware.verifyToken, UploadMapRoutes)
 router.use('/dieutra', authMiddleware.verifyToken, DieuTraRoutes)
 router.use('/account', accountRoutes);

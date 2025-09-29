@@ -2,6 +2,7 @@ const HuyenModel = require('../../models/huyen.model');
 const XaModel = require('../../models/xa.model')
 const TinhModel = require("../../models/tinh.model");
 const DieuTraModel = require('../../models/dieutra.model');
+const Log = require("../../helpers/loguser.helper")
 const moment = require("moment");
 
 module.exports.listDieuTra = async (req, res) => {
@@ -74,7 +75,7 @@ module.exports.listDieuTra = async (req, res) => {
         dsXa: grouped[ma_huyen],
       });
     }
-    
+
     console.log("điều tra: ", dieutraList)
     // ===== Render ra view =====
     res.render("admin/pages/dieu-tra-list", {
@@ -192,11 +193,11 @@ module.exports.createDieuTra = async (req, res) => {
     const ListTinh = await TinhModel.getAll(); // [{ma_tinh, ten_tinh}, ...]
 
     // 2. Lấy danh sách huyện (mỗi huyện cần có cả ma_tinh để lọc)
-    const ListHuyen = await HuyenModel.getAll(); 
+    const ListHuyen = await HuyenModel.getAll();
     // => [{ma_huyen, ten_huyen, ma_tinh}, ...]
 
     // 3. Lấy danh sách xã theo huyện
-    const ListXa = await XaModel.getAll(); 
+    const ListXa = await XaModel.getAll();
     // => [{ma_xa, ten_xa, ma_huyen}, ...]
 
     // Gom nhóm xã theo huyện
@@ -286,97 +287,101 @@ module.exports.appCreateDieuTra = async (req, res) => {
 
 
 module.exports.createDieuTraPost = async (req, res) => {
-    try {
-        let { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb,tk, khoanh, lo } = req.body;
-        const dtra_date = new Date();
-          matinh = matinh ? parseInt(matinh) : null;
-          mahuyen = mahuyen ? parseInt(mahuyen) : null;
-          maxa = maxa ? parseInt(maxa) : null;
-        console.log(req.body)
-        // Lấy user_id từ session (hoặc null nếu không có)
-        const user_id = req.account?.id || 0;
+  try {
+    let { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb, tk, khoanh, lo } = req.body;
+    const dtra_date = new Date();
+    matinh = matinh ? parseInt(matinh) : null;
+    mahuyen = mahuyen ? parseInt(mahuyen) : null;
+    maxa = maxa ? parseInt(maxa) : null;
+    console.log(req.body)
+    // Lấy user_id từ session (hoặc null nếu không có)
+    const user_id = req.account?.id || 0;
 
-        // Ép kiểu số
-        const so_sau_non = parseInt(sosau);
-        const so_cay = parseInt(socay);
-        const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
-        // Validate bắt buộc
-        if (!loai_cay || !["thongmavi", "thongnhua"].includes(loai_cay)) {
-            res.status(400).json({
-                code: "error",
-                message: "Loài cây không hợp lệ"
-            });
-            return;
-        }
-        if (!Number.isInteger(so_sau_non) || so_sau_non <= 0) {
-            return res.status(400).json({
-              code: "error",
-              message: "Số sâu non phải là số nguyên > 0"
-            });
-          }
-
-          // ===== Validate so_cay =====
-        if (!Number.isInteger(so_cay) || so_cay <= 0) {
-          return res.status(400).json({
-            code: "error",
-            message: "Số cây phải là số nguyên > 0"
-          });
-        }
-        if (duong_kinh_tb === undefined || isNaN(duong_kinh_tb_num) || duong_kinh_tb_num <= 0) {
-            res.status(400).json({
-                code: "error",
-                message: "Đường kính TB phải nhập và > 0"
-            });
-        }
-        if (duong_kinh_tb_num >= 1000) {
-          return res.status(400).json({
-            code: "error",
-            message: "Đường kính TB không được vượt quá 999.99"
-          });
-        }
-                // ===== Kiểm tra tồn tại trong DB =====
-        const tinh = await TinhModel.getById(matinh);
-        if (!tinh) {
-          return res.status(400).json({ code: "error", message: "Mã tỉnh không tồn tại" });
-        }
-
-        const huyen = await HuyenModel.getById(mahuyen);
-        if (!huyen || huyen.ma_tinh !== matinh) {
-          return res.status(400).json({ code: "error", message: "Mã huyện không tồn tại hoặc không thuộc tỉnh đã chọn" });
-        }
-
-        const xa = await XaModel.getById(maxa);
-        if (!xa || xa.ma_huyen !== mahuyen) {
-          return res.status(400).json({ code: "error", message: "Mã xã không tồn tại hoặc không thuộc huyện đã chọn" });
-        }
-
-        // Tạo bản ghi mới
-        const newDieuTra = await DieuTraModel.create({
-            ma_tinh: matinh,
-            ma_huyen: mahuyen,
-            ma_xa: maxa,
-            so_sau_non,
-            so_cay,
-            dtra_date,
-            user_id,
-            dia_chi_cu_the: dia_chi_cu_the,
-            loai_cay: loai_cay,
-            duong_kinh_tb: duong_kinh_tb_num,
-            tk:tk, 
-            khoanh:khoanh, 
-            lo:lo
-
-        });
-
-        console.log("Bản ghi mới:", newDieuTra);
-        // Thông báo thành công
-        req.flash("success", "Tạo mới thành công");
-        // Trả về JSON bao gồm dtra_date
-        res.json({ code: "success", data: newDieuTra });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+    // Ép kiểu số
+    const so_sau_non = parseInt(sosau);
+    const so_cay = parseInt(socay);
+    const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
+    // Validate bắt buộc
+    if (!loai_cay || !["thongmavi", "thongnhua"].includes(loai_cay)) {
+      res.status(400).json({
+        code: "error",
+        message: "Loài cây không hợp lệ"
+      });
+      return;
     }
+    if (!Number.isInteger(so_sau_non) || so_sau_non <= 0) {
+      return res.status(400).json({
+        code: "error",
+        message: "Số sâu non phải là số nguyên > 0"
+      });
+    }
+
+    // ===== Validate so_cay =====
+    if (!Number.isInteger(so_cay) || so_cay <= 0) {
+      return res.status(400).json({
+        code: "error",
+        message: "Số cây phải là số nguyên > 0"
+      });
+    }
+    if (duong_kinh_tb === undefined || isNaN(duong_kinh_tb_num) || duong_kinh_tb_num <= 0) {
+      res.status(400).json({
+        code: "error",
+        message: "Đường kính TB phải nhập và > 0"
+      });
+    }
+    if (duong_kinh_tb_num >= 1000) {
+      return res.status(400).json({
+        code: "error",
+        message: "Đường kính TB không được vượt quá 999.99"
+      });
+    }
+    // ===== Kiểm tra tồn tại trong DB =====
+    const tinh = await TinhModel.getById(matinh);
+    if (!tinh) {
+      return res.status(400).json({ code: "error", message: "Mã tỉnh không tồn tại" });
+    }
+
+    const huyen = await HuyenModel.getById(mahuyen);
+    if (!huyen || huyen.ma_tinh !== matinh) {
+      return res.status(400).json({ code: "error", message: "Mã huyện không tồn tại hoặc không thuộc tỉnh đã chọn" });
+    }
+
+    const xa = await XaModel.getById(maxa);
+    if (!xa || xa.ma_huyen !== mahuyen) {
+      return res.status(400).json({ code: "error", message: "Mã xã không tồn tại hoặc không thuộc huyện đã chọn" });
+    }
+
+    // Tạo bản ghi mới
+    const newDieuTra = await DieuTraModel.create({
+      ma_tinh: matinh,
+      ma_huyen: mahuyen,
+      ma_xa: maxa,
+      so_sau_non,
+      so_cay,
+      dtra_date,
+      user_id,
+      dia_chi_cu_the: dia_chi_cu_the,
+      loai_cay: loai_cay,
+      duong_kinh_tb: duong_kinh_tb_num,
+      tk: tk,
+      khoanh: khoanh,
+      lo: lo
+
+    });
+
+    console.log("Bản ghi mới:", newDieuTra);
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Tạo bài điều tra")
+    }
+    // Thông báo thành công
+    req.flash("success", "Tạo mới thành công");
+    // Trả về JSON bao gồm dtra_date
+    res.json({ code: "success", data: newDieuTra });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+  }
 }
 
 
@@ -395,11 +400,11 @@ module.exports.editDieuTra = async (req, res) => {
     const ListTinh = await TinhModel.getAll(); // [{ma_tinh, ten_tinh}, ...]
 
     // 3. Lấy toàn bộ danh sách huyện
-    const ListHuyen = await HuyenModel.getAll(); 
+    const ListHuyen = await HuyenModel.getAll();
     // [{ma_huyen, ten_huyen, ma_tinh}, ...]
 
     // 4. Lấy toàn bộ danh sách xã
-    const ListXa = await XaModel.getAll(); 
+    const ListXa = await XaModel.getAll();
     // [{ma_xa, ten_xa, ma_huyen}, ...]
 
     // 5. Gom nhóm xã theo huyện (giống create)
@@ -507,55 +512,59 @@ module.exports.appEditDieuTra = async (req, res) => {
 
 module.exports.editDieuTraPatch = async (req, res) => {
 
-    const { id } = req.params;
-    const { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb, tk, khoanh, lo } = req.body;
-    try {
+  const { id } = req.params;
+  const { matinh, mahuyen, maxa, sosau, socay, dia_chi_cu_the, loai_cay, duong_kinh_tb, tk, khoanh, lo } = req.body;
+  try {
 
 
-        // 1. Lấy bản ghi hiện tại
-        const dieutra = await DieuTraModel.getById(id);
-        if (!dieutra) {
-            return res.status(404).json({ code: "error", message: "Bản ghi không tồn tại!" });
-        }
-
-        // 2. Ép kiểu số
-        const so_sau_non = parseInt(sosau) || 0;
-        const so_cay = parseInt(socay) || 0;
-        const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
-        
-        
-        // 3. Update bản ghi (giữ nguyên user_id và dtra_date)
-        const updatedDieuTra = await DieuTraModel.update(id, {
-            ma_tinh: matinh || dieutra.ma_tinh,
-            ma_huyen: mahuyen || dieutra.ma_huyen,
-            ma_xa: maxa || dieutra.ma_xa,
-            so_sau_non:so_sau_non || dieutra.so_sau_non,
-            so_cay:so_cay || dieutra.so_cay,
-            dtra_date: dieutra.dtra_date,  
-            user_id: dieutra.user_id,       
-            dia_chi_cu_the: dia_chi_cu_the || dieutra.dia_chi_cu_the,
-            loai_cay: loai_cay,
-            duong_kinh_tb: duong_kinh_tb_num,
-            tk: tk || dieutra.tk,             
-            khoanh: khoanh || dieutra.khoanh,
-            lo: lo || dieutra.lo
-        });
-
-        req.flash("success", "Cập nhật thành công")
-        // 4. Trả về JSON
-        res.json({ code: "success",message:"Cập nhật thành công", data: updatedDieuTra });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+    // 1. Lấy bản ghi hiện tại
+    const dieutra = await DieuTraModel.getById(id);
+    if (!dieutra) {
+      return res.status(404).json({ code: "error", message: "Bản ghi không tồn tại!" });
     }
+
+    // 2. Ép kiểu số
+    const so_sau_non = parseInt(sosau) || 0;
+    const so_cay = parseInt(socay) || 0;
+    const duong_kinh_tb_num = parseFloat(duong_kinh_tb);
+
+
+    // 3. Update bản ghi (giữ nguyên user_id và dtra_date)
+    const updatedDieuTra = await DieuTraModel.update(id, {
+      ma_tinh: matinh || dieutra.ma_tinh,
+      ma_huyen: mahuyen || dieutra.ma_huyen,
+      ma_xa: maxa || dieutra.ma_xa,
+      so_sau_non: so_sau_non || dieutra.so_sau_non,
+      so_cay: so_cay || dieutra.so_cay,
+      dtra_date: dieutra.dtra_date,
+      user_id: dieutra.user_id,
+      dia_chi_cu_the: dia_chi_cu_the || dieutra.dia_chi_cu_the,
+      loai_cay: loai_cay,
+      duong_kinh_tb: duong_kinh_tb_num,
+      tk: tk || dieutra.tk,
+      khoanh: khoanh || dieutra.khoanh,
+      lo: lo || dieutra.lo
+    });
+
+    req.flash("success", "Cập nhật thành công")
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Cập nhật bài điều tra")
+    }
+    // 4. Trả về JSON
+    res.json({ code: "success", message: "Cập nhật thành công", data: updatedDieuTra });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+  }
 };
 
 module.exports.deleteDieuTra = async (req, res) => {
 
-    console.log("Chạy vào đây")
-    try {
-        const { id } = req.params;
+  console.log("Chạy vào đây")
+  try {
+    const { id } = req.params;
 
     const deleted = await DieuTraModel.delete(id);
 
@@ -565,16 +574,20 @@ module.exports.deleteDieuTra = async (req, res) => {
         message: "Chỉ được xóa bản ghi có trạng thái 'Đang xử lý'!"
       });
     }
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Xóa bài điều tra")
+    }
     req.flash("success", "Xóa thành công")
     res.json({
-        code: "success",
-        message: "Xóa thành công"
+      code: "success",
+      message: "Xóa thành công"
     });
 
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
-    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ code: "error", message: "Có lỗi xảy ra, vui lòng thử lại!" });
+  }
 };
 module.exports.deleteMultiDieuTra = async (req, res) => {
   try {
@@ -584,7 +597,11 @@ module.exports.deleteMultiDieuTra = async (req, res) => {
     }
 
     const deleted = await DieuTraModel.deleteMany(ids);
-    req.flash("success",`Đã xóa ${deleted} bản ghi`)
+    const user = req.account?.email;
+    if (user) {
+      Log.logUser(user, req.originalUrl, req.method, "Xóa bài điều tra")
+    }
+    req.flash("success", `Đã xóa ${deleted} bản ghi`)
     res.json({
       code: "success",
       message: `Đã xóa ${deleted} bản ghi`

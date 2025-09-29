@@ -119,7 +119,7 @@ const Sauhailakeo_5tinhModel = {
         }
     },
 
-    async getAll_Defore(status) {
+    async getAll_Defore(status, ma_tinh = null, ma_huyen = null, ma_xa = null) {
         try {
             // Khởi tạo mảng điều kiện
             let conditions = ['defor_ha IS NOT NULL'];
@@ -129,6 +129,24 @@ const Sauhailakeo_5tinhModel = {
             if (status === 0 || status === 1) {
                 values.push(status);
                 conditions.push(`status = $${values.length}`);
+            }
+
+            // Nếu truyền ma_tinh
+            if (ma_tinh) {
+                values.push(ma_tinh);
+                conditions.push(`ma_tinh = $${values.length}`);
+            }
+
+            // Nếu truyền ma_huyen
+            if (ma_huyen) {
+                values.push(ma_huyen);
+                conditions.push(`ma_huyen = $${values.length}`);
+            }
+
+            // Nếu truyền ma_xa
+            if (ma_xa) {
+                values.push(ma_xa);
+                conditions.push(`ma_xa = $${values.length}`);
             }
 
             // Tạo câu query
@@ -156,6 +174,54 @@ const Sauhailakeo_5tinhModel = {
             }
 
             // Thêm limit và offset vào values
+            values.push(limit);
+            values.push(skip);
+
+            const query = `
+          SELECT *
+          FROM public.shk_degrad
+          WHERE ${conditions.join(' AND ')}
+          ORDER BY defor_ha DESC
+          LIMIT $${values.length - 1}
+          OFFSET $${values.length};
+        `;
+
+            const result = await pool.query(query, values);
+            return result.rows;
+        } catch (error) {
+            throw error;
+        }
+    }, async getAll_Defore_Condition(skip = 0, limit = 15, status = null, ma_tinh = null, ma_huyen = null, ma_xa = null) {
+        try {
+            // Điều kiện mặc định
+            let conditions = ['defor_ha IS NOT NULL'];
+            const values = [];
+
+            // Nếu truyền status
+            if (status === 0 || status === 1) {
+                values.push(status);
+                conditions.push(`status = $${values.length}`);
+            }
+
+            // Nếu truyền ma_tinh
+            if (ma_tinh) {
+                values.push(ma_tinh);
+                conditions.push(`ma_tinh = $${values.length}`);
+            }
+
+            // Nếu truyền ma_huyen
+            if (ma_huyen) {
+                values.push(ma_huyen);
+                conditions.push(`ma_huyen = $${values.length}`);
+            }
+
+            // Nếu truyền ma_xa
+            if (ma_xa) {
+                values.push(ma_xa);
+                conditions.push(`ma_xa = $${values.length}`);
+            }
+
+            // Thêm limit và offset
             values.push(limit);
             values.push(skip);
 
@@ -202,7 +268,7 @@ const Sauhailakeo_5tinhModel = {
         return result.rows[0] || null;
     },
     //Degrad
-    async getAll_Degrad(status) {
+    async getAll_Degrad(status = null, ma_tinh = null, ma_huyen = null, ma_xa = null) {
         try {
             // Khởi tạo mảng điều kiện
             let conditions = ['degrad_ha IS NOT NULL'];
@@ -212,6 +278,24 @@ const Sauhailakeo_5tinhModel = {
             if (status === 0 || status === 1) {
                 values.push(status);
                 conditions.push(`status = $${values.length}`);
+            }
+
+            // Nếu truyền ma_tinh
+            if (ma_tinh) {
+                values.push(ma_tinh);
+                conditions.push(`ma_tinh = $${values.length}`);
+            }
+
+            // Nếu truyền ma_huyen
+            if (ma_huyen) {
+                values.push(ma_huyen);
+                conditions.push(`ma_huyen = $${values.length}`);
+            }
+
+            // Nếu truyền ma_xa
+            if (ma_xa) {
+                values.push(ma_xa);
+                conditions.push(`ma_xa = $${values.length}`);
             }
 
             // Tạo câu query
@@ -227,35 +311,21 @@ const Sauhailakeo_5tinhModel = {
             throw error;
         }
     },
-    async getAll_Degrad_Condition(skip = 0, limit = 15, status) {
+    async getAll_Degrad_Condition(skip = 0, limit = 15, status, ma_tinh, ma_huyen, ma_xa) {
         try {
-            let conditions = ['degrad_ha IS NOT NULL'];
+            const conditions = ['degrad_ha IS NOT NULL'];
             const values = [];
 
-            // Nếu truyền status, thêm điều kiện
-            if (status === 0 || status === 1) {
-                values.push(status);
-                conditions.push(`status = $${values.length}`);
-            }
+            if (status === 0 || status === 1) { values.push(status); conditions.push(`status = $${values.length}`); }
+            if (ma_tinh) { values.push(ma_tinh); conditions.push(`ma_tinh = $${values.length}`); }
+            if (ma_huyen) { values.push(ma_huyen); conditions.push(`ma_huyen = $${values.length}`); }
+            if (ma_xa) { values.push(ma_xa); conditions.push(`ma_xa = $${values.length}`); }
 
-            // Thêm limit và offset vào values
-            values.push(limit);
-            values.push(skip);
+            values.push(limit, skip);
 
-            const query = `
-          SELECT *
-          FROM public.shk_degrad
-          WHERE ${conditions.join(' AND ')}
-          ORDER BY degrad_ha DESC
-          LIMIT $${values.length - 1}
-          OFFSET $${values.length};
-        `;
-
-            const result = await pool.query(query, values);
-            return result.rows;
-        } catch (error) {
-            throw error;
-        }
+            const query = `SELECT * FROM public.shk_degrad WHERE ${conditions.join(' AND ')} ORDER BY degrad_ha DESC LIMIT $${values.length - 1} OFFSET $${values.length};`;
+            return (await pool.query(query, values)).rows;
+        } catch (error) { throw error; }
     },
 
 };

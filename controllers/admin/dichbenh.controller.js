@@ -66,12 +66,37 @@ module.exports.list = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
             ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
         }))
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let ma_tinh = null, ma_huyen = null, ma_xa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+        if (req.query.tinh) {
+            ma_tinh = Number(req.query.tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(req.query.tinh);
+        }
+        if (req.query.huyen) {
+            ma_huyen = Number(req.query.huyen);
+            ListXa_Condition = await XaModel.getByDistrict(ma_huyen)
+        }
+
+
 
 
         res.render("admin/pages/dichbenh-nang-list", {
@@ -79,7 +104,12 @@ module.exports.list = async (req, res) => {
             pagination: pagination,
             listDulieu: listDulieu,
             loaidich: "srt",
-            effect: effect
+            effect: effect,
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
 
         });
 
@@ -94,7 +124,6 @@ module.exports.list = async (req, res) => {
 module.exports.listStatusPending = async (req, res) => {
 
     try {
-
         const effect = req.params.effect
         let listDulieu = []
         let TotalDuLieu = [], data = []
@@ -112,12 +141,39 @@ module.exports.listStatusPending = async (req, res) => {
         }
         const skip = (page - 1) * limit
 
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+
+
         if (effect == "defor") {
-            TotalDuLieu = await SauRomThongModel.getAll_Defore();
-            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0);
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(0, matinh, mahuyen, maxa);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await SauRomThongModel.getAll_Degrad();
-            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0);
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, maxa);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa);
         }
 
 
@@ -132,6 +188,9 @@ module.exports.listStatusPending = async (req, res) => {
         }
 
 
+
+
+
         //console.log("Tổng dữ liệu:", pagination)
 
         listDulieu = data.map(item => ({
@@ -143,13 +202,19 @@ module.exports.listStatusPending = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
             ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
         }))
 
+        console.log("du liệu excell:", data)
 
         res.render("admin/pages/dichbenh-status", {
             pageTitle: "Danh sách dịch nặng",
@@ -157,7 +222,12 @@ module.exports.listStatusPending = async (req, res) => {
             listDulieu: listDulieu,
             statusPage,
             loaidich: "srt",
-            effect: effect
+            effect: effect,
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
         });
 
     } catch (err) {
@@ -186,12 +256,38 @@ module.exports.listStatusConfirmed = async (req, res) => {
             }
         }
         const skip = (page - 1) * limit
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+
+
         if (effect == "defor") {
-            TotalDuLieu = await SauRomThongModel.getAll_Defore();
-            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1);
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(1, matinh, mahuyen, maxa);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await SauRomThongModel.getAll_Degrad();
-            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1);
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, maxa);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         }
 
 
@@ -219,7 +315,12 @@ module.exports.listStatusConfirmed = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
@@ -234,7 +335,12 @@ module.exports.listStatusConfirmed = async (req, res) => {
             statusPage,
             loaidich: "srt",
             effect: effect,
-            bando: "Sauromthong_6tinh"
+            bando: "Sauromthong_6tinh",
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
         });
 
     } catch (err) {
@@ -384,7 +490,12 @@ module.exports.listSHK = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
@@ -430,12 +541,37 @@ module.exports.listStatusPendingSHK = async (req, res) => {
         }
         const skip = (page - 1) * limit
 
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
         if (effect == "defor") {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore();
-            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad();
-            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
         }
 
 
@@ -461,12 +597,18 @@ module.exports.listStatusPendingSHK = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
             ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
         }))
+
 
 
         res.render("admin/pages/dichbenh-status", {
@@ -475,7 +617,12 @@ module.exports.listStatusPendingSHK = async (req, res) => {
             listDulieu: listDulieu,
             statusPage,
             loaidich: "shk",
-            effect: effect
+            effect: effect,
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
         });
 
     } catch (err) {
@@ -504,12 +651,37 @@ module.exports.listStatusConfirmedSHK = async (req, res) => {
             }
         }
         const skip = (page - 1) * limit
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
         if (effect == "defor") {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore();
-            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad();
-            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         }
 
 
@@ -537,7 +709,12 @@ module.exports.listStatusConfirmedSHK = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
@@ -552,7 +729,12 @@ module.exports.listStatusConfirmedSHK = async (req, res) => {
             statusPage,
             loaidich: "shk",
             effect: effect,
-            bando: "Sauhailakeo_5tinh"
+            bando: "Sauhailakeo_5tinh",
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
         });
 
     } catch (err) {
@@ -572,7 +754,7 @@ module.exports.changeStatusSHK = async (req, res) => {
         }
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát shk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");
@@ -607,7 +789,7 @@ module.exports.changeMultilStatusSHK = async (req, res) => {
 
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát shk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");
@@ -704,7 +886,12 @@ module.exports.listBHK = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
@@ -750,12 +937,36 @@ module.exports.listStatusPendingBHK = async (req, res) => {
         }
         const skip = (page - 1) * limit
 
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
         if (effect == "defor") {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore();
-            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad();
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, maxa);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa);
         }
 
 
@@ -781,7 +992,12 @@ module.exports.listStatusPendingBHK = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
@@ -795,7 +1011,12 @@ module.exports.listStatusPendingBHK = async (req, res) => {
             listDulieu: listDulieu,
             statusPage,
             loaidich: "bhk",
-            effect: effect
+            effect: effect,
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
         });
 
     } catch (err) {
@@ -824,12 +1045,37 @@ module.exports.listStatusConfirmedBHK = async (req, res) => {
             }
         }
         const skip = (page - 1) * limit
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
         if (effect == "defor") {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore();
-            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 1);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad();
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         }
 
 
@@ -857,7 +1103,12 @@ module.exports.listStatusConfirmedBHK = async (req, res) => {
             tieukhu: item.tk,
             khoanh: item.khoanh,
             lo: item.lo,
-            defor_ha: item.defor_ha,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
             loairung: item.ldlr,
             churung: item.chu_rung,
             status: item.status,
@@ -872,7 +1123,12 @@ module.exports.listStatusConfirmedBHK = async (req, res) => {
             statusPage,
             loaidich: "bhk",
             effect: effect,
-            bando: "Benhhaikeo_8tinh"
+            bando: "Benhhaikeo_8tinh",
+            ListHuyen: ListHuyen,
+            ListTinh: ListTinh,
+            ListXa: ListXa,
+            ListHuyen_Condition: ListHuyen_Condition,
+            ListXa_Condition: ListXa_Condition
         });
 
     } catch (err) {
@@ -892,7 +1148,7 @@ module.exports.changeStatusBHK = async (req, res) => {
         }
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát bhk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");
@@ -927,7 +1183,7 @@ module.exports.changeMultilStatusBHK = async (req, res) => {
 
         const user = req.account?.email;
         if (user) {
-            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát srt")
+            Log.logUser(user, req.originalUrl, req.method, "Đổi trạng thái giám sát bhk")
         }
 
         req.flash("success", "Đổi trạng thái thành công!");

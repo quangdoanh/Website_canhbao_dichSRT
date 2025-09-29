@@ -5,6 +5,7 @@ const TinhModel = require("../../models/tinh.model");
 const DieuTraModel = require("../../models/dieutra.model");
 const moment = require("moment");
 const uploadMapModel = require("../../models/upload_map.model");
+const Log = require("../../helpers/loguser.helper")
 module.exports.listDulieuSRT = async (req, res) => {
   try {
     const limit = 15;
@@ -16,7 +17,7 @@ module.exports.listDulieuSRT = async (req, res) => {
       ma_tinh: parseInt(req.query.ma_tinh) || null,
       ma_huyen: parseInt(req.query.ma_huyen) || null,
       ma_xa: parseInt(req.query.ma_xa) || null,
-      muc_ah:req.query.muc_ah !== undefined && req.query.muc_ah !== "" ? parseInt(req.query.muc_ah): null,
+      muc_ah: req.query.muc_ah !== undefined && req.query.muc_ah !== "" ? parseInt(req.query.muc_ah) : null,
     };
     // console.log("Bộ lọc",filters);
 
@@ -29,6 +30,7 @@ module.exports.listDulieuSRT = async (req, res) => {
 
     // ===== Lấy dữ liệu phân trang =====
     const data = await SauRomThongModel.getAllWithPagination(limit, offset, filters);
+    console.log("Doanh", data)
     const listDulieuSRT = data.map((item) => ({
       id: item.pk,
       tinh: item.tinh,
@@ -41,9 +43,31 @@ module.exports.listDulieuSRT = async (req, res) => {
       loairung: item.sldlr,
       namtr: item.namtr,
       churung: item.churung,
-      muc_ah:item.muc_ah,
-      so_ngay_con_lai:item.so_ngay_con_lai
+      muc_ah: item.muc_ah,
+      so_ngay_con_lai: item.so_ngay_con_lai,
+      // Các trường bổ sung
+      tt: item.tt,
+      maldlr: item.maldlr,
+      machur: item.machur,
+      malr3: item.malr3,
+      docao: item.docao,
+      dodoc: item.dodoc,
+      huongdoc: item.huongdoc,
+      luongmua: item.luongmua,
+      nhietdo: item.nhietdo,
+      loaicay: item.loaicay,
+      captuoi: item.captuoi,
+      lichsu: item.lichsu,
+      tong: item.tong,
+      phancap: item.phancap,
+      ghep: item.ghep,
+      layer: item.layer,
+      duong_kinh: item.duong_kinh,
+      chi_so_k: item.chi_so_k,
+      cap_duong_kinh: item.cap_duong_kinh,
+      f_value: item.f_value
     }));
+
 
     // ===== Danh sách Tỉnh =====
     const ListTinh = await TinhModel.getAll();
@@ -326,7 +350,7 @@ module.exports.editDulieuSRT = async (req, res) => {
 module.exports.editPatchDulieuSRT = async (req, res) => {
   const { id } = req.params;
   const { phancap } = req.body; // lấy phancap từ body
-    console.log(req.body)
+  console.log(req.body)
   try {
     // kiểm tra giá trị hợp lệ (chỉ cho phép 1, 2, 3)
     if (!["1", "2", "3"].includes(phancap)) {
@@ -340,11 +364,17 @@ module.exports.editPatchDulieuSRT = async (req, res) => {
     const updated = await SauRomThongModel.updatePhanCapById(id, parseInt(phancap));
 
     if (updated) {
-        req.flash("success","cập nhật phân cấp thành công")
-        res.json({
-            code: "success",
-            message: "Cập nhật phân cấp thành công",
-        });
+
+      const user = req.account?.email;
+      if (user) {
+        Log.logUser(user, req.originalUrl, req.method, "Sửa dữ liệu cảnh báo")
+      }
+
+      req.flash("success", "cập nhật phân cấp thành công")
+      res.json({
+        code: "success",
+        message: "Cập nhật phân cấp thành công",
+      });
     } else {
       return res.status(404).json({
         code: "error",
@@ -359,16 +389,16 @@ module.exports.editPatchDulieuSRT = async (req, res) => {
 
 module.exports.createDulieuSRT = async (req, res) => {
 
-try {
+  try {
     // 2. Lấy toàn bộ danh sách tỉnh
     const ListTinh = await TinhModel.getAll(); // [{ma_tinh, ten_tinh}, ...]
 
     // 3. Lấy toàn bộ danh sách huyện
-    const ListHuyen = await HuyenModel.getAll(); 
+    const ListHuyen = await HuyenModel.getAll();
     // [{ma_huyen, ten_huyen, ma_tinh}, ...]
 
     // 4. Lấy toàn bộ danh sách xã
-    const ListXa = await XaModel.getAll(); 
+    const ListXa = await XaModel.getAll();
     // [{ma_xa, ten_xa, ma_huyen}, ...]
 
     // 5. Gom nhóm xã theo huyện (giống create)
@@ -391,11 +421,11 @@ try {
         dsXa: grouped[ma_huyen],
       });
     }
-      res.render("admin/pages/dulieuSRT-create", {
-        pageTitle: "Tạo Dữ liệu SRT",
-        ListTinh,
-        ListHuyen,
-        ListXaTheoHuyen,
+    res.render("admin/pages/dulieuSRT-create", {
+      pageTitle: "Tạo Dữ liệu SRT",
+      ListTinh,
+      ListHuyen,
+      ListXaTheoHuyen,
     });
   } catch (err) {
     console.error(err);

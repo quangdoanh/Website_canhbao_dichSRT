@@ -35,7 +35,12 @@ block main
       .inner-item.inner-reset(filter-reset)
         <i class="fa-solid fa-rotate-left" ></i> Xóa bộ lọc
   //- End Section 4
-
+  .section-5
+      .inner-wrap
+        .inner-button-create
+          button#exportExcel(type="button")
+            i.fa-solid.fa-file-excel(style="margin-right:10px; color:white; font-size:20px")
+            | Xuất Excel
   //- Section 5
   //- .section-5
   //-   .inner-wrap
@@ -67,41 +72,83 @@ block main
             th Lô
             th Diện tích
             th Loại rừng
-            th Năm trồng 
+            th Năm trồng
             th(class="inner-center") Chủ rừng
             th Mức ảnh hưởng
             th Số ngày phát dịch còn
+            // Các cột bổ sung ẩn
+            th(style="display:none") TT (tt)
+            th(style="display:none") Mã loại rừng (maldlr)
+            th(style="display:none") Mã chủ rừng (machur)
+            th(style="display:none") Mã rừng 3 (malr3)
+            th(style="display:none") Độ cao (docao)
+            th(style="display:none") Độ dốc (dodoc)
+            th(style="display:none") Hướng dốc (huongdoc)
+            th(style="display:none") Lượng mưa (luongmua)
+            th(style="display:none") Nhiệt độ (nhietdo)
+            th(style="display:none") Loài cây (loaicay)
+            th(style="display:none") Cấp tưới (captuoi)
+            th(style="display:none") Lịch sử (lichsu)
+            th(style="display:none") Tổng (tong)
+            th(style="display:none") Phân cấp (phancap)
+            th(style="display:none") Ghép (ghep)
+            th(style="display:none") Layer (layer)
+            th(style="display:none") Đường kính (duong_kinh)
+            th(style="display:none") Chỉ số k (chi_so_k)
+            th(style="display:none") Cấp đường kính (cap_duong_kinh)
+            th(style="display:none") F value (f_value)
             th Hành động
         tbody
-        if listDulieuSRT.length
-          each item in listDulieuSRT
-            tr 
-              td #{item.tinh}
-              td(class="inner-center") #{item.huyen}
-              td(class="inner-center") #{item.xa}
-              td(class="inner-center") #{item.tieukhu}
-              td(class="inner-center") #{item.khoanh}
-              td(class="inner-center") #{item.lo}
-              td(class="inner-center") #{item.dientich}
-              td(class="inner-center") #{item.loairung}
-              td(class="inner-center") #{item.namtr}
-              td(class="inner-center") #{item.churung}
-              td(class="inner-center") #{item.muc_ah}
-              td(class="inner-center") #{item.so_ngay_con_lai}
-              td
-                .inner-buttons
+          if listDulieuSRT.length
+            each item in listDulieuSRT
+              tr
+                td #{item.tinh}
+                td(class="inner-center") #{item.huyen}
+                td(class="inner-center") #{item.xa}
+                td(class="inner-center") #{item.tieukhu}
+                td(class="inner-center") #{item.khoanh}
+                td(class="inner-center") #{item.lo}
+                td(class="inner-center") #{item.dientich}
+                td(class="inner-center") #{item.loairung}
+                td(class="inner-center") #{item.namtr}
+                td(class="inner-center") #{item.churung}
+                td(class="inner-center") #{item.muc_ah}
+                td(class="inner-center") #{item.so_ngay_con_lai}
+                // Các cột bổ sung ẩn
+                td(style="display:none") #{item.tt}
+                td(style="display:none") #{item.maldlr}
+                td(style="display:none") #{item.machur}
+                td(style="display:none") #{item.malr3}
+                td(style="display:none") #{item.docao}
+                td(style="display:none") #{item.dodoc}
+                td(style="display:none") #{item.huongdoc}
+                td(style="display:none") #{item.luongmua}
+                td(style="display:none") #{item.nhietdo}
+                td(style="display:none") #{item.loaicay}
+                td(style="display:none") #{item.captuoi}
+                td(style="display:none") #{item.lichsu}
+                td(style="display:none") #{item.tong}
+                td(style="display:none") #{item.phancap}
+                td(style="display:none") #{item.ghep}
+                td(style="display:none") #{item.layer}
+                td(style="display:none") #{item.duong_kinh}
+                td(style="display:none") #{item.chi_so_k}
+                td(style="display:none") #{item.cap_duong_kinh}
+                td(style="display:none") #{item.f_value}
+                td
+                  .inner-buttons
                     a.inner-edit(href=`/admin/sauromthong/detail/${item.id}`)
-                      <i class="fa-solid fa-eye"></i>
+                      i(class="fa-solid fa-eye")
                     a.inner-map(
                       href=`/bandocanhbao?bando=cb_srt_map&xa=${item.xa}&tk=${item.tieukhu}&khoanh=${item.khoanh}&lo=${item.lo}`
                       target="_blank"
                       style ="color: inherit;"
-                    ) 
-                      i(class="fa-solid fa-map-location-dot") 
+                    )
+                      i(class="fa-solid fa-map-location-dot")
+          else
+            tr
+              td(colspan="40" class="inner-center") Không có dữ liệu
 
-        else
-          tr
-            td(colspan="13" class="inner-center") Không có dữ liệu
 
             
   //- End Section 6
