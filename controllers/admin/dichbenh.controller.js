@@ -147,6 +147,8 @@ module.exports.listStatusPending = async (req, res) => {
         let ListHuyen_Condition = [], ListXa_Condition = [];
         let matinh = null, mahuyen = null, maxa = null
 
+
+
         ListTinh = await TinhModel.getAll();
         ListHuyen = await HuyenModel.getAll();
         ListXa = await XaModel.getAll();
@@ -166,14 +168,15 @@ module.exports.listStatusPending = async (req, res) => {
         console.log("Huyen", ListHuyen_Condition)
         console.log("Xa", ListXa_Condition)
 
+        console.log(req.query.startDate)
 
 
         if (effect == "defor") {
-            TotalDuLieu = await SauRomThongModel.getAll_Defore(0, matinh, mahuyen, maxa);
-            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, maxa);
-            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -283,11 +286,11 @@ module.exports.listStatusConfirmed = async (req, res) => {
 
 
         if (effect == "defor") {
-            TotalDuLieu = await SauRomThongModel.getAll_Defore(1, matinh, mahuyen, maxa);
-            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, maxa);
-            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -567,11 +570,11 @@ module.exports.listStatusPendingSHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa);
-            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa);
-            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -677,11 +680,11 @@ module.exports.listStatusConfirmedSHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
             data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa);
-            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         }
 
 
@@ -962,11 +965,11 @@ module.exports.listStatusPendingBHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa);
-            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, maxa);
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -1071,11 +1074,11 @@ module.exports.listStatusConfirmedBHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa);
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa);
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
         }
 
 
