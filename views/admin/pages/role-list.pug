@@ -12,14 +12,16 @@ block main
           .inner-item
             select
               option(value="") -- Hành động --
-              option(value="delete") Xóa
+              if (permissions.includes("role-delete"))
+                option(value="delete") Xóa
           .inner-item
             button Áp dụng
         .inner-search
           <i class="fa-solid fa-magnifying-glass"></i>
           input(type="text" placeholder="Tìm kiếm" search)
-        .inner-button-create
-          a(href=`/${pathAdmin}/role/create`) + Tạo mới
+        if (permissions.includes("role-create"))
+          .inner-button-create
+            a(href=`/${pathAdmin}/role/create`) + Tạo mới
     //- End Section 5
 
     //- Section 6
@@ -32,7 +34,7 @@ block main
                 input(type="checkbox" class="inner-check" check-all)
               th Tên nhóm quyền
               th Mô tả ngắn
-                th Hành động
+              th.inner-center Hành động
           tbody
             each item in roleList
               tr
@@ -40,17 +42,19 @@ block main
                   input(type="checkbox" class="inner-check" check-item = item.id)
                 td #{item.name}
                 td #{item.description}
-                td
+                td.inner-center
                     .inner-buttons
-                      a(
-                        href=`/${pathAdmin}/role/edit/${item.id}`
-                        class="inner-edit"
-                      ) <i class="fa-regular fa-pen-to-square"></i>
-                      button(
-                        class="inner-delete"
-                        button-delete
-                        data-api=`/${pathAdmin}/role/delete/${item.id}`
-                      ) <i class="fa-regular fa-trash-can"></i>
+                      if (permissions.includes("role-edit"))
+                        a(
+                          href=`/${pathAdmin}/role/edit/${item.id}`
+                          class="inner-edit"
+                        ) <i class="fa-regular fa-pen-to-square"></i>
+                      if (permissions.includes("role-delete"))
+                        button(
+                          class="inner-delete"
+                          button-delete
+                          data-api=`/${pathAdmin}/role/delete/${item.id}`
+                        ) <i class="fa-regular fa-trash-can"></i>
 
     //- End Section 6
     //- Section 7: Pagination

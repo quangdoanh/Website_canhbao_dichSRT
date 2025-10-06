@@ -31,12 +31,11 @@ block main
         .inner-item
           select()
             option(value="") -- Hành động --
-            option(value="true") Hiện
-            option(value="false") Ẩn
+            if (permissions.includes("contact-update"))
+              option(value="true") Hiện
+              option(value="false") Ẩn
         .inner-item
           button Áp dụng
-
-
   //- Section 6: Bảng danh sách
   .section-6
     .table-2
@@ -89,8 +88,9 @@ block main
                 td= contact.createdAtFormat
                 td
                   .inner-buttons
+                    if (permissions.includes("contact-update"))
                       a.inner-edit(href=`/${pathAdmin}/contact/answer/${contact.id}`)
-                        i.fa-regular.fa-eye
+                        i.fa-regular.fa-pen-to-square
           else
             tr
               td(colspan="9" class="inner-center") Không có dữ liệu

@@ -4,99 +4,101 @@ module.exports.permissionList = [
     value: "dashboard-view"
   },
   {
-    label: "Xem danh mục",
-    value: "category-view"
+    label: "Xem cảnh báo",
+    value: "warning-view"
   },
   {
-    label: "Tạo danh mục",
-    value: "category-create"
+    label: "Sữa cảnh báo dữ liệu thời tiết",
+    value: "warning-weather-update"
   },
   {
-    label: "Sửa danh mục",
-    value: "category-edit"
+    label: "Tạo dữ liệu điều tra",
+    value: "search-create"
   },
   {
-    label: "Xóa danh mục",
-    value: "category-delete"
-  },
-    {
-    label :  "Thùng rác danh mục" ,
-    value :  "category-trash"
+    label: "Sửa dữ liệu điều tra",
+    value: "search-edit"
   },
   {
-    label :  "Xem tour" ,
-    value :  "tour-view"
+    label: "Xóa dữ liệu điều tra",
+    value: "search-delete"
   },
   {
-    label :  "Tao tour" ,
-    value :  "tour-create"
+    label: "Tạo map",
+    value: "map-create"
   },
   {
-    label :  "Sua tour" ,
-    value :  "tour-edit"
+    label: "Sửa map",
+    value: "map-edit"
   },
   {
-    label :  "Xóa tour" ,
-    value :  "tour-delete"
+    label: "Xóa map",
+    value: "map-delete"
   },
   {
-    label :  "Thùng rác tour",
-    value :  "tour-trash"
+    label: "Xem giám sát",
+    value: "monitor-view"
   },
   {
-    label :  "Xem đơn hang" ,
-    value :  "order-view"
+    label: "Xem quản trị hệ thống",
+    value: "system-view"
   },
   {
-    label :  "Sửa đơn hàng" ,
-    value :  "order-edit"
+    label: "Xem lịch sử người dùng",
+    value: "loguser-view"
   },
   {
-    label :  "Xóa đơn hàng" ,
-    value :  "order-delete"
+    label: "Xem quản lý người dùng",
+    value: "user-view"
   },
   {
-    label :  "Thùng rác đơn hàng" ,
-    value :  "order-trash"
+    label: "Tạo người dùng",
+    value: "user-create"
   },
   {
-    label :  "Cài đặt chung" ,
-    value :  "setting-view"
+    label: "Sửa người dùng",
+    value: "user-edit"
   },
   {
-    label :  "Thông tin website" ,
-    value :  "setting-website-info-view"
+    label: "Xóa người dùng",
+    value: "user-delete"
   },
   {
-    label :  "Tài khoản quản trị" ,
-    value :  "setting-account-list"
+    label: "Xem quản lý nhóm quyền",
+    value: "role-view"
   },
   {
-    label :  "Tạo tài khoản quản trị" ,
-    value :  "setting-account-create"
+    label: "Tạo nhóm quyền",
+    value: "role-create"
   },
   {
-    label :  "Xóa tài khoản quản trị" ,
-    value :  "setting-account-delete"
+    label: "Sửa nhóm quyền",
+    value: "role-edit"
   },
   {
-    label :  "Sửa tài khoản quản trị" ,
-    value :  "setting-account-edit"
+    label: "Xóa nhóm quyền",
+    value: "role-delete"
   },
   {
-    label :  "Xem nhóm quyền" ,
-    value :  "rolelist-view"
+    label: "Xem quản lý bài giới thiệu",
+    value: "about-view"
   },
   {
-    label :  "Thêm nhóm quyền" ,
-    value :  "rolelist-create"
+    label: "Tạo bài giới thiệu",
+    value: "about-create"
   },
   {
-    label :  "Sửa nhóm quyền" ,
-    value :  "rolelist-edit"
+    label: "Sửa bài giới thiệu",
+    value: "about-edit"
   },
   {
-    label :  "Xóa nhóm quyền" ,
-    value :  "rolelist-delete"
+    label: "Xem danh sách liên hệ",
+    value: "contact-view"
   },
+  {
+    label: "Sửa bài liên hệ",
+    value: "contact-update"
+  },
+
+
 ]

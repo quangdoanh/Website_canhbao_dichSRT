@@ -1,102 +1,87 @@
 //- sidebar.pug
 nav.sider
   ul.inner-menu
-    li
-      a.dashboard(href=`/${pathAdmin}/dashboard`)
-        i.fa-solid.fa-gauge-high
-        |  Tổng quan
-    li
-      div.item_menu
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        |  Cảnh báo
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu2
-        li
-          a.menu2(href=`/${pathAdmin}/weather-data/list`) 
-            i.fa-solid.fa-cloud-sun-rain
-            |  Dữ liệu thời tiết
-        li
-          a.menu2(href=`/${pathAdmin}/sauromthong/list`) 
-            i.fa-solid.fa-mosquito
-            |  Cảnh báo SRT
-        li
-          a.menu2(href=`/${pathAdmin}/dieutra/list`) 
-            i.fa-solid.fa-magnifying-glass
-            |  Dữ liệu điều tra
-        li
-          a.menu2(href=`/${pathAdmin}/map/list`) 
-            i.fa-solid.fa-map-location-dot
-            |  Dữ liệu bản đồ
+    if (permissions.includes("dashboard-view"))
+      li
+        a.dashboard(href=`/${pathAdmin}/dashboard`)
+          i.fa-solid.fa-gauge-high
+          |  Tổng quan
+    if (permissions.includes("warning-view"))
+      li
+        div.item_menu
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          |  Cảnh báo
+          i.fa-solid.fa-chevron-down.arrow
+        ul.submenu2
+          li
+            a.menu2(href=`/${pathAdmin}/weather-data/list`) 
+              i.fa-solid.fa-cloud-sun-rain
+              |  Dữ liệu thời tiết
+          li
+            a.menu2(href=`/${pathAdmin}/sauromthong/list`) 
+              i.fa-solid.fa-mosquito
+              |  Cảnh báo SRT
+          li
+            a.menu2(href=`/${pathAdmin}/dieutra/list`) 
+              i.fa-solid.fa-magnifying-glass
+              |  Dữ liệu điều tra
+          li
+            a.menu2(href=`/${pathAdmin}/map/list`) 
+              i.fa-solid.fa-map-location-dot
+              |  Dữ liệu bản đồ
     //- li
     //-   a.dashboard.item_menu(href=`/${pathAdmin}/weather-data/list`)
     //-     i.fa-solid.fa-cloud
     //-     |  Dữ liệu thời tiết
-    li
-      //- div.item_menu
-      //-   <i class="fa-solid fa-eye"></i>
-      //-   |  Giám sát
-      //-   i.fa-solid.fa-chevron-down.arrow
-      //- ul.submenu2
-      //-   li
-      //-     a.menu2(href=`/${pathAdmin}/user/log`) 
-      //-       i.fa-solid.fa-bug
-      //-       |  Sâu Róm Thông
-      //-   li
-      //-     a.menu2(href=`/${pathAdmin}/user/list`) 
-      //-       i.fa-solid.fa-bug
-      //-       |  Sâu Hại Lá Keo
-      //-   li
-      //-     a.menu2(href=`/${pathAdmin}/role/list`) 
-      //-       i.fa-solid.fa-bug
-      //-       |  Bệnh Hại Lá Keo
-
-      div.item_menu
-        i.fa-solid.fa-eye
-        |  Giám sát
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu
-        li
-          div.item_city 
-            i.fa-solid.fa-bug
-            span(style="font-size:12px;") Sâu Róm Thông
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/dichbenh/srt/defor/status/pending`) 
-                i.fa-solid.fa-skull-crossbones
-                | Vùng ảnh hưởng nặng
-            li 
-              a.menu(href=`/${pathAdmin}/dichbenh/srt/degrad/status/pending`)
-                i.fa-solid.fa-circle-exclamation
-                | Vùng ảnh hưởng nhẹ
-        li
-          div.item_city 
-            i.fa-solid.fa-bug
-            span(style="font-size:12px;") Sâu Hại Keo
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/dichbenh/shk/defor/status/pending`)
-                i.fa-solid.fa-skull-crossbones
-                | Vùng ảnh hưởng nặng
-            li 
-              a.menu(href=`/${pathAdmin}/dichbenh/shk/degrad/status/pending`) 
-                i.fa-solid.fa-circle-exclamation
-                | Vùng ảnh hưởng nhẹ
-        li
-          div.item_city 
-            i.fa-solid.fa-bug
-            span(style="font-size:12px;") Bệnh Hại Keo
-            i.fa-solid.fa-chevron-down.arrow
-          ul.submenu-child
-            li 
-              a.menu(href=`/${pathAdmin}/dichbenh/bhk/defor/status/pending`)
-                i.fa-solid.fa-skull-crossbones 
-                | Vùng ảnh hưởng nặng
-            li 
-              a.menu(href=`/${pathAdmin}/dichbenh/bhk/degrad/status/pending`) 
-                i.fa-solid.fa-circle-exclamation
-                | Vùng ảnh hưởng nhẹ
+    if (permissions.includes("monitor-view"))
+      li
+        div.item_menu
+          i.fa-solid.fa-eye
+          |  Giám sát
+          i.fa-solid.fa-chevron-down.arrow
+        ul.submenu
+          li
+            div.item_city 
+              i.fa-solid.fa-bug
+              span(style="font-size:12px;") Sâu Róm Thông
+              i.fa-solid.fa-chevron-down.arrow
+            ul.submenu-child
+              li 
+                a.menu(href=`/${pathAdmin}/dichbenh/srt/defor/status/pending`) 
+                  i.fa-solid.fa-skull-crossbones
+                  | Vùng ảnh hưởng nặng
+              li 
+                a.menu(href=`/${pathAdmin}/dichbenh/srt/degrad/status/pending`)
+                  i.fa-solid.fa-circle-exclamation
+                  | Vùng ảnh hưởng nhẹ
+          li
+            div.item_city 
+              i.fa-solid.fa-bug
+              span(style="font-size:12px;") Sâu Hại Keo
+              i.fa-solid.fa-chevron-down.arrow
+            ul.submenu-child
+              li 
+                a.menu(href=`/${pathAdmin}/dichbenh/shk/defor/status/pending`)
+                  i.fa-solid.fa-skull-crossbones
+                  | Vùng ảnh hưởng nặng
+              li 
+                a.menu(href=`/${pathAdmin}/dichbenh/shk/degrad/status/pending`) 
+                  i.fa-solid.fa-circle-exclamation
+                  | Vùng ảnh hưởng nhẹ
+          li
+            div.item_city 
+              i.fa-solid.fa-bug
+              span(style="font-size:12px;") Bệnh Hại Keo
+              i.fa-solid.fa-chevron-down.arrow
+            ul.submenu-child
+              li 
+                a.menu(href=`/${pathAdmin}/dichbenh/bhk/defor/status/pending`)
+                  i.fa-solid.fa-skull-crossbones 
+                  | Vùng ảnh hưởng nặng
+              li 
+                a.menu(href=`/${pathAdmin}/dichbenh/bhk/degrad/status/pending`) 
+                  i.fa-solid.fa-circle-exclamation
+                  | Vùng ảnh hưởng nhẹ
     //- li
     //-   div.item_menu
     //-     i.fa-solid.fa-tree
@@ -113,33 +98,38 @@ nav.sider
     //-         <i class="fa-solid fa-xmark"></i>
     //-         a.menu2(href=`/${pathAdmin}/degrad/list/pending`) Chưa xác nhận
        
-      
-    li
-      div.item_menu
-        <i class="fa-solid fa-gears"></i>
-        |  Quản trị hệ thống
-        i.fa-solid.fa-chevron-down.arrow
-      ul.submenu2
-        li
-          a.menu2(href=`/${pathAdmin}/user/log`) 
-            i.fa-solid.fa-user-clock
-            |  Lịch sử người dùng
-        li
-          a.menu2(href=`/${pathAdmin}/user/list`) 
-            i.fa-solid.fa-user
-            |  Quản lý người dùng
-        li
-          a.menu2(href=`/${pathAdmin}/role/list`) 
-            i.fa-solid.fa-user-lock
-            |  Phân quyền
-        li
-          a.menu2(href=`/${pathAdmin}/about/list`) 
-            i.fa-solid.fa-circle-info
-            |  Giới thiệu
-        li
-          a.menu2(href=`/${pathAdmin}/contact/list`) 
-            i.fa-solid.fa-circle-info
-            |  Liên hệ
+    if (permissions.includes("system-view"))  
+      li
+        div.item_menu
+          <i class="fa-solid fa-gears"></i>
+          |  Quản trị hệ thống
+          i.fa-solid.fa-chevron-down.arrow
+        ul.submenu2
+          if (permissions.includes("loguser-view"))
+            li
+              a.menu2(href=`/${pathAdmin}/user/log`) 
+                i.fa-solid.fa-user-clock
+                |  Lịch sử người dùng
+          if (permissions.includes("user-view"))
+            li
+              a.menu2(href=`/${pathAdmin}/user/list`) 
+                i.fa-solid.fa-user
+                |  Quản lý người dùng
+          if (permissions.includes("role-view"))
+            li
+              a.menu2(href=`/${pathAdmin}/role/list`) 
+                i.fa-solid.fa-user-lock
+                |  Phân quyền
+          if (permissions.includes("about-view"))
+            li
+              a.menu2(href=`/${pathAdmin}/about/list`) 
+                i.fa-solid.fa-circle-info
+                |  Giới thiệu
+          if (permissions.includes("contact-view"))
+            li
+              a.menu2(href=`/${pathAdmin}/contact/list`) 
+                i.fa-solid.fa-circle-info
+                |  Liên hệ
     hr
 
     li

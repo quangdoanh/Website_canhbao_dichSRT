@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const AccountAdmin = require('../../models/user.model');
+const UserModel = require('../../models/user.model');
 const variableConfig = require('../../config/variable');
 const RoleModel = require('../../models/role.model');
 
@@ -17,10 +17,18 @@ module.exports.verifyToken = async (req, res, next) => {
     const { id, email } = decoded;
 
     // Chỉ kiểm tra account có tồn tại và active
-    const existAccount = await AccountAdmin.findOneByIdAndEmail(id, email);
+    const existAccount = await UserModel.findOneByIdAndEmail(id, email);
     const Role = await RoleModel.getRoleById(existAccount.role);
+    console.log("Role:", Role)
     //console.log("Sau verify:", existAccount);
-    existAccount.rolename = Role.name;
+
+    if (Role) {
+      existAccount.rolename = Role.name;
+      req.permissions = Role.permissions;
+      res.locals.permissions = Role.permissions
+    }
+
+
     if (!existAccount) {
       res.clearCookie("token");
       return res.redirect(`/${variableConfig.pathAdmin}/account/login`);

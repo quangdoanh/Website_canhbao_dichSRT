@@ -172,11 +172,11 @@ module.exports.listStatusPending = async (req, res) => {
 
 
         if (effect == "defor") {
-            TotalDuLieu = await SauRomThongModel.getAll_Defore(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -286,11 +286,11 @@ module.exports.listStatusConfirmed = async (req, res) => {
 
 
         if (effect == "defor") {
-            TotalDuLieu = await SauRomThongModel.getAll_Defore(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await SauRomThongModel.getAll_Degrad(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -356,6 +356,8 @@ module.exports.changeStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body; // status = 0 hoặc 1
+
+        console.log(id, status)
 
         const updated = await SauRomThongModel.updateStatus(parseInt(id), parseInt(status));
         if (!updated) {
@@ -570,11 +572,11 @@ module.exports.listStatusPendingSHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -680,10 +682,10 @@ module.exports.listStatusConfirmedSHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
             data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         } else {
-            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
             data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa);
         }
 
@@ -965,11 +967,11 @@ module.exports.listStatusPendingBHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -1074,11 +1076,11 @@ module.exports.listStatusConfirmedBHK = async (req, res) => {
         console.log("Xa", ListXa_Condition)
 
         if (effect == "defor") {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         } else {
-            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
-            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, maxa, req.query.startDate, req.query.endDate);
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
         }
 
 
@@ -1169,6 +1171,8 @@ module.exports.changeMultilStatusBHK = async (req, res) => {
     try {
         const { option, ids } = req.body; // ids = [1,2,3]
 
+        console.log(option, ids)
+
         if (!Array.isArray(ids) || ids.length === 0) {
             return res.json({ code: "error", message: "Chưa chọn bản ghi nào!" });
         }
@@ -1222,4 +1226,647 @@ module.exports.DetailBHK = async (req, res) => {
 
 
     })
+}
+
+
+/* =========== Mobile ============ */
+
+module.exports.listStatusPendingMobile = async (req, res) => {
+
+    try {
+        const effect = req.params.effect
+        let listDulieu = []
+        let TotalDuLieu = [], data = []
+        let statusPage = 0;
+
+        // Phân trang 
+        const limit = 15;
+        let page = 1;
+
+        if (req.query.page) {
+            const pageCurrent = parseInt(req.query.page)
+            if (pageCurrent > 0) {
+                page = pageCurrent
+            }
+        }
+        const skip = (page - 1) * limit
+
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+        console.log(req.query.startDate)
+
+
+        if (effect == "defor") {
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        } else {
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        }
+
+
+        console.log("Tổng dữ liệu:", TotalDuLieu.length)
+
+        const totalPage = Math.ceil(TotalDuLieu.length / limit);
+
+        let pagination = {
+            skip: skip,
+            TotalDuLieu: TotalDuLieu,
+            totalPage: totalPage
+        }
+
+
+
+
+
+        //console.log("Tổng dữ liệu:", pagination)
+
+        listDulieu = data.map(item => ({
+            id: item.id,
+            // diadiem_dieutra: item.dieutra || "",
+            tinh: item.ten_tinh,
+            huyen: item.ten_huyen,
+            xa: item.ten_xa,
+            tieukhu: item.tk,
+            khoanh: item.khoanh,
+            lo: item.lo,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
+            loairung: item.ldlr,
+            churung: item.chu_rung,
+            status: item.status,
+            ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
+        }))
+
+        console.log("du liệu excell:", data)
+
+        res.json({
+            code: "success",
+            message: "Lấy dữ liệu thành công",
+            listDulieu: listDulieu
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+
+}
+module.exports.listStatusConfirmedMobile = async (req, res) => {
+
+    try {
+        const effect = req.params.effect
+
+        let listDulieu = []
+        let TotalDuLieu = [], data = []
+        let statusPage = 1;
+
+        // Phân trang 
+        const limit = 15;
+        let page = 1;
+
+        if (req.query.page) {
+            const pageCurrent = parseInt(req.query.page)
+            if (pageCurrent > 0) {
+                page = pageCurrent
+            }
+        }
+        const skip = (page - 1) * limit
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+
+
+        if (effect == "defor") {
+            TotalDuLieu = await SauRomThongModel.getAll_Defore(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        } else {
+            TotalDuLieu = await SauRomThongModel.getAll_Degrad(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauRomThongModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        }
+
+
+
+
+        console.log("Tổng dữ liệu:", TotalDuLieu.length)
+
+        const totalPage = Math.ceil(TotalDuLieu.length / limit);
+
+        let pagination = {
+            skip: skip,
+            TotalDuLieu: TotalDuLieu,
+            totalPage: totalPage
+        }
+
+
+        //console.log("Tổng dữ liệu:", pagination)
+
+        listDulieu = data.map(item => ({
+            id: item.id,
+            // diadiem_dieutra: item.dieutra || "",
+            tinh: item.ten_tinh,
+            huyen: item.ten_huyen,
+            xa: item.ten_xa,
+            tieukhu: item.tk,
+            khoanh: item.khoanh,
+            lo: item.lo,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
+            loairung: item.ldlr,
+            churung: item.chu_rung,
+            status: item.status,
+            ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
+        }))
+
+
+        res.json({
+            code: "success",
+            message: "Lấy dữ liệu thành công",
+            listDulieu: listDulieu
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+}
+module.exports.listStatusPendingSHKMobile = async (req, res) => {
+
+    try {
+        const effect = req.params.effect
+        let listDulieu = []
+        let TotalDuLieu = [], data = []
+        let statusPage = 0;
+
+        // Phân trang 
+        const limit = 15;
+        let page = 1;
+
+        if (req.query.page) {
+            const pageCurrent = parseInt(req.query.page)
+            if (pageCurrent > 0) {
+                page = pageCurrent
+            }
+        }
+        const skip = (page - 1) * limit
+
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+        console.log(req.query.startDate)
+
+
+        if (effect == "defor") {
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        } else {
+            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        }
+
+
+        console.log("Tổng dữ liệu:", TotalDuLieu.length)
+
+        const totalPage = Math.ceil(TotalDuLieu.length / limit);
+
+        let pagination = {
+            skip: skip,
+            TotalDuLieu: TotalDuLieu,
+            totalPage: totalPage
+        }
+
+
+
+
+
+        //console.log("Tổng dữ liệu:", pagination)
+
+        listDulieu = data.map(item => ({
+            id: item.id,
+            // diadiem_dieutra: item.dieutra || "",
+            tinh: item.ten_tinh,
+            huyen: item.ten_huyen,
+            xa: item.ten_xa,
+            tieukhu: item.tk,
+            khoanh: item.khoanh,
+            lo: item.lo,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
+            loairung: item.ldlr,
+            churung: item.chu_rung,
+            status: item.status,
+            ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
+        }))
+
+        console.log("du liệu excell:", data)
+
+        res.json({
+            code: "success",
+            message: "Lấy dữ liệu thành công",
+            listDulieu: listDulieu
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+
+}
+module.exports.listStatusConfirmedSHKMobile = async (req, res) => {
+
+    try {
+        const effect = req.params.effect
+
+        let listDulieu = []
+        let TotalDuLieu = [], data = []
+        let statusPage = 1;
+
+        // Phân trang 
+        const limit = 15;
+        let page = 1;
+
+        if (req.query.page) {
+            const pageCurrent = parseInt(req.query.page)
+            if (pageCurrent > 0) {
+                page = pageCurrent
+            }
+        }
+        const skip = (page - 1) * limit
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+
+
+        if (effect == "defor") {
+            TotalDuLieu = await SauHaiKeoModel.getAll_Defore(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        } else {
+            TotalDuLieu = await SauHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await SauHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        }
+
+
+
+
+        console.log("Tổng dữ liệu:", TotalDuLieu.length)
+
+        const totalPage = Math.ceil(TotalDuLieu.length / limit);
+
+        let pagination = {
+            skip: skip,
+            TotalDuLieu: TotalDuLieu,
+            totalPage: totalPage
+        }
+
+
+        //console.log("Tổng dữ liệu:", pagination)
+
+        listDulieu = data.map(item => ({
+            id: item.id,
+            // diadiem_dieutra: item.dieutra || "",
+            tinh: item.ten_tinh,
+            huyen: item.ten_huyen,
+            xa: item.ten_xa,
+            tieukhu: item.tk,
+            khoanh: item.khoanh,
+            lo: item.lo,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
+            loairung: item.ldlr,
+            churung: item.chu_rung,
+            status: item.status,
+            ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
+        }))
+
+
+        res.json({
+            code: "success",
+            message: "Lấy dữ liệu thành công",
+            listDulieu: listDulieu
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+}
+module.exports.listStatusPendingBHKMobile = async (req, res) => {
+
+    try {
+        const effect = req.params.effect
+        let listDulieu = []
+        let TotalDuLieu = [], data = []
+        let statusPage = 0;
+
+        // Phân trang 
+        const limit = 15;
+        let page = 1;
+
+        if (req.query.page) {
+            const pageCurrent = parseInt(req.query.page)
+            if (pageCurrent > 0) {
+                page = pageCurrent
+            }
+        }
+        const skip = (page - 1) * limit
+
+
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+        console.log(req.query.startDate)
+
+
+        if (effect == "defor") {
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        } else {
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 0, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        }
+
+
+        console.log("Tổng dữ liệu:", TotalDuLieu.length)
+
+        const totalPage = Math.ceil(TotalDuLieu.length / limit);
+
+        let pagination = {
+            skip: skip,
+            TotalDuLieu: TotalDuLieu,
+            totalPage: totalPage
+        }
+
+
+
+
+
+        //console.log("Tổng dữ liệu:", pagination)
+
+        listDulieu = data.map(item => ({
+            id: item.id,
+            // diadiem_dieutra: item.dieutra || "",
+            tinh: item.ten_tinh,
+            huyen: item.ten_huyen,
+            xa: item.ten_xa,
+            tieukhu: item.tk,
+            khoanh: item.khoanh,
+            lo: item.lo,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
+            loairung: item.ldlr,
+            churung: item.chu_rung,
+            status: item.status,
+            ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
+        }))
+
+        console.log("du liệu excell:", data)
+
+        res.json({
+            code: "success",
+            message: "Lấy dữ liệu thành công",
+            listDulieu: listDulieu
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
+
+}
+module.exports.listStatusConfirmedBHKMobile = async (req, res) => {
+
+    try {
+        const effect = req.params.effect
+
+        let listDulieu = []
+        let TotalDuLieu = [], data = []
+        let statusPage = 1;
+
+        // Phân trang 
+        const limit = 15;
+        let page = 1;
+
+        if (req.query.page) {
+            const pageCurrent = parseInt(req.query.page)
+            if (pageCurrent > 0) {
+                page = pageCurrent
+            }
+        }
+        const skip = (page - 1) * limit
+        // TỈNH - HUYỆN - XÃ
+        let ListTinh = [], ListHuyen = [], ListXa = [];
+        let ListHuyen_Condition = [], ListXa_Condition = [];
+        let matinh = null, mahuyen = null, maxa = null
+
+        ListTinh = await TinhModel.getAll();
+        ListHuyen = await HuyenModel.getAll();
+        ListXa = await XaModel.getAll();
+
+
+        if (req.query.ma_tinh) {
+            matinh = Number(req.query.ma_tinh);
+            ListHuyen_Condition = await HuyenModel.getByMaTinh(matinh);
+        }
+        if (req.query.ma_huyen) {
+            mahuyen = Number(req.query.ma_huyen);
+            ListXa_Condition = await XaModel.getByDistrict(mahuyen)
+        }
+
+
+        console.log("tỉnh ", ListTinh)
+        console.log("Huyen", ListHuyen_Condition)
+        console.log("Xa", ListXa_Condition)
+
+
+
+        if (effect == "defor") {
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Defore(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Defore_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        } else {
+            TotalDuLieu = await BenhHaiKeoModel.getAll_Degrad(1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+            data = await BenhHaiKeoModel.getAll_Degrad_Condition(skip, limit, 1, matinh, mahuyen, req.query.ma_xa, req.query.startDate, req.query.endDate);
+        }
+
+
+
+
+        console.log("Tổng dữ liệu:", TotalDuLieu.length)
+
+        const totalPage = Math.ceil(TotalDuLieu.length / limit);
+
+        let pagination = {
+            skip: skip,
+            TotalDuLieu: TotalDuLieu,
+            totalPage: totalPage
+        }
+
+
+        //console.log("Tổng dữ liệu:", pagination)
+
+        listDulieu = data.map(item => ({
+            id: item.id,
+            // diadiem_dieutra: item.dieutra || "",
+            tinh: item.ten_tinh,
+            huyen: item.ten_huyen,
+            xa: item.ten_xa,
+            tieukhu: item.tk,
+            khoanh: item.khoanh,
+            lo: item.lo,
+            dtich: item.dtich,
+            area_ha: item.area_ha,
+            nochang_ha: item.nochang_ha,
+            improve_ha: item.improv_ha,
+            sensor: item.sensor,
+            impact_ha: item.defor_ha !== null ? item.defor_ha : item.degrad_ha,
+            loairung: item.ldlr,
+            churung: item.chu_rung,
+            status: item.status,
+            ngayPH: moment(item.acqui_date).format("DD/MM/YYYY")
+        }))
+
+
+        res.json({
+            code: "success",
+            message: "Lấy dữ liệu thành công",
+            listDulieu: listDulieu
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Lỗi server");
+    }
 }

@@ -38,4 +38,29 @@ router.patch('/bhk/:effect/change-status/:id', DichBenhController.changeStatusBH
 router.patch('/bhk/:effect/change-multi', DichBenhController.changeMultilStatusBHK)
 router.get('/bhk/:effect/detail/:id', DichBenhController.DetailBHK)
 
+
+// ===================== MOBILE =====================//
+
+/*================
+        SRT
+==================*/
+
+router.get('/api/srt/:effect/status/pending', DichBenhController.listStatusPendingMobile)
+router.get('/api/srt/:effect/status/confirmed', DichBenhController.listStatusConfirmedMobile)
+
+/*================
+        SHK
+==================*/
+
+router.get('/api/shk/:effect/status/pending', DichBenhController.listStatusPendingSHKMobile)
+router.get('/api/shk/:effect/status/confirmed', DichBenhController.listStatusConfirmedSHKMobile)
+
+
+/*================
+        BHK
+==================*/
+router.get('/api/bhk/:effect/status/pending', DichBenhController.listStatusPendingBHKMobile)
+router.get('/api/bhk/:effect/status/confirmed', DichBenhController.listStatusConfirmedBHKMobile)
+
+
 module.exports = router;

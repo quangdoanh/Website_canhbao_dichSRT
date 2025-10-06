@@ -39,8 +39,9 @@ block main
         //- .inner-search
         //-   i(class="fa-solid fa-magnifying-glass")
         //-   input(type="text" placeholder="Tìm kiếm" search)
-        .inner-button-create
-          a(href=`/${pathAdmin}/map/create`) + Tạo mới
+        if (permissions.includes("map-create"))
+          .inner-button-create
+            a(href=`/${pathAdmin}/map/create`) + Tạo mới
 
   //- End Section 5
 
@@ -57,7 +58,7 @@ block main
             th(class="inner-center") Tỉnh
             th(class="inner-center") Loại bản đồ
             th(class="inner-center") Thông tin
-            th Hành động
+            th(class="inner-center") Hành động
         tbody
         if mapList.length
           each item in mapList
@@ -71,12 +72,14 @@ block main
               td(class="inner-center") #{item.ten_tinh}
               td(class="inner-center") #{item.loaibando}
               td(class="inner-center") #{item.thongtin}
-              td
+              td(class="inner-center")
                 .inner-buttons
-                  a(href=`/${pathAdmin}/map/edit/${item.id}` class="inner-edit")
-                    i.fa-regular.fa-pen-to-square
-                  a(class="inner-delete" button-delete data-api=`/${pathAdmin}/map/delete/${item.id}`)
-                    i.fa-regular.fa-trash-can
+                  if (permissions.includes("map-edit"))
+                    a(href=`/${pathAdmin}/map/edit/${item.id}` class="inner-edit")
+                      i.fa-regular.fa-pen-to-square
+                  if (permissions.includes("map-delete"))
+                    a(class="inner-delete" button-delete data-api=`/${pathAdmin}/map/delete/${item.id}`)
+                      i.fa-regular.fa-trash-can
         else
           tr
             td(colspan="13" class="inner-center") Không có dữ liệu

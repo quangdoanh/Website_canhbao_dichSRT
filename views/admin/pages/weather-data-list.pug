@@ -65,8 +65,9 @@ block main
                   .inner-buttons
                     a.inner-edit(href=`/admin/weather-data/detail/${item.id}`)
                       <i class="fa-solid fa-eye"></i>
-                    a.inner-edit(href=`/${pathAdmin}/weather-data/edit/${item.id}`)
-                        i(class="fa-regular fa-pen-to-square")
+                    if (permissions.includes("warning-weather-update"))
+                      a.inner-edit(href=`/${pathAdmin}/weather-data/edit/${item.id}`)
+                          i(class="fa-regular fa-pen-to-square")
           else 
             tr
               td(colspan="11" style="text-align:center; padding:10px;") Không có dữ liệu
