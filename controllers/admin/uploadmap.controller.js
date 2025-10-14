@@ -320,6 +320,8 @@ module.exports.editPatchMap = async (req, res) => {
     const updates = req.body;
     const updatedFields = {};
 
+    // console.log("db cap nhat", req.body)
+
     // Nếu gửi thongtin
     if (updates.thongtin !== undefined) {
       if (updates.thongtin.trim() === "") {

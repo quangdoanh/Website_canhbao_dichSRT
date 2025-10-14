@@ -36,16 +36,19 @@ block main
         .inner-item
           select
             option(value="") -- Hành động --
-            option(value="active") Hoạt động
-            option(value="inactive") Dừng hoạt động
-            option(value="delete") Xóa
+            if (permissions.includes("user-edit"))
+              option(value="active") Hoạt động
+              option(value="inactive") Dừng hoạt động
+            if (permissions.includes("user-delete"))
+              option(value="delete") Xóa
         .inner-item
           button Áp dụng
       .inner-search
         i(class="fa-solid fa-magnifying-glass")
         input(type="text" placeholder="Tìm kiếm" search)
-      .inner-button-create
-        a(href=`/${pathAdmin}/user/create`) + Tạo mới
+      if (permissions.includes("user-create"))
+        .inner-button-create
+          a(href=`/${pathAdmin}/user/create`) + Tạo mới
 
   //- Section 6: Bảng danh sách
   .section-6
@@ -59,7 +62,7 @@ block main
             th Email
             th Số điện thoại
             th Nhóm quyền
-            th Tạo bởi
+            th.inner-center Tạo bởi
             th Trạng thái
             th Tỉnh/TP
             th Hành động
@@ -73,7 +76,7 @@ block main
                 td #{item.email}
                 td #{item.phone}
                 td #{item.roleName}
-                td #{item.createdByName || "N/A"}
+                td.inner-center #{item.createdByName || "N/A"}
                 td
                   if item.status === "active"
                     .badge.badge-green Hoạt động
@@ -84,10 +87,12 @@ block main
                 td #{item.ten_tinh}
                 td
                   .inner-buttons
-                    a.inner-edit(href=`/${pathAdmin}/user/edit/${item.id}`)
-                      i(class="fa-regular fa-pen-to-square")
-                    button.inner-delete(button-delete data-api=`/${pathAdmin}/user/delete/${item.id}`)
-                      i(class="fa-regular fa-trash-can")
+                    if (permissions.includes("user-edit"))
+                      a.inner-edit(href=`/${pathAdmin}/user/edit/${item.id}`)
+                        i(class="fa-regular fa-pen-to-square")
+                    if (permissions.includes("user-delete"))
+                      button.inner-delete(button-delete data-api=`/${pathAdmin}/user/delete/${item.id}`)
+                        i(class="fa-regular fa-trash-can")
             else 
               tr
                 td(colspan="11" style="text-align:center; padding:10px;") Không có dữ liệu

@@ -36,15 +36,16 @@ block main
         .inner-item
           select
             option(value="") -- Hành động --
-            option(value="delete") Xóa
-            
+            if (permissions.includes("search-delete"))
+              option(value="delete") Xóa     
         .inner-item
           button Áp dụng
       //- .inner-search
       //-   i(class="fa-solid fa-magnifying-glass")
       //-   input(type="text" placeholder="Tìm kiếm" search)
-      .inner-button-create
-          a(href=`/${pathAdmin}/dieutra/create`) + Tạo mới
+      if (permissions.includes("search-create"))
+        .inner-button-create
+            a(href=`/${pathAdmin}/dieutra/create`) + Tạo mới
 
   //- //- Section 6: Bảng danh sách
   .section-6
@@ -93,9 +94,10 @@ block main
                   .badge.badge-green Đã xử lý
               td
                 .inner-buttons
-                  a.inner-edit(href=`/${pathAdmin}/dieutra/edit/${item.id}`)
-                    i(class="fa-regular fa-pen-to-square")
-                  if(item.status == 1)
+                  if (permissions.includes("search-edit"))
+                    a.inner-edit(href=`/${pathAdmin}/dieutra/edit/${item.id}`)
+                      i(class="fa-regular fa-pen-to-square")
+                  if(item.status == 1 && permissions.includes("search-delete"))
                     button.inner-delete(button-delete data-api=`/${pathAdmin}/dieutra/delete/${item.id}`)
                       i(class="fa-regular fa-trash-can")
         else

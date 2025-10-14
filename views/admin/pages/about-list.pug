@@ -20,7 +20,8 @@ block main
         i(class="fa-solid fa-magnifying-glass")
         input(type="text" placeholder="Tìm kiếm" search)
       .inner-button-create
-        a(href=`/${pathAdmin}/about/create`) + Tạo mới
+        if (permissions.includes("about-create"))
+          a(href=`/${pathAdmin}/about/create`) + Tạo mới
 
   //- Section 6: Bảng danh sách
   .section-6
@@ -54,8 +55,9 @@ block main
                           span.slider.round
                   td
                     .inner-buttons
-                      a.inner-edit(href=`/${pathAdmin}/about/edit/${item.id}`)
-                          i(class="fa-regular fa-pen-to-square")
+                      if (permissions.includes("about-edit"))
+                        a.inner-edit(href=`/${pathAdmin}/about/edit/${item.id}`)
+                            i(class="fa-regular fa-pen-to-square")
               else
                 tr
                   td(colspan="9" class="inner-center") Không có dữ liệu

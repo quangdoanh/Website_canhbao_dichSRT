@@ -1528,6 +1528,8 @@ if (mapEditForm && fileRarInput && filePondRar) {
       }
       formData.append("mota", mota);
 
+      //console.log("du_lieu", formData)
+
       fetch(`/${pathAdmin}/map/edit/${id}`, {
         method: "PATCH",
         body: formData

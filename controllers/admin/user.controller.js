@@ -4,7 +4,6 @@ const ProvinceModel = require("../../models/province.model");
 const LogUserModel = require("../../models/log_user.model")
 const RoleModel = require("../../models/role.model");
 const TinhModel = require("../../models/tinh.model")
-const AccountsAdminModel = require("../../models/account-admin.model")
 const Log = require("../../helpers/loguser.helper")
 
 const moment = require("moment/moment")
@@ -60,7 +59,7 @@ module.exports.list = async (req, res) => {
     }
     for (const item of accountUserList) {
       if (item.create_by) {
-        const accountInf = await AccountsAdminModel.findByID(item.create_by);
+        const accountInf = await UserModel.findByID(item.create_by);
 
         if (accountInf) {
           item.createdByName = accountInf.full_name;
