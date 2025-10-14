@@ -33,7 +33,7 @@ app.use(express.json());
 // Sử dụng cookie-parser
 app.use(cookieParser('SVACIIWQBC'));
 
-app.use(session({ cookie: { maxAge: 60000 } }));
+app.use(session({ cookie: { maxAge: 60000 } })); // Thời gian sống (tối đa) của cookie
 app.use(flash());
 
 //thiết lập đường dẫn
